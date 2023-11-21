@@ -1,51 +1,46 @@
-import NextLink from "next/link";
-import { Link } from "@nextui-org/link";
-import { Snippet } from "@nextui-org/snippet";
-import { Code } from "@nextui-org/code";
-import { button as buttonStyles } from "@nextui-org/theme";
+"use client";
+
 import { siteConfig } from "@/config/site";
-import { title, subtitle } from "@/components/primitives";
-import { GithubIcon } from "@/components/icons";
+import { cn } from "@/lib/utils";
+import { Image } from "@nextui-org/react";
 
 export default function Home() {
   return (
-    <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
-      <div className="inline-block max-w-lg text-center justify-center">
-        <h1 className={title()}>Make&nbsp;</h1>
-        <h1 className={title({ color: "violet" })}>beautiful&nbsp;</h1>
-        <br />
-      </div>
-
-      <div className="flex gap-3">
-        <Link
-          isExternal
-          as={NextLink}
-          href={siteConfig.links.docs}
-          className={buttonStyles({
-            color: "primary",
-            radius: "full",
-            variant: "shadow",
-          })}
-        >
-          Documentation
-        </Link>
-        <Link
-          isExternal
-          as={NextLink}
-          className={buttonStyles({ variant: "bordered", radius: "full" })}
-          href={siteConfig.links.github}
-        >
-          <GithubIcon size={20} />
-          GitHub
-        </Link>
-      </div>
-
-      <div className="mt-8">
-        <Snippet hideSymbol hideCopyButton variant="flat">
-          <span>
-            Get started by editing <Code color="primary">app/page.tsx</Code>
-          </span>
-        </Snippet>
+    <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10 h-full w-full overflow-x-hidden">
+      <div className={cn("h-full", "flex justify-center items-center gap-2")}>
+        <Image
+          src="https://app.requestly.io/delay/1000/http://localhost:3000/assets/images/left-bg-peepup-home.png"
+          alt="PeepUp"
+          loading="lazy"
+          isZoomed
+          draggable={false}
+        />
+        <div className="flex flex-col items-center min-w-[200px] max-w-full">
+          <h1
+            className={cn(
+              "font-randrake text-[12rem] max-lg:text-[8rem] max-md:text-[4.4rem] max-sm:text-[4rem] min-w-max",
+              "text-center",
+              "select-none",
+            )}
+          >
+            {siteConfig.name}
+          </h1>
+          <p
+            className={cn(
+              "font-mono font-medium -mt-5 text-center text-[12px] max-md:text-[7px] max-sm:hidden min-w-max",
+            )}
+          >
+            <i>{"Inspiration starts here, words take flight."}</i>
+          </p>
+        </div>
+        <Image
+          src="https://app.requestly.io/delay/1000/http://localhost:3000/assets/images/right-bg-peepup-home.png"
+          alt="PeepUp"
+          isZoomed
+          draggable={false}
+          onContextMenu={(e) => e.preventDefault()}
+          loading="lazy"
+        />
       </div>
     </section>
   );
