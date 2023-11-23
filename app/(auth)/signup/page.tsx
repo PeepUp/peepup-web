@@ -1,445 +1,89 @@
 "use client";
+
 import * as React from "react";
-import axios, { AxiosError } from "axios";
-import {
-    FacebookColoredIcon,
-    ForwardIcon,
-    GoogleIcon,
-    TwitterColoredIcon,
-} from "@/components/icons";
+import * as Icons from "@/components/icons";
+import * as UI from "@nextui-org/react";
+
+import Link from "next/link";
+import LoadingSpinner from "@/components/spinner";
+
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import {
-    Input,
-    Button,
-    Link,
-    Dropdown,
-    DropdownTrigger,
-    DropdownMenu,
-    DropdownItem,
-    Chip,
-} from "@nextui-org/react";
-import toast, { ToastOptions } from "react-hot-toast";
+import { AuthForm } from "@/components/auth-form";
+import { useAuthFormContext } from "@/context/store";
+import { OAuthProvidersSupported } from "@/config/oauth-providers-supported";
 
-const toastStyles: ToastOptions = {
-    icon: (
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="#fff"
-        >
-            <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4ZM11 7C11 6.44772 11.4477 6 12 6C12.5523 6 13 6.44772 13 7V13C13 13.5523 12.5523 14 12 14C11.4477 14 11 13.5523 11 13V7ZM12 16C11.4477 16 11 16.4477 11 17C11 17.5523 11.4477 18 12 18C12.5523 18 13 17.5523 13 17C13 16.4477 12.5523 16 12 16Z"
-                fill="currentColor"
-            />
-        </svg>
-    ),
-    position: "top-center",
-    style: {
-        borderRadius: "10px",
-        background: "#252525",
-        color: "#fff",
-    },
-};
+export default function Page() {
+    const { data } = useAuthFormContext();
 
-const inputStyles = {
-    label: "text-[#7A7A7A] text-sm",
-    input: [
-        "bg-transparent",
-        "font-medium",
-        "placeholder:text-sm",
-        "dark:placeholder:text-[#7A7A7A]",
-        "dark:text-[#7A7A7A]",
-    ],
-    base: ["bg-transparent, dark:text-[#7A7A7A], text-sm"],
-    innerWrapper: "",
-    inputWrapper: [
-        "text-sm",
-        "font-medium",
-        "dark:bg-[#202020]",
-        "bg-[#e0e0e0]",
-        "backdrop-blur-none",
-        "backdrop-saturate-0",
-        "hover:bg-default-200/70",
-        "focus-within:!bg-default-200/50",
-        "focus-within:border-2",
-        "focus-within:border-[#303030]",
-        "dark:hover:bg-[#212121]",
-        "dark:focus-within:!bg-[#202020]",
-        "!cursor-text",
-    ],
-};
+    React.useEffect(() => {
+        if (data.signUpCompleted) {
+            toast.success("Account created successfully!", { position: "top-center" });
+        }
+    }, [data?.signUpCompleted]);
 
-type SignUpArgsField = {
-    email?: string;
-    username?: string;
-    phone?: string;
-    password: string;
-    method?: "password" | "google" | "twitter" | "facebook";
-};
-
-export async function submitSignUpForm(fields: SignUpArgsField) {
-    const response = await fetch("http://127.0.0.1:4334/local/registration", {
-        method: "post",
-        headers: {
-            "Content-Type": "application/json; charset=utf-8",
-        },
-        body: JSON.stringify({
-            traits: {
-                email: fields.email || "",
-                phone_number: fields?.phone || "",
-            },
-            password: fields.password,
-            method: "password",
-        }),
-    });
-    return await response.json();
+    return !data.signUpCompleted ? SignUp() : OTPVerification();
 }
 
-function Page() {
-    const [fields, setFields] = React.useState<SignUpArgsField>({} as SignUpArgsField);
-    const [selectedKeys, setSelectedKeys] = React.useState(new Set(["Email"]));
-    const reference_array = ["Email", "Username", "Phone"];
-    const selectedValue = React.useMemo(
-        () => Array.from(selectedKeys).join(", ").replaceAll("_", " "),
-        [selectedKeys]
-    );
-
-    async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-        e.preventDefault();
-        const data = await submitSignUpForm(fields);
-
-        console.log(data);
-        if (data.code === 409) {
-            return toast("Email is invalid or already taken ", { ...toastStyles });
-        }
-
-        if (data.code === 400) {
-            return toast("Please enter a valid fields", { ...toastStyles });
-        }
-
-        if (data.code === 201) {
-            return toast("User created successfully", { ...toastStyles });
-        }
-
-        return toast("User created successfully", { ...toastStyles });
-    }
-
+function SignUp() {
     return (
-        <section className="flex flex-col items-center justify-start gap-4 py-8 md:py-10 h-full w-full overflow-x-hidden">
-            {/* Title */}
-            <div className="justify-self-start mt-12 text-xl">
-                <h3>Sign up with PeepUp account</h3>
+        <section className={cn(["ctr", "gap-8 py-8 max-md:py-18 overflow-x-hidden"])}>
+            <div className="justify-self-start">
+                <h1>Sign up with PeepUp account</h1>
             </div>
 
-            <div className="w-1/2">
-                <Dropdown backdrop="opaque">
-                    <DropdownTrigger>
-                        <Button
-                            size="lg"
-                            radius="sm"
-                            variant="light"
-                            className="capitalize dark:bg-transparent h-max py-2"
-                            fullWidth
-                        >
-                            {selectedValue.length > 0
-                                ? selectedValue.split(", ").map((value, index) => (
-                                      <Chip
-                                          key={index}
-                                          className="capitalize bg-transparent dark:bg-[#202020] text-primary"
-                                          color="primary"
-                                          size="sm"
-                                          onClose={() =>
-                                              selectedKeys.size > 1
-                                                  ? selectedKeys.delete(value) &&
-                                                    setSelectedKeys(new Set(selectedKeys))
-                                                  : null
-                                          }
-                                      >
-                                          {value}
-                                      </Chip>
-                                  ))
-                                : "Select a field"}
-                        </Button>
-                    </DropdownTrigger>
-                    <DropdownMenu
-                        aria-label="Multiple selection field"
-                        color="primary"
-                        variant="flat"
-                        emptyContent="No options"
-                        closeOnSelect={false}
-                        selectionMode="multiple"
-                        aria-required={true}
-                        autoFocus
-                        bottomContent
-                        disallowEmptySelection={true}
-                        selectedKeys={selectedKeys}
-                        defaultSelectedKeys={selectedKeys}
-                        onSelectionChange={(keys) => setSelectedKeys(keys as Set<string>)}
-                        placeholder="Select a field"
-                    >
-                        <DropdownItem key="Email">Email</DropdownItem>
-                        <DropdownItem key="Phone">Phone</DropdownItem>
-                        <DropdownItem key="Username">Username</DropdownItem>
-                    </DropdownMenu>
-                </Dropdown>
+            <div className="w-1/2 max-md:w-full">
+                <AuthForm email phone_number />
             </div>
 
-            {/* Input Form */}
-            <div className="w-1/2">
-                <form onSubmit={onSubmit} method="post" className="flex flex-col gap-2">
-                    {selectedValue.length > 0
-                        ? selectedValue
-                              .split(", ")
-                              .sort(function (a, b) {
-                                  return (
-                                      reference_array.indexOf(a) -
-                                      reference_array.indexOf(b)
-                                  );
-                              })
-                              .map((value, index) => (
-                                  <Input
-                                      key={index}
-                                      size="sm"
-                                      radius="sm"
-                                      isRequired={true}
-                                      type={
-                                          value.toLowerCase().match("email")
-                                              ? "email"
-                                              : "text"
-                                      }
-                                      classNames={{ ...inputStyles }}
-                                      placeholder={`${value}`}
-                                      className=""
-                                      maxLength={255}
-                                      minLength={10}
-                                      aria-required={true}
-                                      value={
-                                          fields[
-                                              value.toLowerCase() as keyof SignUpArgsField
-                                          ]
-                                      }
-                                      onValueChange={(v) => {
-                                          setFields({
-                                              ...fields,
-                                              [value.toLowerCase()]: v,
-                                          });
-                                      }}
-                                  />
-                              ))
-                        : null}
-
-                    {/* <div>
-            <Input
-              size="sm"
-              radius="sm"
-              type="email"
-              classNames={{ ...styles }}
-              placeholder="Email address, phone, or username"
-              className=""
-              maxLength={255}
-              minLength={10}
-            />
-          </div>
-
-          <div>
-            <Input
-              size="sm"
-              radius="sm"
-              classNames={{ ...styles }}
-              placeholder="Password"
-              className=""
-              type={"password"}
-            />
-          </div> */}
-
-                    <div>
-                        <Input
-                            size="sm"
-                            radius="sm"
-                            isRequired
-                            classNames={{ ...inputStyles }}
-                            placeholder="Password"
-                            className=""
-                            minLength={10}
-                            maxLength={64}
-                            type={"password"}
-                            value={fields["password"]}
-                            onValueChange={(v) => {
-                                setFields({ ...fields, password: v });
-                            }}
-                        />
-                    </div>
-
-                    <div>
-                        <Button
-                            size="lg"
-                            radius="sm"
-                            type="submit"
-                            fullWidth
-                            className={cn(
-                                "dark:bg-[#A8A8A8]",
-                                "dark:text-[#101010]",
-                                "text-sm",
-                                "font-medium"
-                            )}
-                        >
-                            Sign up
-                        </Button>
-                    </div>
-
-                    <div className="mt-2 flex justify-center justify-self-end">
-                        <p className="text-center text-sm font-medium dark:text-[#7a7a7a]">
-                            Click “Sign up” to agree to PeepUp’s{" "}
-                            <Link
-                                href={"/signin"}
-                                as={Link}
-                                isExternal={false}
-                                size="sm"
-                                showAnchorIcon
-                                className={cn("")}
-                                onContextMenu={(e) => e.preventDefault()}
-                            >
-                                Terms of Service
-                            </Link>{" "}
-                            <br />
-                            and acknowledge that PeepUp’s{" "}
-                            <Link
-                                href={"/signin"}
-                                as={Link}
-                                isExternal={false}
-                                size="sm"
-                                showAnchorIcon
-                                className={cn("")}
-                                onContextMenu={(e) => e.preventDefault()}
-                            >
-                                {" "}
-                                Privacy Policy
-                            </Link>{" "}
-                            applies to you.
-                        </p>
-                    </div>
-
-                    <div className="mt-4 flex w-full justify-center">
-                        <p className="text-center text-sm font-medium dark:text-[#7a7a7a]">
-                            or
-                        </p>
-                    </div>
-                    {/* <div className="mt-4 flex w-full justify-center">
-            <Link
-              href={"#"}
-              as={Link}
-              isExternal
-              color="foreground"
-              className={cn("select-none")}
-              onContextMenu={(e) => e.preventDefault()}
-            >
-              <p className="text-center text-sm">Forgotten password?</p>
-            </Link>
-          </div> */}
-                </form>
+            <div className="w-1/2 max-md:w-full">
+                <div className="flex w-full justify-center">
+                    <p className="max-md:hidden text-center">
+                        or you can use your social account
+                    </p>
+                    <p className="hidden max-md:contents text-center">
+                        or use your social account
+                    </p>
+                </div>
             </div>
 
-            {/* OAUTH PROVIDER SIGNUP */}
-            <div className="w-1/2">
-                <div className="mt-4 flex w-full justify-center items-center">
-                    <Button
-                        className={cn(
-                            "dark:bg-[#202020]",
-                            "w-full",
-                            "flex",
-                            "justify-stretch"
-                        )}
-                        type="button"
-                        startContent={
-                            <GoogleIcon size={20} className="mr-4 justify-self-start" />
-                        }
-                        endContent={
-                            <ForwardIcon
-                                size={20}
-                                className="ml-auto justify-self-end fill-[#7a7a7a]"
-                            />
-                        }
-                        radius="sm"
-                        variant="solid"
-                    >
-                        <p className="justify-self-start">Sign up with Google</p>
-                    </Button>
-                </div>
-
-                <div className="mt-2 flex w-full justify-center items-center">
-                    <Button
-                        className={cn(
-                            "dark:bg-[#202020]",
-                            "w-full",
-                            "flex",
-                            "justify-stretch"
-                        )}
-                        type="button"
-                        startContent={
-                            <TwitterColoredIcon
-                                size={24}
-                                className="mr-4 justify-self-start"
-                            />
-                        }
-                        endContent={
-                            <ForwardIcon
-                                size={20}
-                                className="ml-auto justify-self-end fill-[#7a7a7a]"
-                            />
-                        }
-                        radius="sm"
-                        variant="solid"
-                    >
-                        <p className="justify-self-start">Sign up with Twitter</p>
-                    </Button>
-                </div>
-
-                <div className="mt-2 flex w-full justify-center items-center">
-                    <Button
-                        className={cn(
-                            "dark:bg-[#202020]",
-                            "w-full",
-                            "flex",
-                            "justify-stretch"
-                        )}
-                        type="button"
-                        startContent={
-                            <FacebookColoredIcon
-                                size={24}
-                                className="mr-4 justify-self-start"
-                            />
-                        }
-                        endContent={
-                            <ForwardIcon
-                                size={20}
-                                className="ml-auto justify-self-end fill-[#7a7a7a]"
-                            />
-                        }
-                        radius="sm"
-                        variant="solid"
-                    >
-                        <p className="justify-self-start">Sign up with Facebook</p>
-                    </Button>
-                </div>
+            <div className="w-1/2 max-md:w-full">
+                {OAuthProvidersSupported.length > 0
+                    ? OAuthProvidersSupported.map((provider, i) => (
+                          <div
+                              className="flex w-full justify-center items-center mt-2"
+                              key={provider.name}
+                          >
+                              <UI.Button
+                                  type="button"
+                                  fullWidth
+                                  startContent={provider.icon}
+                                  radius="sm"
+                                  color="default"
+                              >
+                                  <p className="justify-self-start max-w-min max-md:text-xs">
+                                      {`Sign up with ${provider.name}`}
+                                  </p>
+                              </UI.Button>
+                          </div>
+                      ))
+                    : null}
 
                 <div className="mt-4 flex w-full justify-center">
-                    <p className="text-center text-sm font-medium dark:text-[#7a7a7a]">
+                    <p className="text-center">
                         {"Already have an account? "}
-                        <Link
+                        <UI.Link
                             href={"/signin"}
-                            as={Link}
+                            as={UI.Link}
                             isExternal={false}
                             size="sm"
                             showAnchorIcon
-                            className={cn("select-none", "ml-1", "text-[#7a7a7a]")}
+                            color="secondary"
+                            className={cn(["__link", "ml-1"])}
                             onContextMenu={(e) => e.preventDefault()}
                         >
                             Sign in
-                        </Link>
+                        </UI.Link>
                     </p>
                 </div>
             </div>
@@ -447,4 +91,265 @@ function Page() {
     );
 }
 
-export default Page;
+function OTPVerification() {
+    const [inputOTP, setInputOTP] = React.useState("");
+    const [loading, setLoading] = React.useState(false);
+    const { data, setData } = useAuthFormContext();
+
+    async function handleSendVerification(e: React.FormEvent<HTMLButtonElement>) {
+        e.preventDefault();
+        setLoading(true);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        console.log("Sending verification...");
+        setData({ ...data, verifyCodeRetrieved: true });
+        toast.success("Verification code sent!", {
+            position: "top-center",
+            description: "Please check your email for the verification code!",
+        });
+        setLoading(false);
+    }
+
+    async function handleSubmitOTPForm(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        setLoading(true);
+
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        console.log("Submitting OTP...");
+        toast.success("Account verified!", {
+            position: "top-center",
+            description: "Your account has been verified!",
+        });
+
+        setLoading(false);
+        setInputOTP("");
+        setData({ ...data, verifyCodeApproved: true });
+    }
+
+    function FormVerifyCode() {
+        return (
+            <form
+                className="w-1/2 max-md:w-full flex flex-col gap-4 justify-center items-center mt-8"
+                onSubmit={handleSubmitOTPForm}
+            >
+                <UI.Input
+                    size="sm"
+                    radius="sm"
+                    variant="bordered"
+                    name="otp_code"
+                    isRequired
+                    type="text"
+                    placeholder="Enter your verification code"
+                    className="max-w-xs text-center bg-transparent font-bold text-lg"
+                    minLength={6}
+                    maxLength={6}
+                    value={inputOTP}
+                    onValueChange={setInputOTP}
+                />
+
+                <UI.Button
+                    size="md"
+                    radius="sm"
+                    className="max-w-xs"
+                    fullWidth
+                    disabled={loading}
+                    type="submit"
+                >
+                    {loading ? (
+                        <LoadingSpinner
+                            size="sm"
+                            color="current"
+                            className="flex justify-between items-center"
+                        />
+                    ) : (
+                        "Submit"
+                    )}
+                </UI.Button>
+            </form>
+        );
+    }
+
+    const SendVerificationButton = () => (
+        <div className="w-1/2 max-md:w-full flex flex-col gap-4 justify-center items-center mt-8">
+            <UI.Button
+                size="md"
+                radius="sm"
+                className="text-sm font-medium max-w-sm"
+                disabled={loading}
+                fullWidth
+                onClick={handleSendVerification}
+                onKeyUp={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                        handleSendVerification(e);
+                    }
+                }}
+            >
+                {loading ? (
+                    <LoadingSpinner
+                        size="sm"
+                        color="current"
+                        className="flex justify-between items-center"
+                    />
+                ) : (
+                    "Send verification"
+                )}
+            </UI.Button>
+        </div>
+    );
+
+    const VerifyCodeApproved = () => (
+        <div className="w-1/3 max-md:w-full flex flex-col gap-8 justify-center items-center mt-8 ">
+            <div className="w-full flex justify-center items-center">
+                <h2 className="max-md:text-center text-2xl max-md:text-md">
+                    Sign in with PeepUp account now
+                </h2>
+            </div>
+            <UI.Card
+                isFooterBlurred
+                radius="lg"
+                className="border-none w-full max-h-[400px] max-w-[600px]"
+                shadow="md"
+                draggable={false}
+            >
+                <UI.Image
+                    alt="Woman listing to music"
+                    draggable={false}
+                    className="object-cover w-full bg-center"
+                    src="/assets/images/orang-profile-my.jpg"
+                />
+                <UI.CardFooter className="px-2 justify-evenly before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
+                    <p className="max-md:text-center text-md text-white/50 font-semibold">
+                        Sign in as
+                    </p>
+                    <UI.Button
+                        as={Link}
+                        variant="flat"
+                        color="default"
+                        href="/signin"
+                        className="bg-black/60 font-semibold text-md text-white/50"
+                    >
+                        {data.email.split("@")[0]}
+                    </UI.Button>
+                </UI.CardFooter>
+            </UI.Card>
+        </div>
+    );
+
+    return (
+        <section className="flex flex-col items-center justify-start h-full w-full overflow-x-hidden max-sm:pb-12 mt-40 max-md:mt-0">
+            {/* Header */}
+            {!data.verifyCodeApproved ? (
+                <div>
+                    <div className="flex flex-col items-center justify-self-start gap-2">
+                        <Icons.VerificationIdentityIcon size={128} />
+                    </div>
+
+                    <div className="flex flex-col items-center justify-self-start gap-2">
+                        <h2 className="max-md:text-center text-2xl">
+                            Verify your account
+                        </h2>
+                        <p className="max-md:text-center text-sm">
+                            {!data.verifyCodeRetrieved
+                                ? "Send verification to your email address"
+                                : "Please check your email for the verification code"}
+                        </p>
+                    </div>
+                </div>
+            ) : null}
+
+            {!data.verifyCodeRetrieved ? (
+                <SendVerificationButton />
+            ) : data.verifyCodeRetrieved && !data.verifyCodeApproved ? (
+                <FormVerifyCode />
+            ) : (
+                <VerifyCodeApproved />
+            )}
+        </section>
+    );
+}
+
+/* const inputStyles = {
+    label: "dark:text-[#7A7A7A] text-sm",
+    input: [
+        "bg-transparent",
+        "font-medium",
+        "placeholder:text-sm",
+        "dark:placeholder:text-[#7A7A7A]",
+        "dark:text-[#7A7A7A]",
+    ],
+    base: ["dark:text-[#7A7A7A]", "text-sm"],
+    innerWrapper: "",
+    inputWrapper: [
+        "text-sm",
+        "font-medium",
+        "dark:bg-[#202020]",
+        "backdrop-blur-none",
+        "backdrop-saturate-0",
+        "focus-within:border-2",
+        "focus-within:border-[#303030]",
+        "dark:hover:bg-[#212121]",
+        "dark:focus-within:!bg-[#202020]",
+        "!cursor-text",
+    ],
+}; */
+
+/* export type OTPInputProps = {
+    id: string;
+    previous: string;
+    next: string;
+    value: string;
+    onValueChange: (inputId: string, v: string) => void;
+};
+
+function OTPInput(props: OTPInputProps) {
+    console.log({ props });
+    const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        const target = e.target as HTMLInputElement;
+
+        if (e.key === "Backspace" || e.key === "Delete" || e.key === "ArrowLeft") {
+            const previous = document.querySelector(
+                `input[name="${props.previous}"]`
+            ) as HTMLInputElement;
+            console.log({ previous });
+
+            if (previous) {
+                previous.focus();
+            }
+        } else if (
+            //check if key is numeric keys 0 to 9
+            e.key === "ArrowRight" ||
+            (e.keyCode >= 48 && e.keyCode <= 57) ||
+            (e.keyCode >= 96 && e.keyCode <= 105)
+        ) {
+            const next = document.querySelector(
+                `input[name="${props.next}"]`
+            ) as HTMLInputElement;
+            console.log({ next });
+
+            if (next) {
+                next.focus();
+                next.select();
+                next.autofocus = true;
+            } else {
+                console.log("submit");
+            }
+        }
+    };
+
+    return (
+        <UI.Input
+            name={props.id}
+            autoFocus={props.id === "otp-0"}
+            key={props.id}
+            maxLength={1}
+            type="text"
+            size="sm"
+            color="default"
+            className={cn(["max-w-[40px]", "m-2", "font-bold", "text-lg"])}
+            onKeyUp={handleKeyUp}
+            onValueChange={(value) => {
+                props.onValueChange(props.id, value);
+            }}
+        />
+    );
+} */
