@@ -1,3 +1,35 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    h1 {
+        @apply font-medium;
+        @apply text-3xl;
+        @apply max-sm:text-center;
+        @apply max-sm:text-xl;
+    }
+
+    h2 {
+        @apply font-bold;
+        @apply text-2xl;
+        @apply max-sm:text-center;
+    }
+    p {
+        @apply text-sm;
+        @apply font-medium;
+    }
+}
+
+@layer components {
+    .ctr {
+        @apply w-full h-full;
+        @apply flex flex-col items-center justify-center;
+    }
+
+    .__link {
+        @apply text-xs;
+        @apply font-medium;
+        @apply select-none;
+    }
+}

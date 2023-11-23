@@ -1,18 +1,101 @@
 import "@/styles/globals.css";
 
 import clsx from "clsx";
-import { Metadata } from "next";
-import { siteConfig } from "@/config/site";
-import { Providers } from "./providers";
-import { Navbar } from "@/components/navbar";
-import { fontMono, fontSans } from "@/config/fonts";
+import Link from "next/link";
 import localFont from "next/font/local";
-import { Toaster } from "react-hot-toast";
+
+import * as UI from "@nextui-org/react";
+import { Toaster } from "sonner";
+import { Providers } from "./providers";
+import { siteConfig } from "@/config/site";
+import { Navbar } from "@/components/navbar";
+import { toasterProps } from "@/config/toast";
+import { fontMono, fontSans } from "@/config/fonts";
+
+import type { Metadata } from "next";
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+    return (
+        <html
+            lang="en"
+            suppressHydrationWarning
+            className={clsx([
+                fontSans.variable,
+                fontMono.variable,
+                fontRandrake.variable,
+            ])}
+        >
+            <head />
+            <body
+                className={clsx(
+                    "min-h-screen bg-background font-sans antialiased",
+                    "text-foreground bg-background selection:bg-[#999999] selection:text-[#1A1A1A]",
+                    "dark:selection:bg-[#919190] dark:selection:text-[#252525]"
+                )}
+            >
+                <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
+                    <div className="relative flex flex-col h-screen">
+                        <Navbar />
+                        <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
+                            {children}
+                        </main>
+                        <footer className="w-full flex flex-col items-start justify-center py-2">
+                            <UI.Divider />
+                            <div className="flex mt-4 pl-12 max-md:flex-col">
+                                <UI.Link
+                                    as={Link}
+                                    href={siteConfig.links.repository}
+                                    rel="noopener noreferrer"
+                                    target="_blank"
+                                    color="foreground"
+                                    size="sm"
+                                    isExternal
+                                    showAnchorIcon
+                                    className="max-md:text-xs"
+                                >
+                                    See PeepUp on GitHub
+                                </UI.Link>
+                                <UI.Spacer x={4} />
+                                <p className="text-sm font-medium max-md:text-xs">
+                                    © {new Date().getFullYear()} {siteConfig.name}
+                                    <span> All rights reserved.</span>
+                                </p>
+                            </div>
+                        </footer>
+                    </div>
+                    <Toaster
+                        duration={toasterProps.duration}
+                        richColors
+                        closeButton
+                        visibleToasts={3}
+                        theme="system"
+                        toastOptions={
+                            {
+                                /* style: {
+                                fontSize: "0.9rem",
+                            },
+                            classNames: {
+                                title: "font-semibold text-md",
+                                info: "font-semibold",
+                                warning: "font-semibold",
+                                error: "font-semibold",
+                                success: "font-semibold",
+                                description: "font-medium text-md",
+                                loader: "font-semibold",
+                            }, */
+                            }
+                        }
+                    />
+                </Providers>
+            </body>
+        </html>
+    );
+}
 
 export const metadata: Metadata = {
     title: {
         default: siteConfig.name,
-        template: `%s - ${siteConfig.name}`,
+        template: `%s | ${siteConfig.name}`,
     },
     description: siteConfig.description,
     icons: {
@@ -40,42 +123,3 @@ const fontRandrake = localFont({
     style: "normal",
     display: "optional",
 });
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-    return (
-        <html
-            lang="en"
-            suppressHydrationWarning
-            className={clsx([
-                fontSans.variable,
-                fontMono.variable,
-                fontRandrake.variable,
-            ])}
-        >
-            <head />
-            <body
-                className={clsx(
-                    "min-h-screen bg-background font-sans antialiased",
-                    "text-current selection:bg-[#F25F5C] selection:text-[#1A1A1A]",
-                    "dark:selection:bg-[#f5cb5c] dark:selection:text-[#1C1C1C]"
-                )}
-            >
-                <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
-                    <Toaster
-                        toastOptions={{
-                            position: "bottom-center",
-                            duration: 5000,
-                        }}
-                    />
-                    <div className="relative flex flex-col h-screen">
-                        <Navbar />
-                        <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
-                            {children}
-                        </main>
-                        <footer className="w-full flex items-center justify-center py-3"></footer>
-                    </div>
-                </Providers>
-            </body>
-        </html>
-    );
-}
