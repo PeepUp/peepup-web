@@ -41,7 +41,7 @@ export const phone = z
 export const password = z
     .string()
     .regex(mediumPassword, {
-        message: "Password is too weak",
+        message: "Password is too weak or not secure enough",
     })
     .min(8, {
         message: "Password must be at least 8 characters long",
@@ -53,7 +53,8 @@ export const password = z
 export const strongPwd = z
     .string()
     .regex(strongPassword, {
-        message: "Please enter a strong password",
+        message:
+            "Please enter a strong password with at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character",
     })
     .min(8, {
         message: "Password must be at least 8 characters long",

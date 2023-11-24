@@ -6,6 +6,7 @@ type DataAuthForm = {
     signUpCompleted: boolean;
     verifyCodeRetrieved: boolean;
     verifyCodeApproved: boolean;
+    inputVerifyCode: string;
 };
 
 interface AuthFormContextProps {

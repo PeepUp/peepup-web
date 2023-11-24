@@ -1,10 +1,8 @@
 import "@/styles/globals.css";
 
 import clsx from "clsx";
-import Link from "next/link";
 import localFont from "next/font/local";
 
-import * as UI from "@nextui-org/react";
 import { Toaster } from "sonner";
 import { Providers } from "./providers";
 import { siteConfig } from "@/config/site";
@@ -39,7 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                         <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
                             {children}
                         </main>
-                        <footer className="w-full flex flex-col items-start justify-center py-2">
+                        {/* <footer className="w-full flex flex-col items-start justify-center py-2 relative">
                             <UI.Divider />
                             <div className="flex mt-4 pl-12 max-md:flex-col">
                                 <UI.Link
@@ -61,7 +59,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                                     <span> All rights reserved.</span>
                                 </p>
                             </div>
-                        </footer>
+                        </footer> */}
                     </div>
                     <Toaster
                         duration={toasterProps.duration}
