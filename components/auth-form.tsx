@@ -8,13 +8,27 @@ import LoadingSpinner from "./spinner";
 import { toast } from "sonner";
 import { MyInput } from "./input";
 import { siteConfig } from "@/config/site";
-import { useAuthFormContext } from "@/context/store";
-import { checkEmailAvailability, submitSignUpForm } from "@/lib/api/auth";
+import { MethodOption, SignUpData } from "@/types/identities";
+import { useAuthFormContext } from "@/context/store/auth-form-store";
+import { submitLocalSignInForm, submitLocalSignUpForm } from "@/lib/api/auth";
+import { setTokenSession } from "@/lib/session/token";
+import { useMutation } from "@tanstack/react-query";
+import { AxiosResponse } from "axios";
 
 export function AuthForm(props: AuthFormProps) {
     const { data, setData } = useAuthFormContext();
     const [isOnSubmit, setIsOnSubmit] = React.useState(false);
     const [inputForm, setInputForm] = React.useState<AuthInputForm>({} as AuthInputForm);
+
+    const { mutateAsync } = useMutation({
+        mutationFn: async (data: SignUpData) => await submitLocalSignUpForm(data),
+        onSuccess: (data) => {
+            console.log(data);
+        },
+        onError: (error) => {
+            console.log(error);
+        },
+    });
 
     async function validateTraits() {
         let data: unknown;
@@ -38,35 +52,38 @@ export function AuthForm(props: AuthFormProps) {
                     ]);
                 } */
 
-                console.log("parse as email");
+                // console.log("parse as email");
                 setInputForm({ ...inputForm, traitsType: "email" });
                 return parse;
             }
 
-            console.log("failed to parse as email");
+            // console.log("failed to parse as email");
             data = parse.error;
         }
 
         if (props.username) {
             const parse = Schema.username.safeParse(inputForm.traitsValue);
+
             if (parse.success === true) {
-                console.log("parse as username");
+                //  console.log("parse as username");
                 setInputForm({ ...inputForm, traitsType: "username" });
                 return parse;
             }
 
-            console.log("failed to parse as username");
+            // console.log("failed to parse as username");
             data = parse.error;
         }
 
         if (props.phone_number) {
             const parse = Schema.phone.safeParse(inputForm.traitsValue);
+
             if (parse.success === true) {
-                console.log("parse as phone");
+                // console.log("parse as phone");
                 setInputForm({ ...inputForm, traitsType: "phone_number" });
                 return parse;
             }
-            console.log("failed to parse as phone");
+
+            // console.log("failed to parse as phone");
             data = parse.error;
         }
 
@@ -77,26 +94,29 @@ export function AuthForm(props: AuthFormProps) {
         const parse = Schema.password.safeParse(inputForm.password);
 
         if (parse.success === true) {
-            console.log("parse as medium password");
+            // console.log("parse as medium password");
 
             // continue to parse as strong password
             const strongParse = Schema.strongPwd.safeParse(inputForm.password);
 
             if (strongParse.success === true) {
-                console.log("parse as strong password");
+                // console.log("parse as strong password");
+                setData({ ...data, method: "password" });
                 return strongParse;
             }
 
             return strongParse.error;
         } else {
-            console.log("parsed as medium password");
+            // console.log("parsed as medium password");
             return parse.error;
         }
     }
 
     async function preSubmit(): Promise<boolean> {
         const parseInputTraits = await validateTraits();
-        const parseInputPassword = await validatePassword();
+        const parseInputPassword = !props.isValidatePassword
+            ? null
+            : await validatePassword();
 
         if (parseInputTraits instanceof Z.ZodError) {
             const traitsEl = document.querySelector(
@@ -133,33 +153,78 @@ export function AuthForm(props: AuthFormProps) {
 
         if (!(await preSubmit())) return setIsOnSubmit(false);
 
+        let response: Response | undefined;
+
         try {
-            let response: Response | undefined;
             if (props.type === "signup") {
-                response = await submitSignUpForm({
+                response = await submitLocalSignUpForm({
                     traits: {
                         [inputForm.traitsType ?? "email"]: inputForm.traitsValue,
                     },
                     password: inputForm.password,
                 });
-            }
 
-            if (!response) throw new Error("Failed to create account! Server is busy");
+                if (!response) {
+                    throw new Error("Failed to create account! Server is busy");
+                }
 
-            if (response.status === 201) {
-                setData({
-                    ...data,
-                    email: inputForm.traitsValue,
-                    signUpCompleted: true,
+                if (response.status === 201) {
+                    setData({
+                        ...data,
+                        email: inputForm.traitsValue,
+                        signUpCompleted: true,
+                    });
+                }
+            } else if (props.type === "signin") {
+                response = await submitLocalSignInForm({
+                    traits: {
+                        [inputForm.traitsType ?? "email"]: inputForm.traitsValue,
+                    },
+                    password: inputForm.password,
+                    method: !props.method ? data.method : props.method,
                 });
 
-                return setIsOnSubmit(false);
+                if (!response) {
+                    throw new Error("Failed to create account! Server is busy");
+                }
+
+                if (response.status === 200) {
+                    const data = await response.json();
+                    console.log(data);
+
+                    toast.success("Signed in successfully!", {
+                        duration: 2000,
+                        position: "top-center",
+                    });
+
+                    setAuthTokenSession({
+                        refreshToken: data.refresh_token,
+                        accessToken: data.access_token,
+                    });
+
+                    await new Promise((resolve) => setTimeout(resolve, 4000));
+
+                    setIsOnSubmit(false);
+                    return;
+                    // return window.location.replace(inputForm.traitsValue.split("@")[1]);
+                }
+            } else {
+                throw new Error("Invalid form type");
             }
 
             if (response.status === 400) {
                 const error = await response.json();
-                return toast.warning("Validation fields failed", {
+                toast.warning("Validation fields failed", {
                     description: error.errors[0].message,
+                    position: "top-center",
+                });
+            }
+
+            if (response.status === 401) {
+                const error = await response.json();
+                console.log(error);
+                toast.warning("Invalid Cridential ", {
+                    description: error.error,
                     position: "top-center",
                 });
             }
@@ -169,7 +234,6 @@ export function AuthForm(props: AuthFormProps) {
                     description: "Email already registered or fields is invalid",
                     position: "top-center",
                 });
-                return setIsOnSubmit(false);
             }
 
             if (response.status === 500) {
@@ -180,7 +244,6 @@ export function AuthForm(props: AuthFormProps) {
                         description: "Email already registered",
                         position: "top-center",
                     });
-                    return setIsOnSubmit(false);
                 }
             }
         } catch (error) {
@@ -193,7 +256,7 @@ export function AuthForm(props: AuthFormProps) {
             }
 
             if (error instanceof Error) {
-                toast.error("Failed to create account!", {
+                toast.error("Failed to Send Request", {
                     position: "top-center",
                     description: "Sorry the server is busy, please try again later.",
                 });
@@ -210,6 +273,17 @@ export function AuthForm(props: AuthFormProps) {
         }
 
         setIsOnSubmit(false);
+    }
+
+    function setAuthTokenSession({
+        refreshToken,
+        accessToken,
+    }: {
+        refreshToken: string;
+        accessToken: string;
+    }): void {
+        setTokenSession({ name: "_refresh", value: refreshToken });
+        setTokenSession({ name: "_access", value: accessToken });
     }
 
     return (
@@ -320,9 +394,12 @@ export interface AuthFormProps extends React.HTMLAttributes<HTMLFormElement> {
     username?: boolean;
     phone_number?: boolean;
     submitLabel?: string;
-    type?: "signin" | "signup";
-    method?: string;
+    type?: AuthFormFor;
+    isValidatePassword?: boolean;
+    method?: MethodOption;
 }
+
+export type AuthFormFor = "signin" | "signup";
 
 export type AuthInputForm = {
     traitsValue: string;

@@ -1,8 +1,12 @@
 "use client";
+
 import * as React from "react";
+
+import type { MethodOption } from "@/types/identities";
 
 type DataAuthForm = {
     email: string;
+    method: MethodOption;
     signUpCompleted: boolean;
     verifyCodeRetrieved: boolean;
     verifyCodeApproved: boolean;

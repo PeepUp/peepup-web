@@ -7,7 +7,7 @@ import * as Icons from "@/components/icons";
 import LoadingSpinner from "@/components/spinner";
 
 import { toast } from "sonner";
-import { useAuthFormContext } from "@/context/store";
+import { useAuthFormContext } from "@/context/store/auth-form-store";
 import RandomIcon from "./random-icon";
 
 export default function OTPVerification() {

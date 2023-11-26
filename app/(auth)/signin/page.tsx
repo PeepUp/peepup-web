@@ -31,7 +31,14 @@ export default function Page() {
             </div>
 
             <div className="w-1/2 max-md:w-full">
-                <AuthForm email username phone_number submitLabel="Sign in" />
+                <AuthForm
+                    email
+                    username
+                    phone_number
+                    submitLabel="Sign in"
+                    type="signin"
+                    isValidatePassword={false}
+                />
             </div>
 
             <div className="w-1/2 max-md:w-full">

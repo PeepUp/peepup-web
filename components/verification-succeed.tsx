@@ -3,7 +3,7 @@ import * as UI from "@nextui-org/react";
 
 import Link from "next/link";
 
-import { useAuthFormContext } from "@/context/store";
+import { useAuthFormContext } from "@/context/store/auth-form-store";
 
 export function SuccessVerifyCodeApproved() {
     const { data } = useAuthFormContext();

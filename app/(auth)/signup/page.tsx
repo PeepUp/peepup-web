@@ -1,10 +1,11 @@
 "use client";
 import * as React from "react";
-import OTPVerification from "@/components/otp-verification";
 
-import { useAuthFormContext } from "@/context/store";
+import OTPVerification from "@/components/otp-verification";
 import SignUp from "@/components/signup";
+
 import { toast } from "sonner";
+import { useAuthFormContext } from "@/context/store/auth-form-store";
 import { SuccessVerifyCodeApproved } from "@/components/verification-succeed";
 
 export default function Page() {

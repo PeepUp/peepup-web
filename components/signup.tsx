@@ -7,7 +7,6 @@ import RandomIcon from "@/components/random-icon";
 import { cn } from "@/lib/utils";
 import { AuthForm } from "@/components/auth-form";
 import { OAuthProvidersSupported } from "@/config/oauth-providers-supported";
-import { submitSignUpForm } from "@/lib/api/auth";
 
 export default function SignUp() {
     return (
@@ -31,7 +30,13 @@ export default function SignUp() {
             </div>
 
             <div className="w-1/2 max-md:w-full">
-                <AuthForm email phone_number submitLabel="Sign up" type="signup" />
+                <AuthForm
+                    email
+                    phone_number
+                    submitLabel="Sign up"
+                    type="signup"
+                    isValidatePassword
+                />
             </div>
 
             <div className="w-1/2 max-md:w-full">
