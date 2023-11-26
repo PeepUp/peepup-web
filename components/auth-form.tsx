@@ -5,48 +5,85 @@ import * as Schema from "@/lib/schema/identity/signup";
 
 import LoadingSpinner from "./spinner";
 
-import { MyInput } from "./input";
 import { toast } from "sonner";
+import { MyInput } from "./input";
 import { siteConfig } from "@/config/site";
-import { useAuthFormContext } from "@/context/store";
+import { MethodOption, SignUpData } from "@/types/identities";
+import { useAuthFormContext } from "@/context/store/auth-form-store";
+import { submitLocalSignInForm, submitLocalSignUpForm } from "@/lib/api/auth";
+import { setTokenSession } from "@/lib/session/token";
+import { useMutation } from "@tanstack/react-query";
+import { AxiosResponse } from "axios";
 
 export function AuthForm(props: AuthFormProps) {
-    const [inputForm, setInputForm] = React.useState<AuthInputForm>({} as AuthInputForm);
     const { data, setData } = useAuthFormContext();
     const [isOnSubmit, setIsOnSubmit] = React.useState(false);
+    const [inputForm, setInputForm] = React.useState<AuthInputForm>({} as AuthInputForm);
+
+    const { mutateAsync } = useMutation({
+        mutationFn: async (data: SignUpData) => await submitLocalSignUpForm(data),
+        onSuccess: (data) => {
+            console.log(data);
+        },
+        onError: (error) => {
+            console.log(error);
+        },
+    });
 
     async function validateTraits() {
         let data: unknown;
 
         if (props.email) {
             const parse = Schema.email.safeParse(inputForm.traitsValue);
+
             if (parse.success === true) {
-                console.log("parse as email");
+                /* const response = await checkEmailAvailability(inputForm.traitsValue);
+
+                if (response.status !== 204) {
+                    console.log("email already registered");
+                    return new Z.ZodError([
+                        {
+                            code: "invalid_string",
+                            message: "Invalid email address or email already registered",
+                            path: ["email"],
+                            fatal: true,
+                            validation: "email",
+                        },
+                    ]);
+                } */
+
+                // console.log("parse as email");
+                setInputForm({ ...inputForm, traitsType: "email" });
                 return parse;
             }
 
-            console.log("failed to parse as email");
+            // console.log("failed to parse as email");
             data = parse.error;
         }
 
         if (props.username) {
             const parse = Schema.username.safeParse(inputForm.traitsValue);
+
             if (parse.success === true) {
-                console.log("parse as username");
+                //  console.log("parse as username");
+                setInputForm({ ...inputForm, traitsType: "username" });
                 return parse;
             }
 
-            console.log("failed to parse as username");
+            // console.log("failed to parse as username");
             data = parse.error;
         }
 
         if (props.phone_number) {
             const parse = Schema.phone.safeParse(inputForm.traitsValue);
+
             if (parse.success === true) {
-                console.log("parse as phone");
+                // console.log("parse as phone");
+                setInputForm({ ...inputForm, traitsType: "phone_number" });
                 return parse;
             }
-            console.log("failed to parse as phone");
+
+            // console.log("failed to parse as phone");
             data = parse.error;
         }
 
@@ -57,26 +94,29 @@ export function AuthForm(props: AuthFormProps) {
         const parse = Schema.password.safeParse(inputForm.password);
 
         if (parse.success === true) {
-            console.log("parse as medium password");
+            // console.log("parse as medium password");
 
             // continue to parse as strong password
             const strongParse = Schema.strongPwd.safeParse(inputForm.password);
 
             if (strongParse.success === true) {
-                console.log("parse as strong password");
+                // console.log("parse as strong password");
+                setData({ ...data, method: "password" });
                 return strongParse;
             }
 
             return strongParse.error;
         } else {
-            console.log("parsed as medium password");
+            // console.log("parsed as medium password");
             return parse.error;
         }
     }
 
     async function preSubmit(): Promise<boolean> {
         const parseInputTraits = await validateTraits();
-        const parseInputPassword = await validatePassword();
+        const parseInputPassword = !props.isValidatePassword
+            ? null
+            : await validatePassword();
 
         if (parseInputTraits instanceof Z.ZodError) {
             const traitsEl = document.querySelector(
@@ -85,6 +125,7 @@ export function AuthForm(props: AuthFormProps) {
 
             toast.warning("Validation fields failed", {
                 description: parseInputTraits.errors[0].message,
+                position: "top-center",
             });
 
             traitsEl.focus();
@@ -97,6 +138,7 @@ export function AuthForm(props: AuthFormProps) {
             ) as HTMLInputElement;
             toast.warning("Validation fields failed", {
                 description: parseInputPassword.errors[0].message,
+                position: "top-center",
             });
             passwordEl.focus();
             return false;
@@ -111,14 +153,137 @@ export function AuthForm(props: AuthFormProps) {
 
         if (!(await preSubmit())) return setIsOnSubmit(false);
 
-        await new Promise((resolve, _) => {
-            setTimeout(() => {
-                resolve("Success!");
-            }, 4000);
-        });
+        let response: Response | undefined;
 
-        setData({ ...data, email: inputForm.traitsValue, signUpCompleted: true });
+        try {
+            if (props.type === "signup") {
+                response = await submitLocalSignUpForm({
+                    traits: {
+                        [inputForm.traitsType ?? "email"]: inputForm.traitsValue,
+                    },
+                    password: inputForm.password,
+                });
+
+                if (!response) {
+                    throw new Error("Failed to create account! Server is busy");
+                }
+
+                if (response.status === 201) {
+                    setData({
+                        ...data,
+                        email: inputForm.traitsValue,
+                        signUpCompleted: true,
+                    });
+                }
+            } else if (props.type === "signin") {
+                response = await submitLocalSignInForm({
+                    traits: {
+                        [inputForm.traitsType ?? "email"]: inputForm.traitsValue,
+                    },
+                    password: inputForm.password,
+                    method: !props.method ? data.method : props.method,
+                });
+
+                if (!response) {
+                    throw new Error("Failed to create account! Server is busy");
+                }
+
+                if (response.status === 200) {
+                    const data = await response.json();
+                    console.log(data);
+
+                    toast.success("Signed in successfully!", {
+                        duration: 2000,
+                        position: "top-center",
+                    });
+
+                    setAuthTokenSession({
+                        refreshToken: data.refresh_token,
+                        accessToken: data.access_token,
+                    });
+
+                    await new Promise((resolve) => setTimeout(resolve, 4000));
+
+                    setIsOnSubmit(false);
+                    return;
+                    // return window.location.replace(inputForm.traitsValue.split("@")[1]);
+                }
+            } else {
+                throw new Error("Invalid form type");
+            }
+
+            if (response.status === 400) {
+                const error = await response.json();
+                toast.warning("Validation fields failed", {
+                    description: error.errors[0].message,
+                    position: "top-center",
+                });
+            }
+
+            if (response.status === 401) {
+                const error = await response.json();
+                console.log(error);
+                toast.warning("Invalid Cridential ", {
+                    description: error.error,
+                    position: "top-center",
+                });
+            }
+
+            if (response.status === 409) {
+                toast.warning("Validation fields failed", {
+                    description: "Email already registered or fields is invalid",
+                    position: "top-center",
+                });
+            }
+
+            if (response.status === 500) {
+                const error = await response.json();
+
+                if (error.error === "traits already in use") {
+                    toast.warning("Validation fields failed", {
+                        description: "Email already registered",
+                        position: "top-center",
+                    });
+                }
+            }
+        } catch (error) {
+            if (error instanceof Z.ZodError) {
+                toast.warning("Validation fields failed", {
+                    description: error.errors[0].message,
+                    position: "top-center",
+                });
+                return setIsOnSubmit(false);
+            }
+
+            if (error instanceof Error) {
+                toast.error("Failed to Send Request", {
+                    position: "top-center",
+                    description: "Sorry the server is busy, please try again later.",
+                });
+                return setIsOnSubmit(false);
+            }
+
+            toast.error(
+                "Sorry, we're having trouble creating your account. Please try again later.",
+                {
+                    position: "top-center",
+                    description: "Server Busy",
+                }
+            );
+        }
+
         setIsOnSubmit(false);
+    }
+
+    function setAuthTokenSession({
+        refreshToken,
+        accessToken,
+    }: {
+        refreshToken: string;
+        accessToken: string;
+    }): void {
+        setTokenSession({ name: "_refresh", value: refreshToken });
+        setTokenSession({ name: "_access", value: accessToken });
     }
 
     return (
@@ -129,10 +294,9 @@ export function AuthForm(props: AuthFormProps) {
                     size="md"
                     radius="sm"
                     isRequired
+                    autoFocus={true}
                     placeholder={`Email ${
-                        !props.username
-                            ? "or phone number"
-                            : ", username, or phone number"
+                        !props.username ? "or phone number" : ", username or phone number"
                     }`}
                     minLength={5}
                     maxLength={255}
@@ -178,7 +342,7 @@ export function AuthForm(props: AuthFormProps) {
                     disabled={isOnSubmit}
                 >
                     {!isOnSubmit ? (
-                        "Sign up"
+                        `${props.submitLabel ?? "Sign up"}`
                     ) : (
                         <LoadingSpinner size="sm" color="current" />
                     )}
@@ -225,14 +389,20 @@ export function AuthForm(props: AuthFormProps) {
     );
 }
 
-export interface AuthFormProps {
+export interface AuthFormProps extends React.HTMLAttributes<HTMLFormElement> {
     email?: boolean;
     username?: boolean;
     phone_number?: boolean;
-    method?: string;
+    submitLabel?: string;
+    type?: AuthFormFor;
+    isValidatePassword?: boolean;
+    method?: MethodOption;
 }
+
+export type AuthFormFor = "signin" | "signup";
 
 export type AuthInputForm = {
     traitsValue: string;
+    traitsType?: string;
     password: string;
 };
