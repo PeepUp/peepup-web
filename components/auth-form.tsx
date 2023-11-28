@@ -1,5 +1,6 @@
 import * as Z from "zod";
 import * as React from "react";
+import * as lib from "@/lib/api/auth";
 import * as UI from "@nextui-org/react";
 import * as Schema from "@/lib/schema/identity/signup";
 
@@ -8,27 +9,51 @@ import LoadingSpinner from "./spinner";
 import { toast } from "sonner";
 import { MyInput } from "./input";
 import { siteConfig } from "@/config/site";
-import { MethodOption, SignUpData } from "@/types/identities";
-import { useAuthFormContext } from "@/context/store/auth-form-store";
-import { submitLocalSignInForm, submitLocalSignUpForm } from "@/lib/api/auth";
+import { MethodOption } from "@/types/identities";
 import { setTokenSession } from "@/lib/session/token";
-import { useMutation } from "@tanstack/react-query";
-import { AxiosResponse } from "axios";
+import { useAuthFormContext } from "@/context/store/auth-form-store";
+import { useGlobalContext } from "@/context/store/global";
 
 export function AuthForm(props: AuthFormProps) {
     const { data, setData } = useAuthFormContext();
+    const { data: globalData, setData: setGlobalData } = useGlobalContext();
     const [isOnSubmit, setIsOnSubmit] = React.useState(false);
     const [inputForm, setInputForm] = React.useState<AuthInputForm>({} as AuthInputForm);
 
-    const { mutateAsync } = useMutation({
-        mutationFn: async (data: SignUpData) => await submitLocalSignUpForm(data),
-        onSuccess: (data) => {
-            console.log(data);
-        },
-        onError: (error) => {
-            console.log(error);
-        },
-    });
+    const csrfToken = async () => {
+        try {
+            const response = await lib.getCSRFToken();
+
+            if (!response) {
+                throw new Error("Failed to get CSRF Token");
+            }
+
+            const { data: csrfData } = await response.json();
+            setData({ ...data, csrf: csrfData });
+        } catch (error) {
+            toast.error("Something gone wrong!", {
+                position: "top-center",
+                description: "Server Busy",
+            });
+        }
+    };
+
+    React.useEffect(() => {
+        let mounted = false;
+
+        if (!data.csrf && !mounted) {
+            csrfToken();
+            mounted = true;
+        }
+    }, []);
+
+    async function clearInputForm() {
+        setInputForm({
+            traitsValue: "",
+            traitsType: "",
+            password: "",
+        });
+    }
 
     async function validateTraits() {
         let data: unknown;
@@ -37,21 +62,6 @@ export function AuthForm(props: AuthFormProps) {
             const parse = Schema.email.safeParse(inputForm.traitsValue);
 
             if (parse.success === true) {
-                /* const response = await checkEmailAvailability(inputForm.traitsValue);
-
-                if (response.status !== 204) {
-                    console.log("email already registered");
-                    return new Z.ZodError([
-                        {
-                            code: "invalid_string",
-                            message: "Invalid email address or email already registered",
-                            path: ["email"],
-                            fatal: true,
-                            validation: "email",
-                        },
-                    ]);
-                } */
-
                 // console.log("parse as email");
                 setInputForm({ ...inputForm, traitsType: "email" });
                 return parse;
@@ -157,7 +167,7 @@ export function AuthForm(props: AuthFormProps) {
 
         try {
             if (props.type === "signup") {
-                response = await submitLocalSignUpForm({
+                response = await lib.submitLocalSignUpForm({
                     traits: {
                         [inputForm.traitsType ?? "email"]: inputForm.traitsValue,
                     },
@@ -176,12 +186,13 @@ export function AuthForm(props: AuthFormProps) {
                     });
                 }
             } else if (props.type === "signin") {
-                response = await submitLocalSignInForm({
+                response = await lib.submitLocalSignInForm({
                     traits: {
                         [inputForm.traitsType ?? "email"]: inputForm.traitsValue,
                     },
                     password: inputForm.password,
                     method: !props.method ? data.method : props.method,
+                    csrf: data.csrf,
                 });
 
                 if (!response) {
@@ -190,7 +201,6 @@ export function AuthForm(props: AuthFormProps) {
 
                 if (response.status === 200) {
                     const data = await response.json();
-                    console.log(data);
 
                     toast.success("Signed in successfully!", {
                         duration: 2000,
@@ -202,11 +212,16 @@ export function AuthForm(props: AuthFormProps) {
                         accessToken: data.access_token,
                     });
 
-                    await new Promise((resolve) => setTimeout(resolve, 4000));
+                    setGlobalData({
+                        ...globalData,
+                        accessToken: data.access_token,
+                        refreshToken: data.refresh_token,
+                    });
 
                     setIsOnSubmit(false);
-                    return;
-                    // return window.location.replace(inputForm.traitsValue.split("@")[1]);
+                    clearInputForm();
+
+                    return window.location.replace(inputForm.traitsValue.split("@")[0]);
                 }
             } else {
                 throw new Error("Invalid form type");
@@ -215,14 +230,13 @@ export function AuthForm(props: AuthFormProps) {
             if (response.status === 400) {
                 const error = await response.json();
                 toast.warning("Validation fields failed", {
-                    description: error.errors[0].message,
+                    description: error.message ?? error.errors[0].message,
                     position: "top-center",
                 });
             }
 
             if (response.status === 401) {
                 const error = await response.json();
-                console.log(error);
                 toast.warning("Invalid Cridential ", {
                     description: error.error,
                     position: "top-center",
@@ -287,7 +301,7 @@ export function AuthForm(props: AuthFormProps) {
     }
 
     return (
-        <form onSubmit={onSubmit} className="flex flex-col gap-2">
+        <form onSubmit={onSubmit} className="flex flex-col gap-2" name="signup">
             {/* Email Username or Phone Number Input */}
             <div>
                 <MyInput
@@ -328,6 +342,19 @@ export function AuthForm(props: AuthFormProps) {
                     }
                 />
             </div>
+
+            {/* CSRF Protection */}
+            {data && data.csrf ? (
+                <div className="hidden">
+                    <input
+                        type="hidden"
+                        name="_csrf"
+                        value={data.csrf}
+                        hidden
+                        className="hidden"
+                    />
+                </div>
+            ) : null}
 
             {/* Submit SignUp Form Button */}
             <div>

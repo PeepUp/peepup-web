@@ -5,6 +5,7 @@ export interface SignUpData {
     traits: SignUpDataTraits;
     password: string;
     method?: MethodOption;
+    csrf?: string;
 }
 
 export interface SignUpDataTraits {

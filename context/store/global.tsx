@@ -2,37 +2,44 @@
 
 import * as React from "react";
 
-import type { MethodOption } from "@/types/identities";
-
-type DataAuthForm = {
-    email: string;
-    method: MethodOption;
-    signUpCompleted: boolean;
-    verifyCodeRetrieved: boolean;
-    verifyCodeApproved: boolean;
-    inputVerifyCode: string;
+export type GlobalDataStore = {
+    identity: {
+        username: string;
+        email: string;
+        avatar: string;
+        firstName: string;
+        lastName: string;
+        fullName: string;
+        roles: string;
+        state: string;
+    };
+    uid: string;
+    accessToken: string;
+    refreshToken: string;
+    isAuthorized: boolean;
+    isAuthenticated: boolean;
 };
 
-interface AuthFormContextProps {
-    data: DataAuthForm;
-    setData: React.Dispatch<React.SetStateAction<DataAuthForm>>;
+export interface GlobalDataContextProps {
+    data: GlobalDataStore;
+    setData: React.Dispatch<React.SetStateAction<GlobalDataStore>>;
 }
 
-const AuthFormContext = React.createContext<AuthFormContextProps>({
-    data: {} as DataAuthForm,
-    setData: (): DataAuthForm => ({}) as DataAuthForm,
+const GlobalDataContext = React.createContext<GlobalDataContextProps>({
+    data: {} as GlobalDataStore,
+    setData: (): GlobalDataStore => ({}) as GlobalDataStore,
 });
 
-export function useAuthFormContext() {
-    return React.useContext(AuthFormContext);
+export function useGlobalContext() {
+    return React.useContext(GlobalDataContext);
 }
 
-export function AuthFormProvider(props: { children: React.ReactNode }) {
-    const [data, setData] = React.useState<DataAuthForm>({} as DataAuthForm);
+export function GlobalDataProvider(props: { children: React.ReactNode }) {
+    const [data, setData] = React.useState<GlobalDataStore>({} as GlobalDataStore);
 
     return (
-        <AuthFormContext.Provider value={{ data, setData }}>
+        <GlobalDataContext.Provider value={{ data, setData }}>
             {props.children}
-        </AuthFormContext.Provider>
+        </GlobalDataContext.Provider>
     );
 }
