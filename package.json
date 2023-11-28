@@ -4,7 +4,7 @@
     "license": "NO LICENSE",
     "private": true,
     "scripts": {
-        "dev": "next dev -p 3000",
+        "dev": "next dev -p 3000 && set NODE_OPTION='--trace-deprecation' && set NODE_ENV='development'",
         "build": "next build",
         "start": "next start -p 3000",
         "lint": "next lint"

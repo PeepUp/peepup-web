@@ -1,9 +1,10 @@
 "use client";
 
-import { ForwardIcon } from "@/components/icons";
-import { siteConfig } from "@/config/site";
-import { cn } from "@/lib/utils";
 import * as UI from "@nextui-org/react";
+
+import { cn } from "@/lib/utils";
+import { siteConfig } from "@/config/site";
+import { ForwardIcon } from "@/components/icons";
 
 export default function Home() {
     return (

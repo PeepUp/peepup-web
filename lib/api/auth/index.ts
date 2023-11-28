@@ -1,5 +1,4 @@
 import { join } from "path";
-import axios, { AxiosResponse } from "axios";
 
 import type {
     SignInData,
@@ -8,14 +7,24 @@ import type {
     SignUpData,
     SignUpDataTraits,
 } from "@/types/identities";
+import { API_ENDPOINT } from "@/lib/constant";
 
-const url = process.env.NEXT_PUBLIC_IDENTITY_API_URL as string;
 const headers = {
     "Content-Type": "application/json; charset=utf-8",
 };
 
+export async function getCSRFToken(): Promise<Response> {
+    const response = await fetch(new URL(join(API_ENDPOINT, "tokens", "csrf")), {
+        method: "get",
+        mode: "cors",
+        credentials: "include",
+    });
+
+    return response;
+}
+
 export async function submitLocalSignUpForm(fields: SignUpData): Promise<Response> {
-    const response = await fetch(new URL(join(url, "local", "registration")), {
+    const response = await fetch(new URL(join(API_ENDPOINT, "local", "registration")), {
         method: "post",
         headers: headers,
         credentials: "include",
@@ -30,11 +39,14 @@ export async function submitLocalSignUpForm(fields: SignUpData): Promise<Respons
 }
 
 export async function checkEmailAvailability(email: string) {
-    const response = await fetch(new URL(join(url, "local", "verify", "email")), {
-        method: "post",
-        headers: headers,
-        body: JSON.stringify({ email }),
-    });
+    const response = await fetch(
+        new URL(join(API_ENDPOINT, "local", "verify", "email")),
+        {
+            method: "post",
+            headers: headers,
+            body: JSON.stringify({ email }),
+        }
+    );
 
     return response;
 }
@@ -47,9 +59,12 @@ export async function submitLocalSignInForm(
         (key) => fields.traits[key as keyof SignInDataTraits] !== undefined
     ) as keyof SignInDataTraits;
 
-    const response = await fetch(new URL(join(url, "local", "login")), {
+    const response = await fetch(new URL(join(API_ENDPOINT, "local", "login")), {
         method: "post",
-        headers: headers,
+        headers: {
+            ...headers,
+            "x-csrf-token": fields.csrf as string,
+        },
         credentials: "include",
         mode: "cors",
         body: JSON.stringify({
@@ -58,6 +73,19 @@ export async function submitLocalSignInForm(
             method: fields.method,
             password_identifier: typeIdentifier,
         } satisfies SignInData),
+    });
+
+    return response;
+}
+
+export async function logout(token: string): Promise<Response> {
+    const response = await fetch(new URL(join(API_ENDPOINT, "local", "logout", "api")), {
+        method: "delete",
+        credentials: "include",
+        headers: {
+            authorization: `Bearer ${token}`,
+        },
+        mode: "cors",
     });
 
     return response;

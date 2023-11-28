@@ -11,6 +11,7 @@ type DataAuthForm = {
     verifyCodeRetrieved: boolean;
     verifyCodeApproved: boolean;
     inputVerifyCode: string;
+    csrf: string;
 };
 
 interface AuthFormContextProps {

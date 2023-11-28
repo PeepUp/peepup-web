@@ -1,5 +1,7 @@
 import "@/styles/globals.css";
 
+import React from "react";
+
 import clsx from "clsx";
 import localFont from "next/font/local";
 
@@ -9,6 +11,7 @@ import { siteConfig } from "@/config/site";
 import { Navbar } from "@/components/navbar";
 import { toasterProps } from "@/config/toast";
 import { fontMono, fontSans } from "@/config/fonts";
+import { GlobalDataProvider } from "@/context/store/global";
 
 import type { Metadata } from "next";
 
@@ -32,12 +35,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 )}
             >
                 <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
-                    <div className="relative flex flex-col h-screen">
-                        <Navbar />
-                        <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
-                            {children}
-                        </main>
-                        {/* <footer className="w-full flex flex-col items-start justify-center py-2 relative">
+                    <GlobalDataProvider>
+                        <div className="relative flex flex-col h-screen">
+                            <Navbar />
+                            <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
+                                {children}
+                            </main>
+                            {/* <footer className="w-full flex flex-col items-start justify-center py-2 relative">
                             <UI.Divider />
                             <div className="flex mt-4 pl-12 max-md:flex-col">
                                 <UI.Link
@@ -60,30 +64,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                                 </p>
                             </div>
                         </footer> */}
-                    </div>
-                    <Toaster
-                        duration={toasterProps.duration}
-                        richColors
-                        closeButton
-                        visibleToasts={3}
-                        theme="system"
-                        toastOptions={
-                            {
-                                /* style: {
-                                fontSize: "0.9rem",
-                            },
-                            classNames: {
-                                title: "font-semibold text-md",
-                                info: "font-semibold",
-                                warning: "font-semibold",
-                                error: "font-semibold",
-                                success: "font-semibold",
-                                description: "font-medium text-md",
-                                loader: "font-semibold",
-                            }, */
-                            }
-                        }
-                    />
+                        </div>
+                        <Toaster
+                            duration={toasterProps.duration}
+                            richColors
+                            closeButton
+                            visibleToasts={3}
+                            theme="system"
+                        />
+                    </GlobalDataProvider>
                 </Providers>
             </body>
         </html>
