@@ -13,12 +13,24 @@ import { MethodOption } from "@/types/identities";
 import { setTokenSession } from "@/lib/session/token";
 import { useAuthFormContext } from "@/context/store/auth-form-store";
 import { useGlobalContext } from "@/context/store/global";
+import PrivacyPolicy from "./legal-agreement/privacy-policy";
+import TermsConditions from "./legal-agreement/terms-condition";
 
 export function AuthForm(props: AuthFormProps) {
     const { data, setData } = useAuthFormContext();
     const { data: globalData, setData: setGlobalData } = useGlobalContext();
     const [isOnSubmit, setIsOnSubmit] = React.useState(false);
     const [inputForm, setInputForm] = React.useState<AuthInputForm>({} as AuthInputForm);
+    const {
+        isOpen: isOpenTerms,
+        onOpen: onOpenTerms,
+        onOpenChange: onOpenChangeTerms,
+    } = UI.useDisclosure();
+    const {
+        isOpen: isOpenPrivacy,
+        onOpen: onOpenPrivacy,
+        onOpenChange: onOpenChangePrivacy,
+    } = UI.useDisclosure();
 
     const csrfToken = async () => {
         try {
@@ -378,37 +390,51 @@ export function AuthForm(props: AuthFormProps) {
 
             <div className="mt-2 flex justify-center items-center w-full">
                 <p className="text-center text-xs max-w-md">
-                    Click <b className="text-white/70">Sign Up</b> to agree to PeepUp’s
-                    &nbsp;
+                    Click <b className="dark:text-white/70">Sign Up</b> to agree to
+                    PeepUp’s &nbsp;
                     <UI.Link
-                        href={siteConfig.links.termsOfService}
+                        onPress={onOpenTerms}
                         rel="noopener noreferrer"
                         target="_self"
                         as={UI.Link}
-                        isExternal={false}
-                        size="sm"
-                        color="secondary"
-                        showAnchorIcon
-                        className="text-xs __link"
-                        onContextMenu={(e) => e.preventDefault()}
-                    >
-                        Terms of Service
-                    </UI.Link>
-                    and acknowledge that PeepUp’s
-                    <UI.Link
-                        href={siteConfig.links.privacyPolicy}
-                        rel="noopener noreferrer"
-                        target="_self"
-                        as={UI.Link}
-                        isExternal={false}
                         size="sm"
                         color="secondary"
                         className="text-xs"
                         showAnchorIcon
+                        style={{ cursor: "pointer" }}
+                        onContextMenu={(e) => e.preventDefault()}
+                    >
+                        &nbsp; Terms of Service
+                    </UI.Link>
+                    <UI.Modal
+                        isOpen={isOpenTerms}
+                        onOpenChange={onOpenChangeTerms}
+                        scrollBehavior="inside"
+                    >
+                        <TermsConditions />
+                    </UI.Modal>
+                    and acknowledge that PeepUp’s
+                    <UI.Link
+                        onPress={onOpenPrivacy}
+                        rel="noopener noreferrer"
+                        target="_self"
+                        as={UI.Link}
+                        size="sm"
+                        color="secondary"
+                        className="text-xs"
+                        showAnchorIcon
+                        style={{ cursor: "pointer" }}
                         onContextMenu={(e) => e.preventDefault()}
                     >
                         &nbsp; Privacy Policy
                     </UI.Link>
+                    <UI.Modal
+                        isOpen={isOpenPrivacy}
+                        onOpenChange={onOpenChangePrivacy}
+                        scrollBehavior="inside"
+                    >
+                        <PrivacyPolicy />
+                    </UI.Modal>
                     applies to you.
                 </p>
             </div>

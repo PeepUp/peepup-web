@@ -5,6 +5,7 @@ import * as UI from "@nextui-org/react";
 import { cn } from "@/lib/utils";
 import { siteConfig } from "@/config/site";
 import { ForwardIcon } from "@/components/icons";
+import FrequentlyQA from "@/components/faq";
 
 export default function Home() {
     return (
@@ -12,10 +13,11 @@ export default function Home() {
             <div
                 className={cn([
                     "flex flex-col gap-0",
-                    "min-h-screen h-full w-full my-auto",
+                    "min-h-full h-full w-full my-auto",
                     "justify-center items-center",
                 ])}
             >
+                <UI.Spacer y={40} className="max-sm:hidden" />
                 <div
                     className={cn([
                         "flex",
@@ -85,9 +87,9 @@ export default function Home() {
                     <UI.Image
                         className={cn([
                             "flex-none object-cover",
-                            "rotate-45",
                             "rounded-[100%]",
-                            "max-sm:rotate-45",
+                            "rotate-[45deg]",
+                            "max-sm:rotate-[60deg]",
                             "max-sm:-mt-6",
                             "max-sm:max-w-[220px]",
                         ])}
@@ -100,6 +102,7 @@ export default function Home() {
                         loading="lazy"
                     />
                 </div>
+                <UI.Spacer y={40} className="max-sm:hidden" />
             </div>
 
             <div
@@ -110,6 +113,7 @@ export default function Home() {
                 ])}
             >
                 <BlogOverviewCover />
+                <FrequentlyQA />
             </div>
         </section>
     );
