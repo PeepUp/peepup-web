@@ -79,7 +79,7 @@ export default function Page() {
                     <p className="text-center">
                         {"Don't have an account? "}
                         <UI.Link
-                            href={"/signin"}
+                            href={"/signup"}
                             as={UI.Link}
                             isExternal={false}
                             size="sm"
