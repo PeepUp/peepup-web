@@ -5,16 +5,15 @@ import React from "react";
 
 import * as UI from "@nextui-org/react";
 
-import { toast } from "sonner";
 import { useState } from "react";
 import { siteConfig } from "@/config/site";
+import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
-import { SearchIcon } from "@/components/icons";
-import { ThemeSwitch } from "@/components/theme-switch";
-import { useGlobalContext } from "@/context/store/global";
 import { useAuth } from "@/hooks/auth/useAuth";
 import { getTokenSession } from "@/lib/session/token";
-import { useRouter } from "next/navigation";
+import { ThemeSwitch } from "@/components/theme-switch";
+import { useGlobalContext } from "@/context/store/global";
+import { LogoutIcon, SearchIcon, SettingIcon } from "@/components/icons";
 
 export const Navbar = () => {
     const { data } = useGlobalContext();
@@ -29,17 +28,6 @@ export const Navbar = () => {
             verifyAuth(access);
         }
     }, [access, data, data.identity, data.isAuthenticated]);
-
-    React.useEffect(() => {
-        if (data) {
-            if (data.identity) {
-                toast.success(`Welcome back, ${data.identity.username}!`, {
-                    position: "bottom-center",
-                    duration: 2000,
-                });
-            }
-        }
-    }, [data]);
 
     const handleSignout = async () => {
         await signout(access);
@@ -72,7 +60,11 @@ export const Navbar = () => {
                         <p className="font-semibold">Signed in as</p>
                         <p className="font-semibold">{data.identity.email}</p>
                     </UI.DropdownItem>
-                    <UI.DropdownItem key="settings" textValue="Settings">
+                    <UI.DropdownItem
+                        key="settings"
+                        textValue="Settings"
+                        endContent={<SettingIcon size={18} className="" />}
+                    >
                         Settings
                     </UI.DropdownItem>
                     <UI.DropdownItem key="analytics" textValue="Analytics">
@@ -84,6 +76,7 @@ export const Navbar = () => {
                     <UI.DropdownItem
                         key="logout"
                         textValue="log out"
+                        endContent={<LogoutIcon size={20} />}
                         onClick={handleSignout}
                     >
                         Log out
@@ -110,6 +103,7 @@ export const Navbar = () => {
             }
             labelPlacement="outside"
             placeholder="Search..."
+            color="default"
             startContent={
                 !isOnSearch ? (
                     <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
@@ -154,6 +148,13 @@ export const Navbar = () => {
                         </p>
                     </NextLink>
                 </UI.NavbarItem>
+            </UI.NavbarContent>
+
+            <UI.NavbarContent
+                className="hidden sm:flex basis-1/5 sm:basis-full"
+                justify="center"
+            >
+                <UI.NavbarItem>{searchInput}</UI.NavbarItem>
             </UI.NavbarContent>
 
             <UI.NavbarContent

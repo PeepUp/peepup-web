@@ -1,6 +1,7 @@
 import "@/styles/globals.css";
 
-import React from "react";
+import * as UI from "@nextui-org/react";
+import * as React from "react";
 
 import clsx from "clsx";
 import localFont from "next/font/local";
@@ -14,6 +15,7 @@ import { fontMono, fontSans } from "@/config/fonts";
 import { GlobalDataProvider } from "@/context/store/global";
 
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
@@ -41,29 +43,74 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                             <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
                                 {children}
                             </main>
-                            {/* <footer className="w-full flex flex-col items-start justify-center py-2 relative">
-                            <UI.Divider />
-                            <div className="flex mt-4 pl-12 max-md:flex-col">
-                                <UI.Link
-                                    as={Link}
-                                    href={siteConfig.links.repository}
-                                    rel="noopener noreferrer"
-                                    target="_blank"
-                                    color="foreground"
-                                    size="sm"
-                                    isExternal
-                                    showAnchorIcon
-                                    className="max-md:text-xs"
-                                >
-                                    See PeepUp on GitHub
-                                </UI.Link>
-                                <UI.Spacer x={4} />
-                                <p className="text-sm font-medium max-md:text-xs">
-                                    © {new Date().getFullYear()} {siteConfig.name}
-                                    <span> All rights reserved.</span>
-                                </p>
-                            </div>
-                        </footer> */}
+                            <footer className="w-full flex flex-col items-start justify-center">
+                                <UI.Divider />
+                                <UI.Spacer y={8} />
+                                <div className="flex max-md:flex-col justify-around items-center w-5/6">
+                                    <div className="flex">
+                                        {/*
+                                        <UI.Link
+                                            as={Link}
+                                            href={siteConfig.links.repository}
+                                            rel="noopener noreferrer"
+                                            target="_blank"
+                                            color="foreground"
+                                            size="sm"
+                                            isExternal
+                                            showAnchorIcon
+                                            className="max-md:text-xs text-md"
+                                        >
+                                            See PeepUp on GitHub
+                                        </UI.Link> */}
+
+                                        <p className="text-md font-medium max-md:text-xs">
+                                            © 2023 PeepUp. {new Date().getFullYear()}
+                                            <span className="text-md font-medium max-md:text-xs">
+                                                {" "}
+                                                All rights reserved.
+                                            </span>
+                                        </p>
+                                    </div>
+
+                                    <div className="flex space-x-4">
+                                        <Link
+                                            className="flex justify-start items-center gap-1"
+                                            href="/"
+                                            replace
+                                        >
+                                            <p className="font-randrake font-medium text-4xl select-none">
+                                                PeepUp
+                                            </p>
+                                        </Link>
+                                    </div>
+
+                                    <div className="flex space-x-4">
+                                        <UI.Link
+                                            as={Link}
+                                            href={siteConfig.links.privacyPolicy}
+                                            rel="noopener noreferrer"
+                                            target="_blank"
+                                            color="foreground"
+                                            size="sm"
+                                            className="max-md:text-xs text-md"
+                                        >
+                                            Privacy Policy
+                                        </UI.Link>
+                                        <UI.Link
+                                            as={Link}
+                                            href={siteConfig.links.termsOfService}
+                                            rel="noopener noreferrer"
+                                            target="_blank"
+                                            color="foreground"
+                                            size="sm"
+                                            className="max-md:text-xs text-md"
+                                        >
+                                            Terms of Service
+                                        </UI.Link>
+                                    </div>
+                                </div>
+                                <UI.Spacer y={8} />
+                            </footer>
                         </div>
                         <Toaster
                             duration={toasterProps.duration}

@@ -5,16 +5,15 @@ import * as UI from "@nextui-org/react";
 import * as Schema from "@/lib/schema/identity/signup";
 
 import LoadingSpinner from "./spinner";
+import PrivacyPolicy from "./legal-agreement/privacy-policy";
+import TermsConditions from "./legal-agreement/terms-condition";
 
 import { toast } from "sonner";
 import { MyInput } from "./input";
-import { siteConfig } from "@/config/site";
 import { MethodOption } from "@/types/identities";
 import { setTokenSession } from "@/lib/session/token";
 import { useAuthFormContext } from "@/context/store/auth-form-store";
 import { useGlobalContext } from "@/context/store/global";
-import PrivacyPolicy from "./legal-agreement/privacy-policy";
-import TermsConditions from "./legal-agreement/terms-condition";
 
 export function AuthForm(props: AuthFormProps) {
     const { data, setData } = useAuthFormContext();
