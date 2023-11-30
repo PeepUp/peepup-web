@@ -33,6 +33,11 @@ module.exports = {
                         background: "rgb(242, 240, 235)",
                         foreground: "#2A2A2A",
                     },
+                    secondary: {
+                        foreground: "#252525",
+                        DEFAULT: "#f5cb5c",
+                        background: "#2B2B2B",
+                    },
                 },
                 dark: {
                     colors: {

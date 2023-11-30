@@ -19,7 +19,7 @@ export default function SignUp() {
             >
                 <RandomIcon
                     icon={
-                        <Icons.JoyFigureDoodleIcon className="w-24 h-24 dark:stroke-white/80 dark:fill-transparent opacity-50 rotate-12" />
+                        <Icons.JoyFigureDoodleIcon className="w-24 h-24 dark:stroke-white/80 stroke-current fill-none opacity-50 rotate-12" />
                     }
                     duration={10000}
                 />

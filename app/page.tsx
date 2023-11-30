@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { siteConfig } from "@/config/site";
 import { ForwardIcon } from "@/components/icons";
 import FrequentlyQA from "@/components/faq";
+import Link from "next/link";
 
 export default function Home() {
     return (
@@ -141,7 +142,7 @@ function BlogOverviewCover() {
                     <UI.Image
                         removeWrapper
                         alt="Card background"
-                        className="z-0 w-full h-full object-cover"
+                        className="z-0 w-full h-full object-cover hover:grayscale-0 grayscale-[80%]"
                         src="https://nextui.org/images/card-example-4.jpeg"
                     />
                 </UI.Card>
@@ -157,7 +158,7 @@ function BlogOverviewCover() {
                     <UI.Image
                         removeWrapper
                         alt="Card background"
-                        className="z-0 w-full h-full object-cover"
+                        className="z-0 w-full h-full object-cover hover:grayscale-0 grayscale-[80%]"
                         src="https://nextui.org/images/card-example-3.jpeg"
                     />
                 </UI.Card>
@@ -173,7 +174,7 @@ function BlogOverviewCover() {
                     <UI.Image
                         removeWrapper
                         alt="Card background"
-                        className="z-0 w-full h-full object-cover"
+                        className="z-0 w-full h-full object-cover hover:grayscale-0 grayscale-[80%]"
                         src="https://nextui.org/images/card-example-2.jpeg"
                     />
                 </UI.Card>
@@ -188,7 +189,7 @@ function BlogOverviewCover() {
                     <UI.Image
                         removeWrapper
                         alt="Card example background"
-                        className="z-0 w-full h-full scale-125 -translate-y-6 object-cover"
+                        className="z-0 w-full h-full scale-125 -translate-y-6 object-cover hover:grayscale-0 grayscale-[80%]"
                         src="https://nextui.org/images/card-example-6.jpeg"
                     />
                     <UI.CardFooter className="absolute bg-white/30 bottom-0 border-t-1 border-zinc-100/50 z-10 justify-between">
@@ -222,14 +223,14 @@ function BlogOverviewCover() {
                     <UI.Image
                         removeWrapper
                         alt="Relaxing app background"
-                        className="z-0 w-full h-full object-cover"
+                        className="z-0 w-full h-full object-cover hover:grayscale-0 grayscale-[80%]"
                         src="https://nextui.org/images/card-example-5.jpeg"
                     />
                     <UI.CardFooter className="absolute bg-black/40 bottom-0 z-10 border-t-1 border-default-600 dark:border-default-100">
                         <div className="flex flex-grow gap-2 items-center">
                             <UI.Image
                                 alt="Breathing app icon"
-                                className="rounded-full w-10 h-11 bg-black grayscale"
+                                className="rounded-full w-10 h-11 bg-black hover:grayscale-0 grayscale-[80%]"
                                 src="https://nextui.org/images/breathing-app-icon.jpeg"
                             />
                             <div className="flex flex-col">
@@ -260,14 +261,14 @@ function BlogOverviewCover() {
                     <UI.Image
                         removeWrapper
                         alt="Relaxing app background"
-                        className="z-0 w-full h-full object-cover"
+                        className="z-0 w-full h-full object-cover hover:grayscale-0 grayscale-[80%]"
                         src="/assets/images/milad.jpg"
                     />
                     <UI.CardFooter className="absolute bg-black/40 bottom-0 z-10 border-t-1 border-default-600 dark:border-default-100">
                         <div className="flex flex-grow gap-2 items-center">
                             <UI.Image
                                 alt="Breathing app icon"
-                                className="rounded-full w-10 h-11 bg-black grayscale"
+                                className="rounded-full w-10 h-11 bg-black hover:grayscale-0 grayscale-[80%]"
                                 src="https://nextui.org/images/breathing-app-icon.jpeg"
                             />
                             <div className="flex flex-col">
@@ -294,7 +295,7 @@ function BlogOverviewCover() {
                     <UI.Image
                         removeWrapper
                         alt="Card example background"
-                        className="z-0 w-full h-full scale-125 -translate-y-6 object-cover"
+                        className="z-0 w-full h-full scale-125 -translate-y-6 object-cover hover:grayscale-0 grayscale-[80%]"
                         src="/assets/images/apple-bubble-background-b2-3840x2160-4051695046.jpeg"
                     />
                     <UI.CardFooter className="absolute bg-white/30 bottom-0 border-t-1 border-zinc-100/50 z-10 justify-between">
@@ -325,7 +326,7 @@ function BlogOverviewCover() {
                     <UI.Image
                         removeWrapper
                         alt="Card background"
-                        className="z-0 w-full h-full object-cover"
+                        className="z-0 w-full h-full object-cover hover:grayscale-0 grayscale-[80%]"
                         src="/assets/images/Abstract+Wallpapers+For+Desktop+2-355631041.jpeg"
                     />
                 </UI.Card>
@@ -342,7 +343,7 @@ function BlogOverviewCover() {
                     <UI.Image
                         removeWrapper
                         alt="Card background"
-                        className="z-0 w-full h-full object-cover"
+                        className="z-0 w-full h-full object-cover hover:grayscale-0 grayscale-[80%]"
                         src="/assets/images/0231de96df2e7e9a84da5f127381f750.jpg"
                     />
                 </UI.Card>
@@ -359,7 +360,7 @@ function BlogOverviewCover() {
                     <UI.Image
                         removeWrapper
                         alt="Card background"
-                        className="z-0 w-full h-full object-cover"
+                        className="z-0 w-full h-full object-cover hover:grayscale-0  grayscale-[60%]"
                         src="/assets/images/23774-12-4280744934.jpeg"
                     />
                 </UI.Card>
@@ -369,6 +370,8 @@ function BlogOverviewCover() {
                 <UI.Button
                     className="w-40 py-4 mx-auto"
                     endContent={<ForwardIcon className="dark:fill-white/60" />}
+                    as={Link}
+                    href="/app"
                 >
                     See more
                 </UI.Button>

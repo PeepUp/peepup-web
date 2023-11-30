@@ -27,7 +27,7 @@ export default function RandomIcon(props: RandomIconProps) {
             React.createElement(listIcons[0], {
                 className:
                     props.className ??
-                    "w-24 h-24 dark:stroke-white/80 dark:fill-transparent opacity-50 rotate-12",
+                    "w-24 h-24 dark:stroke-white/80 stroke-current fill-none opacity-50 rotate-12",
             } as IconSvgProps)
     );
 
@@ -39,7 +39,7 @@ export default function RandomIcon(props: RandomIconProps) {
                 setIconToShow(
                     React.createElement(listIcons[randomIndex], {
                         className:
-                            "w-24 h-24 dark:stroke-white/80 dark:fill-transparent opacity-50 rotate-12",
+                            "w-24 h-24 dark:stroke-white/80 stroke-current fill-none opacity-50 rotate-12",
                     } as IconSvgProps)
                 );
             },
@@ -50,7 +50,7 @@ export default function RandomIcon(props: RandomIconProps) {
     }, [iconToShow]);
 
     return (
-        <UI.Card className="border-none bg-background p-2" shadow="lg" isPressable>
+        <UI.Card className="border-none bg-background p-2" shadow="md" isPressable>
             {iconToShow ? iconToShow : null}
         </UI.Card>
     );

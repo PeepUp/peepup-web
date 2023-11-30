@@ -45,16 +45,16 @@ export default function page({ params }: { params: { username: string } }) {
         >
             <div>
                 <p className="max-sm:text-xs">Good evening,</p>
-                <div className="absolute z-0 -translate-y-7 translate-x-12">
+                <div className="absolute z-0 -translate-y-5 translate-x-14">
                     <LineDoodleIcon
-                        size={58}
+                        size={42}
                         className="stroke-current stroke-[0.5px] dark:stroke-[#717171] max-sm:hidden"
                     />
                 </div>
                 {data?.identity?.username ? (
                     <div className="flex justify-start items-center space-x-1 max-sm:justify-center">
                         <p className="max-sm:text-xs">{data?.identity?.username}</p>
-                        <VerifiedIcon size={18} className="max-sm:w-3 h-3" />
+                        <VerifiedIcon size={20} className="max-sm:w-3 h-3" />
                     </div>
                 ) : (
                     <UI.Skeleton className="mt-1 h-3 w-10/12 max-sm:w-full rounded-lg" />
