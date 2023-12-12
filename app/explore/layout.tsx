@@ -1,6 +1,7 @@
 import * as UI from "@nextui-org/react";
 import * as Icons from "@/components/icons";
 import Link from "next/link";
+import { BackwardButton } from "@/components/backward-button";
 
 export default function Layout(props: { children: React.ReactNode }) {
     const sideBarDropDown = (
@@ -24,6 +25,7 @@ export default function Layout(props: { children: React.ReactNode }) {
             </ul>
         </div>
     );
+
     const sideBar = (
         <aside className="basis-1/6 max-md:basis-1/5 h-screen sticky top-32 max-sm:basis-10 max-sm:hidden">
             <ul className="flex flex-col space-y-2 w-full">
@@ -94,11 +96,19 @@ export default function Layout(props: { children: React.ReactNode }) {
     );
 
     return (
-        <section className="flex flex-row max-lg:space-x-5 space-x-3 min-w-full min-h-full max-sm:flex-col">
-            {sideBar}
-            {props.children}
-            {rightSideBar}
-        </section>
+        <>
+            <header>
+                <nav className="">
+                    <BackwardButton />
+                </nav>
+                <UI.Spacer y={6} />
+            </header>
+            <section className="flex flex-row max-lg:space-x-5 space-x-3 min-w-full min-h-full max-sm:flex-col">
+                {sideBar}
+                {props.children}
+                {rightSideBar}
+            </section>
+        </>
     );
 }
 

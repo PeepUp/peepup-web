@@ -4,7 +4,7 @@ import * as UI from "@nextui-org/react";
 export default function TermsConditions() {
     return (
         <UI.ModalContent>
-            {(onClose) => (
+            {(_) => (
                 <>
                     <UI.ModalHeader className="flex flex-col gap-1">
                         <h1 className="text-2xl font-semibold text-center">

@@ -1,5 +1,4 @@
 import { BackwardButton } from "@/components/backward-button";
-import { AuthFormProvider } from "@/context/store/auth-form-store";
 import * as UI from "@nextui-org/react";
 
 export default function Layout(props: { children: React.ReactNode }) {
@@ -11,7 +10,7 @@ export default function Layout(props: { children: React.ReactNode }) {
                 </nav>
                 <UI.Spacer y={6} />
             </header>
-            <AuthFormProvider>{props.children}</AuthFormProvider>
+            <main>{props.children}</main>
         </>
     );
 }

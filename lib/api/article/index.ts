@@ -1,5 +1,6 @@
 import { join } from "path";
-const URL_ENDPOINT_ARTICLES = "http://127.0.0.1:8000/api/admin";
+
+import { URL_ENDPOINT_ARTICLES } from "@/lib/constant";
 
 export async function getAllArticles(): Promise<Response> {
     const response = await fetch(

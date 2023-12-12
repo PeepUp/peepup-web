@@ -2,28 +2,50 @@
 import * as React from "react";
 import * as UI from "@nextui-org/react";
 
-import { useGlobalContext } from "@/context/store/global";
-import { cn } from "@/lib/utils";
-import { LineDoodleIcon, VerifiedIcon } from "@/components/icons";
 import PreviewListPost from "@/components/article/list-post";
 
-export default function page({ params }: { params: { username: string } }) {
+import { cn } from "@/lib/utils";
+import { useGlobalContext } from "@/context/store/global";
+import { LineDoodleIcon, PlusSquareIcon, VerifiedIcon } from "@/components/icons";
+import { Editor } from "@/components/article/editor";
+
+export default function page() {
     const { data } = useGlobalContext();
 
     const NavigationTabs = () => (
-        <div className="flex-0 w-full flex flex-col justify-center items-center">
+        <div className="w-full flex flex-col items-start">
             <UI.Tabs
                 color="default"
                 variant="underlined"
                 aria-label="tabs_navigation_dashboard"
                 radius="full"
+                className="mx-auto self-center"
             >
+                <UI.Tab
+                    key="new_posts"
+                    aria-label="create new post"
+                    className="w-full"
+                    title={
+                        <UI.Tooltip content="Create your own post" offset={5}>
+                            <PlusSquareIcon size={14} className="fill-current" />
+                        </UI.Tooltip>
+                    }
+                >
+                    <Editor />
+                </UI.Tab>
                 <UI.Tab key="post_articles" title="Posts" className="w-full">
                     <PreviewListPost />
                 </UI.Tab>
-                <UI.Tab key="replies" title="Replies" />
-                <UI.Tab key="repost" title="Repost" />
-                <UI.Tab key="stars" title="Stars" />
+                <UI.Tab key="replies" title="Replies">
+                    <UI.Spacer y={80} />
+                </UI.Tab>
+                <UI.Tab key="repost" title="Repost">
+                    {" "}
+                    <UI.Spacer y={80} />
+                </UI.Tab>
+                <UI.Tab key="stars" title="Stars">
+                    <UI.Spacer y={80} />
+                </UI.Tab>
             </UI.Tabs>
         </div>
     );
@@ -60,7 +82,7 @@ export default function page({ params }: { params: { username: string } }) {
                     <UI.Skeleton className="mt-1 h-3 w-10/12 max-sm:w-full rounded-lg" />
                 )}
             </div>
-            <div className={cn(["flex", "justify-center", "items-center"])}>
+            <div className={cn(["flex", "justify-start", "items-center"])}>
                 {data?.identity?.avatar ? (
                     <UI.Avatar
                         size="md"
@@ -85,14 +107,14 @@ export default function page({ params }: { params: { username: string } }) {
                 className={cn([
                     "flex",
                     "flex-col",
-                    "flex-grow",
                     "items-center",
                     "justify-start",
                     "w-full",
+                    "h-full",
                     "gap-8",
                 ])}
             >
-                <NavigationDashboard />
+                {data?.isAuthenticated && data?.isAuthorized && <NavigationDashboard />}
                 <NavigationTabs />
             </div>
         </>

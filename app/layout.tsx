@@ -1,6 +1,5 @@
 import "@/styles/globals.css";
 
-import * as UI from "@nextui-org/react";
 import * as React from "react";
 
 import clsx from "clsx";
@@ -9,13 +8,13 @@ import localFont from "next/font/local";
 import { Toaster } from "sonner";
 import { Providers } from "./providers";
 import { siteConfig } from "@/config/site";
-import { Navbar } from "@/components/navbar";
 import { toasterProps } from "@/config/toast";
+import { Navbar } from "@/components/common/navbar";
+import { Footer } from "@/components/common/footer";
 import { fontMono, fontSans } from "@/config/fonts";
 import { GlobalDataProvider } from "@/context/store/global";
 
 import type { Metadata } from "next";
-import Link from "next/link";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
@@ -32,8 +31,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <body
                 className={clsx(
                     "min-h-screen bg-background font-sans antialiased",
-                    "text-foreground bg-background selection:bg-[#999999] selection:text-[#1A1A1A]",
-                    "dark:selection:bg-[#919190] dark:selection:text-[#252525]"
+                    "text-foreground bg-background selection:bg-[#E5CFF7] selection:text-[#1A1A1A]",
+                    "dark:selection:bg-[#F5CB5C] dark:selection:text-[#252525]"
                 )}
             >
                 <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
@@ -43,74 +42,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                             <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
                                 {children}
                             </main>
-                            <footer className="w-full flex flex-col items-start justify-center">
-                                <UI.Divider />
-                                <UI.Spacer y={8} />
-                                <div className="flex max-md:flex-col justify-around items-center w-5/6">
-                                    <div className="flex">
-                                        {/*
-                                        <UI.Link
-                                            as={Link}
-                                            href={siteConfig.links.repository}
-                                            rel="noopener noreferrer"
-                                            target="_blank"
-                                            color="foreground"
-                                            size="sm"
-                                            isExternal
-                                            showAnchorIcon
-                                            className="max-md:text-xs text-md"
-                                        >
-                                            See PeepUp on GitHub
-                                        </UI.Link> */}
-
-                                        <p className="text-md font-medium max-md:text-xs">
-                                            © 2023 PeepUp. {new Date().getFullYear()}
-                                            <span className="text-md font-medium max-md:text-xs">
-                                                {" "}
-                                                All rights reserved.
-                                            </span>
-                                        </p>
-                                    </div>
-
-                                    <div className="flex space-x-4">
-                                        <Link
-                                            className="flex justify-start items-center gap-1"
-                                            href="/"
-                                            replace
-                                        >
-                                            <p className="font-randrake font-medium text-4xl select-none">
-                                                PeepUp
-                                            </p>
-                                        </Link>
-                                    </div>
-
-                                    <div className="flex space-x-4">
-                                        <UI.Link
-                                            as={Link}
-                                            href={siteConfig.links.privacyPolicy}
-                                            rel="noopener noreferrer"
-                                            target="_blank"
-                                            color="foreground"
-                                            size="sm"
-                                            className="max-md:text-xs text-md"
-                                        >
-                                            Privacy Policy
-                                        </UI.Link>
-                                        <UI.Link
-                                            as={Link}
-                                            href={siteConfig.links.termsOfService}
-                                            rel="noopener noreferrer"
-                                            target="_blank"
-                                            color="foreground"
-                                            size="sm"
-                                            className="max-md:text-xs text-md"
-                                        >
-                                            Terms of Service
-                                        </UI.Link>
-                                    </div>
-                                </div>
-                                <UI.Spacer y={8} />
-                            </footer>
+                            <Footer />
                         </div>
                         <Toaster
                             duration={toasterProps.duration}

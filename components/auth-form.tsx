@@ -25,6 +25,7 @@ export function AuthForm(props: AuthFormProps) {
         onOpen: onOpenTerms,
         onOpenChange: onOpenChangeTerms,
     } = UI.useDisclosure();
+
     const {
         isOpen: isOpenPrivacy,
         onOpen: onOpenPrivacy,
@@ -40,6 +41,11 @@ export function AuthForm(props: AuthFormProps) {
             }
 
             const { data: csrfData } = await response.json();
+
+            if (!csrfData) {
+                throw new Error("Failed to get CSRF Token");
+            }
+
             setData({ ...data, csrf: csrfData });
         } catch (error) {
             toast.error("Something gone wrong!", {
@@ -50,12 +56,7 @@ export function AuthForm(props: AuthFormProps) {
     };
 
     React.useEffect(() => {
-        let mounted = false;
-
-        if (!data.csrf && !mounted) {
-            csrfToken();
-            mounted = true;
-        }
+        csrfToken();
     }, []);
 
     async function clearInputForm() {
@@ -231,7 +232,6 @@ export function AuthForm(props: AuthFormProps) {
 
                     setIsOnSubmit(false);
                     clearInputForm();
-
                     return window.location.replace(inputForm.traitsValue.split("@")[0]);
                 }
             } else {
@@ -403,7 +403,7 @@ export function AuthForm(props: AuthFormProps) {
                         style={{ cursor: "pointer" }}
                         onContextMenu={(e) => e.preventDefault()}
                     >
-                        &nbsp; Terms of Service
+                        Terms of Service
                     </UI.Link>
                     <UI.Modal
                         isOpen={isOpenTerms}
