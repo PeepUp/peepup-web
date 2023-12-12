@@ -13,14 +13,23 @@ import { useAuth } from "@/hooks/auth/useAuth";
 import { getTokenSession } from "@/lib/session/token";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { useGlobalContext } from "@/context/store/global";
-import { LogoutIcon, SearchIcon, SettingIcon } from "@/components/icons";
+import {
+    HomeIcon,
+    LogoutIcon,
+    MarkdownIcon,
+    SearchIcon,
+    SettingIcon,
+} from "@/components/icons";
+import { toast } from "sonner";
+import { SearchInput } from "./input/search/search";
 
 export const Navbar = () => {
     const { data } = useGlobalContext();
     const { push } = useRouter();
     const access = getTokenSession("_access") ?? "";
     const { verifyAuth, loading, signout } = useAuth();
-    const isInSignUpPage = usePathname() === "/signup";
+    const onTheSignupPage = usePathname() === "/signup";
+    const onTheExplorePage = usePathname() === "/explore";
     const [isOnSearch, setIsOnSearch] = useState(false);
 
     React.useEffect(() => {
@@ -31,93 +40,78 @@ export const Navbar = () => {
 
     const handleSignout = async () => {
         await signout(access);
+
+        toast.success("Signed out successfully!", {
+            duration: 2000,
+            position: "top-center",
+        });
+
         return push("/");
     };
 
     const AvatarUser = () => (
-        <>
-            <UI.Dropdown placement="bottom">
-                <UI.DropdownTrigger>
-                    <UI.User
-                        name=""
-                        draggable={false}
-                        avatarProps={{
-                            name: data.identity.username,
-                            isBordered: true,
-                            size: "sm",
-                            src: data
-                                ? data.identity.avatar
-                                : "https://avatars.githubusercontent.com/u/58453383?v=4",
-                        }}
-                    />
-                </UI.DropdownTrigger>
-                <UI.DropdownMenu aria-label="Profile Actions" variant="flat">
-                    <UI.DropdownItem
-                        key="profile"
-                        className="h-14 gap-2"
-                        textValue="profile"
-                    >
-                        <p className="font-semibold">Signed in as</p>
-                        <p className="font-semibold">{data.identity.email}</p>
-                    </UI.DropdownItem>
-                    <UI.DropdownItem
-                        key="settings"
-                        textValue="Settings"
-                        endContent={<SettingIcon size={18} className="" />}
-                    >
-                        Settings
-                    </UI.DropdownItem>
-                    <UI.DropdownItem key="analytics" textValue="Analytics">
-                        Analytics
-                    </UI.DropdownItem>
-                    <UI.DropdownItem key="help_and_feedback" textValue="Help & Feedback">
-                        Help & Feedback
-                    </UI.DropdownItem>
-                    <UI.DropdownItem
-                        key="logout"
-                        textValue="log out"
-                        endContent={<LogoutIcon size={20} />}
-                        onClick={handleSignout}
-                    >
-                        Log out
-                    </UI.DropdownItem>
-                </UI.DropdownMenu>
-            </UI.Dropdown>
-        </>
+        <UI.Dropdown placement="bottom">
+            <UI.DropdownTrigger>
+                <UI.User
+                    name=""
+                    className="cursor-pointer"
+                    draggable={false}
+                    avatarProps={{
+                        name: data.identity.username,
+                        isBordered: true,
+                        size: "sm",
+                        src: data
+                            ? data.identity.avatar
+                            : "https://avatars.githubusercontent.com/u/58453383?v=4",
+                    }}
+                />
+            </UI.DropdownTrigger>
+            <UI.DropdownMenu aria-label="Profile Actions" variant="flat">
+                <UI.DropdownItem key="profile" className="h-14 gap-2" textValue="profile">
+                    <p className="font-semibold">Signed in as</p>
+                    <p className="font-semibold">{data.identity.email}</p>
+                </UI.DropdownItem>
+                <UI.DropdownItem
+                    key="settings"
+                    textValue="Settings"
+                    endContent={<SettingIcon size={18} className="" />}
+                >
+                    Settings
+                </UI.DropdownItem>
+                <UI.DropdownItem key="analytics" textValue="Analytics">
+                    Analytics
+                </UI.DropdownItem>
+                <UI.DropdownItem key="help_and_feedback" textValue="Help & Feedback">
+                    Help & Feedback
+                </UI.DropdownItem>
+                <UI.DropdownItem
+                    key="logout"
+                    textValue="log out"
+                    endContent={<LogoutIcon size={20} />}
+                    onClick={handleSignout}
+                >
+                    Log out
+                </UI.DropdownItem>
+            </UI.DropdownMenu>
+        </UI.Dropdown>
     );
 
-    const searchInput = (
-        <UI.Input
-            aria-label="Search"
-            lang="en"
-            size="md"
-            name="search"
-            classNames={{
-                inputWrapper: "bg-default-50",
-                input: "text-sm font-semibold",
-            }}
-            endContent={
-                <UI.Kbd className="hidden lg:inline-block" keys={["command"]}>
-                    {`+   K`}
-                </UI.Kbd>
-            }
-            labelPlacement="outside"
-            placeholder="Search..."
-            color="default"
+    const ExploreMenuButton = () => (
+        <UI.Button
+            as={NextLink}
+            className="text-sm font-medium font-sans"
+            href={onTheExplorePage ? "/" : "/explore"}
+            variant="flat"
             startContent={
-                !isOnSearch ? (
-                    <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
-                ) : null
+                onTheExplorePage ? (
+                    <HomeIcon size={16} fill="currentColor" />
+                ) : (
+                    <MarkdownIcon size={16} stroke="currentColor" />
+                )
             }
-            onInput={(e) => {
-                if ((e.target as HTMLInputElement).value !== "") {
-                    setIsOnSearch(true);
-                } else {
-                    setIsOnSearch(false);
-                }
-            }}
-            type="search"
-        />
+        >
+            {onTheExplorePage ? "Home" : "Explore"}
+        </UI.Button>
     );
 
     const SignUpInButton = () => (
@@ -125,10 +119,11 @@ export const Navbar = () => {
             <UI.Button
                 as={NextLink}
                 className="text-sm font-medium font-sans"
-                href={isInSignUpPage ? "/signin" : "/signup"}
-                variant="solid"
+                href={onTheSignupPage ? "/signin" : "/signup"}
+                color="secondary"
+                variant="flat"
             >
-                {isInSignUpPage ? "Sign In" : "Sign Up"}
+                {onTheSignupPage ? "Sign In" : "Sign Up"}
             </UI.Button>
         </UI.NavbarItem>
     );
@@ -154,15 +149,18 @@ export const Navbar = () => {
                 className="hidden sm:flex basis-1/5 sm:basis-full"
                 justify="center"
             >
-                <UI.NavbarItem>{searchInput}</UI.NavbarItem>
+                <UI.NavbarItem>
+                    <SearchInput />
+                </UI.NavbarItem>
             </UI.NavbarContent>
 
             <UI.NavbarContent
                 className="hidden sm:flex basis-1/5 sm:basis-full"
                 justify="end"
             >
-                <UI.NavbarItem className="hidden sm:flex gap-2">
+                <UI.NavbarItem className="hidden sm:flex gap-4">
                     <ThemeSwitch />
+                    <ExploreMenuButton />
                 </UI.NavbarItem>
 
                 {data && data.identity ? (
@@ -188,7 +186,7 @@ export const Navbar = () => {
             </UI.NavbarContent>
 
             <UI.NavbarMenu>
-                {searchInput}
+                <SearchInput />
                 <div className="mx-4 mt-2 flex flex-col gap-2">
                     {siteConfig.navMenuItems.map((item, index) => (
                         <UI.NavbarMenuItem key={`${item}-${index}`}>

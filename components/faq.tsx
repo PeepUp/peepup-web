@@ -1,9 +1,11 @@
-import React from "react";
+"use client";
+
 import * as UI from "@nextui-org/react";
+
 import { cn } from "@/lib/utils";
 import { siteConfig } from "@/config/site";
 
-export default function FrequentlyQA() {
+export function FrequentlyAskingQuestion() {
     return (
         <div
             className={cn([
@@ -13,13 +15,13 @@ export default function FrequentlyQA() {
             ])}
         >
             <UI.Accordion>
-                {siteConfig.faqItems.map((content, index) => (
+                {siteConfig.faqItems.map((faq, i) => (
                     <UI.AccordionItem
-                        key={index}
-                        aria-label={"Accordion " + content.title}
-                        title={content.title}
+                        key={i}
+                        aria-label={"Accordion " + faq.title}
+                        title={faq.title}
                     >
-                        {content.content}
+                        {faq.content}
                     </UI.AccordionItem>
                 ))}
             </UI.Accordion>

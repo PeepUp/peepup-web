@@ -45,6 +45,7 @@ export const ThemeSwitch: FC<ThemeSwitchProps> = ({ className, classNames }) => 
                 <input {...getInputProps()} />
             </VisuallyHidden>
             <div
+                title={`Switch to ${theme === "light" || isSSR ? "dark" : "light"} mode`}
                 {...getWrapperProps()}
                 className={slots.wrapper({
                     class: clsx(
@@ -64,7 +65,7 @@ export const ThemeSwitch: FC<ThemeSwitchProps> = ({ className, classNames }) => 
                 })}
             >
                 {!isSelected || isSSR ? (
-                    <SunIcon size={22} className="fill-current" />
+                    <SunIcon size={22} fill="currentColor" />
                 ) : (
                     <MoonIcon size={22} />
                 )}

@@ -6,18 +6,61 @@
     h1 {
         @apply font-medium;
         @apply text-3xl;
-        @apply max-sm:text-center;
         @apply max-sm:text-xl;
     }
 
     h2 {
         @apply font-bold;
         @apply text-2xl;
-        @apply max-sm:text-center;
     }
+
+    h3 {
+        @apply font-bold;
+        @apply text-xl;
+    }
+
+    h4 {
+        @apply font-bold;
+        @apply text-lg;
+    }
+
     p {
         @apply text-sm;
         @apply font-medium;
+    }
+
+    ul[data-type="taskList"] {
+        list-style: none;
+        padding: 0;
+
+        p {
+            margin: 0;
+        }
+
+        li {
+            display: flex;
+
+            > label {
+                flex: 0 0 auto;
+                @apply items-center justify-center;
+                margin-right: 0.5rem;
+                user-select: none;
+            }
+
+            > div {
+                flex: 1 1 auto;
+            }
+
+            ul li,
+            ol li {
+                display: list-item;
+            }
+
+            ul[data-type="taskList"] > li {
+                display: flex;
+                @apply items-center justify-center;
+            }
+        }
     }
 }
 

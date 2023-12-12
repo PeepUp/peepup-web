@@ -1,5 +1,7 @@
 import { join } from "path";
 
+import { API_IDENTITY_ENDPOINT } from "@/lib/constant";
+
 import type {
     SignInData,
     SignInDataPayload,
@@ -7,40 +9,43 @@ import type {
     SignUpData,
     SignUpDataTraits,
 } from "@/types/identities";
-import { API_ENDPOINT } from "@/lib/constant";
 
 const headers = {
     "Content-Type": "application/json; charset=utf-8",
 };
 
 export async function getCSRFToken(): Promise<Response> {
-    const response = await fetch(new URL(join(API_ENDPOINT, "tokens", "csrf")), {
+    const response = await fetch(new URL(join(API_IDENTITY_ENDPOINT, "tokens", "csrf")), {
         method: "get",
         mode: "cors",
         credentials: "include",
+        cache: "reload",
     });
 
     return response;
 }
 
 export async function submitLocalSignUpForm(fields: SignUpData): Promise<Response> {
-    const response = await fetch(new URL(join(API_ENDPOINT, "local", "registration")), {
-        method: "post",
-        headers: headers,
-        credentials: "include",
-        body: JSON.stringify({
-            traits: fields.traits satisfies SignUpDataTraits,
-            password: fields.password,
-            method: "password",
-        } satisfies SignUpData),
-    });
+    const response = await fetch(
+        new URL(join(API_IDENTITY_ENDPOINT, "local", "registration")),
+        {
+            method: "post",
+            headers: headers,
+            credentials: "include",
+            body: JSON.stringify({
+                traits: fields.traits satisfies SignUpDataTraits,
+                password: fields.password,
+                method: "password",
+            } satisfies SignUpData),
+        }
+    );
 
     return response;
 }
 
 export async function checkEmailAvailability(email: string) {
     const response = await fetch(
-        new URL(join(API_ENDPOINT, "local", "verify", "email")),
+        new URL(join(API_IDENTITY_ENDPOINT, "local", "verify", "email")),
         {
             method: "post",
             headers: headers,
@@ -59,7 +64,11 @@ export async function submitLocalSignInForm(
         (key) => fields.traits[key as keyof SignInDataTraits] !== undefined
     ) as keyof SignInDataTraits;
 
-    const response = await fetch(new URL(join(API_ENDPOINT, "local", "login")), {
+    console.log({
+        ...fields,
+    });
+
+    const response = await fetch(new URL(join(API_IDENTITY_ENDPOINT, "local", "login")), {
         method: "post",
         headers: {
             ...headers,
@@ -70,7 +79,7 @@ export async function submitLocalSignInForm(
         body: JSON.stringify({
             traits: fields.traits satisfies SignInDataTraits,
             password: fields.password,
-            method: fields.method,
+            method: fields.method ?? "password",
             password_identifier: typeIdentifier,
         } satisfies SignInData),
     });
@@ -79,14 +88,17 @@ export async function submitLocalSignInForm(
 }
 
 export async function logout(token: string): Promise<Response> {
-    const response = await fetch(new URL(join(API_ENDPOINT, "local", "logout", "api")), {
-        method: "delete",
-        credentials: "include",
-        headers: {
-            authorization: `Bearer ${token}`,
-        },
-        mode: "cors",
-    });
+    const response = await fetch(
+        new URL(join(API_IDENTITY_ENDPOINT, "local", "logout", "api")),
+        {
+            method: "delete",
+            credentials: "include",
+            headers: {
+                authorization: `Bearer ${token}`,
+            },
+            mode: "cors",
+        }
+    );
 
     return response;
 }
