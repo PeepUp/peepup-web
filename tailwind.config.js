@@ -57,6 +57,7 @@ module.exports = {
             },
             fontFamily: {
                 randrake: ["var(--font-randrake)"],
+                sfmono: ["var(--font-sfmono)"],
             },
         },
     },

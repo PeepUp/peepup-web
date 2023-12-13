@@ -10,6 +10,7 @@ import { URL_ENDPOINT_ARTICLES } from "@/lib/constant";
 import { getTokenSession, setTokenSession } from "@/lib/session/token";
 import { CategoryChip } from "@/components/article/category/category-chip";
 import { InsightIcon, RepostIcon, StarShineIcon } from "@/components/icons";
+import { ImageCoverModal } from "@/components/article/image/image-modal";
 
 export type Props = { params: { slug: string } };
 
@@ -19,6 +20,12 @@ export default function Page({ params }: Props) {
     const url = `${URL_ENDPOINT_ARTICLES}/posts/articles/${params.slug}/content`;
     const [visitorId, setVisitorId] = React.useState<string>("");
     const postMetaUrl = `${URL_ENDPOINT_ARTICLES}/posts/articles/${params.slug}`;
+
+    const {
+        isOpen: isOpenModal,
+        onOpen: onOpenModal,
+        onOpenChange: onOpenChangeModal,
+    } = UI.useDisclosure();
 
     const { data, error } = useFetch<string>({
         url,
@@ -109,6 +116,20 @@ export default function Page({ params }: Props) {
 
                 <UI.Spacer y={10} />
 
+                <UI.Modal
+                    isOpen={isOpenModal}
+                    onOpenChange={onOpenChangeModal}
+                    radius="lg"
+                    size="5xl"
+                    draggable={false}
+                    placement="center"
+                    backdrop="blur"
+                >
+                    <ImageCoverModal
+                        src={metadata && metadata.image_cover ? metadata.image_cover : ""}
+                    />
+                </UI.Modal>
+
                 <div className="w-11/12 self-center">
                     {metadata && metadata.image_cover ? (
                         <UI.Image
@@ -116,6 +137,7 @@ export default function Page({ params }: Props) {
                             draggable={false}
                             onContextMenu={(e) => e.preventDefault()}
                             alt={metadata.title}
+                            onClick={onOpenModal}
                             src={
                                 metadata && metadata.image_cover
                                     ? `https://app.requestly.io/delay/3000/${metadata.image_cover}`

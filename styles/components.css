@@ -1,0 +1,36 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+
+@layer components {
+    .ctr {
+        @apply w-full h-full;
+        @apply flex flex-col items-center justify-center;
+    }
+
+    .__link {
+        @apply text-xs;
+        @apply font-medium;
+        @apply select-none;
+    }
+    .modal-content {
+        scrollbar-width: thin;
+    }
+
+    .modal-content::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    .modal-content::-webkit-scrollbar-track {
+        @apply bg-background;
+        border-radius: 10px;
+    }
+
+    .modal-content::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 10px;
+    }
+
+    .modal-content::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+}

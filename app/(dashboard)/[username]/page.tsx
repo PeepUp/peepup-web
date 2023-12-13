@@ -1,4 +1,5 @@
 "use client";
+
 import * as React from "react";
 import * as UI from "@nextui-org/react";
 
@@ -6,11 +7,13 @@ import PreviewListPost from "@/components/article/list-post";
 
 import { cn } from "@/lib/utils";
 import { useGlobalContext } from "@/context/store/global";
-import { LineDoodleIcon, PlusSquareIcon, VerifiedIcon } from "@/components/icons";
 import { Editor } from "@/components/article/editor";
+import { LineDoodleIcon, PlusSquareIcon, VerifiedIcon } from "@/components/icons";
 
 export default function page() {
     const { data } = useGlobalContext();
+
+    React.useEffect(() => {}, []);
 
     const NavigationTabs = () => (
         <div className="w-full flex flex-col items-start">
@@ -20,14 +23,24 @@ export default function page() {
                 aria-label="tabs_navigation_dashboard"
                 radius="full"
                 className="mx-auto self-center"
+                defaultSelectedKey="post_articles"
             >
                 <UI.Tab
                     key="new_posts"
                     aria-label="create new post"
                     className="w-full"
                     title={
-                        <UI.Tooltip content="Create your own post" offset={5}>
-                            <PlusSquareIcon size={14} className="fill-current" />
+                        <UI.Tooltip
+                            content="Create new post"
+                            offset={5}
+                            placement="bottom"
+                        >
+                            <div>
+                                <PlusSquareIcon
+                                    size={14}
+                                    className="fill-current stroke-current"
+                                />
+                            </div>
                         </UI.Tooltip>
                     }
                 >
@@ -47,6 +60,7 @@ export default function page() {
                     <UI.Spacer y={80} />
                 </UI.Tab>
             </UI.Tabs>
+            <UI.Spacer y={20} />
         </div>
     );
 
@@ -102,21 +116,19 @@ export default function page() {
     );
 
     return (
-        <>
-            <div
-                className={cn([
-                    "flex",
-                    "flex-col",
-                    "items-center",
-                    "justify-start",
-                    "w-full",
-                    "h-full",
-                    "gap-8",
-                ])}
-            >
-                {data?.isAuthenticated && data?.isAuthorized && <NavigationDashboard />}
-                <NavigationTabs />
-            </div>
-        </>
+        <section
+            className={cn([
+                "flex",
+                "flex-col",
+                "items-center",
+                "justify-start",
+                "w-full",
+                "h-full",
+                "gap-8",
+            ])}
+        >
+            {data?.isAuthenticated && data?.isAuthorized && <NavigationDashboard />}
+            <NavigationTabs />
+        </section>
     );
 }

@@ -1,4 +1,4 @@
-import "@/styles/globals.css";
+import "@/styles/main.css";
 
 import * as React from "react";
 
@@ -25,6 +25,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 fontSans.variable,
                 fontMono.variable,
                 fontRandrake.variable,
+                fontSFMono.variable,
             ])}
         >
             <head />
@@ -83,8 +84,42 @@ export const metadata: Metadata = {
 };
 
 const fontRandrake = localFont({
-    src: [{ path: "../public/fonts/Randrake.ttf" }],
+    src: [{ path: "../public/fonts/randrake/Randrake.ttf" }],
     variable: "--font-randrake",
+    weight: "500",
+    style: "normal",
+    display: "optional",
+});
+
+const fontSFMono = localFont({
+    src: [
+        {
+            path: "../public/fonts/sf-mono/SFMonoBoldNerdFontComplete.otf",
+            weight: "700",
+        },
+        {
+            path: "../public/fonts/sf-mono/SFMonoSemiboldNerdFontComplete.otf",
+            weight: "600",
+        },
+        {
+            path: "../public/fonts/sf-mono/SFMonoRegularNerdFontComplete.otf",
+            weight: "400",
+        },
+        {
+            path: "../public/fonts/sf-mono/SFMonoHeavyNerdFontComplete.otf",
+            weight: "800",
+        },
+        {
+            path: "../public/fonts/sf-mono/SFMonoMediumNerdFontComplete.otf",
+            weight: "500",
+        },
+        {
+            path: "../public/fonts/sf-mono/SFMonoLightNerdFontComplete.otf",
+            weight: "300",
+        },
+    ],
+
+    variable: "--font-sfmono",
     weight: "500",
     style: "normal",
     display: "optional",

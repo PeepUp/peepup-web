@@ -1,15 +1,12 @@
-import {
-    BulletListIcon,
-    ItalicFontIcon,
-    ListOlIcon,
-    TaskListIcon,
-} from "@/components/icons";
-import { cn } from "@/lib/utils";
 import * as UI from "@nextui-org/react";
-import type { Editor } from "@tiptap/react";
+
+import { cn } from "@/lib/utils";
+import { BulletListIcon, ItalicFontIcon, ListOlIcon } from "@/components/icons";
+
+import type { TipTapEditor } from "@/types/editor";
 
 type Props = {
-    editor: Editor | null;
+    editor: TipTapEditor | null;
 };
 
 export function EditorMenu({ editor }: Props) {
@@ -17,12 +14,17 @@ export function EditorMenu({ editor }: Props) {
         return null;
     }
 
-    const PopOverParagraph = () => {
+    const PopOverHeadings = () => {
         return (
             <UI.Popover placement="top" showArrow offset={10}>
                 <UI.PopoverTrigger>
-                    <UI.Button size="sm" className="basis-4 font-bold h-8">
-                        H
+                    <UI.Button
+                        size="sm"
+                        className="basis-4 font-bold h-8"
+                        variant="light"
+                        color="secondary"
+                    >
+                        <div className="w-full">H</div>
                     </UI.Button>
                 </UI.PopoverTrigger>
                 <UI.PopoverContent className="w-max">
@@ -31,7 +33,8 @@ export function EditorMenu({ editor }: Props) {
                             <div className="flex gap-2 w-full">
                                 <UI.Tooltip content="Heading 1" offset={5}>
                                     <UI.Button
-                                        variant="solid"
+                                        variant="light"
+                                        color="success"
                                         className={cn([
                                             "font-bold h-8",
                                             editor.isActive("heading", { level: 1 })
@@ -52,7 +55,8 @@ export function EditorMenu({ editor }: Props) {
                                 </UI.Tooltip>
                                 <UI.Tooltip content="Heading 2" offset={5}>
                                     <UI.Button
-                                        variant="solid"
+                                        variant="light"
+                                        color="success"
                                         className={cn([
                                             "font-bold h-8",
                                             editor.isActive("heading", { level: 2 })
@@ -73,7 +77,8 @@ export function EditorMenu({ editor }: Props) {
                                 </UI.Tooltip>
                                 <UI.Tooltip content="Heading 3" offset={5}>
                                     <UI.Button
-                                        variant="solid"
+                                        variant="light"
+                                        color="success"
                                         className={cn([
                                             "font-bold h-8",
                                             editor.isActive("heading", { level: 3 })
@@ -94,7 +99,8 @@ export function EditorMenu({ editor }: Props) {
                                 </UI.Tooltip>
                                 <UI.Tooltip content="Heading 4" offset={5}>
                                     <UI.Button
-                                        variant="solid"
+                                        variant="light"
+                                        color="success"
                                         className={cn([
                                             "font-bold h-8",
                                             editor.isActive("heading", { level: 4 })
@@ -123,11 +129,12 @@ export function EditorMenu({ editor }: Props) {
 
     if (editor) {
         return (
-            <div className="rounded-lg p-2 flex gap-2 max-w-max w-full flex-wrap">
-                <PopOverParagraph />
+            <div className="rounded-lg p-2 flex gap-1 container flex-wrap shadow-small transition-all">
+                <PopOverHeadings />
                 <UI.Tooltip content="Bold" offset={5}>
                     <UI.Button
-                        variant="solid"
+                        variant="light"
+                        color="secondary"
                         className={cn([
                             "basis-5 h-8",
                             editor.isActive("bold") ? "is-active" : "",
@@ -142,7 +149,8 @@ export function EditorMenu({ editor }: Props) {
 
                 <UI.Tooltip content="Italic" offset={5}>
                     <UI.Button
-                        variant="solid"
+                        variant="light"
+                        color="secondary"
                         className={cn([
                             "max-w-xs font-bold h-8",
                             editor.isActive("italic") ? "is-active" : "",
@@ -156,7 +164,8 @@ export function EditorMenu({ editor }: Props) {
 
                 <UI.Tooltip content="Underline" offset={5}>
                     <UI.Button
-                        variant="solid"
+                        variant="light"
+                        color="secondary"
                         className={cn([
                             "max-w-xs font-bold h-8 underline",
                             editor.isActive("underline") ? "is-active" : "",
@@ -170,7 +179,8 @@ export function EditorMenu({ editor }: Props) {
 
                 <UI.Tooltip content="Strike" offset={5}>
                     <UI.Button
-                        variant="solid"
+                        variant="light"
+                        color="secondary"
                         className={cn([
                             "max-w-xs font-bold h-8 line-through",
                             editor.isActive("strike") ? "is-active" : "",
@@ -184,7 +194,8 @@ export function EditorMenu({ editor }: Props) {
 
                 <UI.Tooltip content="Inline code" offset={5}>
                     <UI.Button
-                        variant="solid"
+                        variant="light"
+                        color="secondary"
                         className={cn([
                             "max-w-xs font-bold h-8",
                             editor.isActive("code") ? "is-active" : "",
@@ -198,7 +209,8 @@ export function EditorMenu({ editor }: Props) {
 
                 <UI.Tooltip content="Order list" offset={5}>
                     <UI.Button
-                        variant="solid"
+                        variant="light"
+                        color="secondary"
                         className={cn([
                             "basis-8 font-bold h-8",
                             editor.isActive("orderedList") ? "is-active" : "",
@@ -212,7 +224,8 @@ export function EditorMenu({ editor }: Props) {
 
                 <UI.Tooltip content="Bullet list" offset={5}>
                     <UI.Button
-                        variant="solid"
+                        variant="light"
+                        color="secondary"
                         className={cn([
                             "basis-8 font-bold h-8",
                             editor.isActive("bulletList") ? "is-active" : "",
@@ -226,7 +239,8 @@ export function EditorMenu({ editor }: Props) {
 
                 <UI.Tooltip content="Horizontal rule" offset={5}>
                     <UI.Button
-                        variant="solid"
+                        variant="light"
+                        color="secondary"
                         size="sm"
                         className={cn(["basis-8 font-bold h-8"])}
                         onPress={() => editor.chain().focus().setHorizontalRule().run()}
@@ -237,7 +251,8 @@ export function EditorMenu({ editor }: Props) {
 
                 <UI.Tooltip content="Task List" offset={5}>
                     <UI.Button
-                        variant="solid"
+                        variant="light"
+                        color="secondary"
                         className={cn([
                             "basis-8 font-bold h-8",
                             editor.isActive("taskList") ? "is-active" : "",
@@ -251,7 +266,8 @@ export function EditorMenu({ editor }: Props) {
 
                 <UI.Tooltip content="Blockquote" offset={5}>
                     <UI.Button
-                        variant="solid"
+                        variant="light"
+                        color="secondary"
                         className={cn([
                             "basis-8 font-bold h-8",
                             editor.isActive("blockquote") ? "is-active" : "",
@@ -259,7 +275,7 @@ export function EditorMenu({ editor }: Props) {
                         size="sm"
                         onPress={() => editor.chain().focus().toggleBlockquote().run()}
                     >
-                        <i>" "</i>
+                        <i>""</i>
                     </UI.Button>
                 </UI.Tooltip>
             </div>

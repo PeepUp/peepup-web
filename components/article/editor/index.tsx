@@ -1,6 +1,7 @@
 "use client";
 
 import * as UI from "@nextui-org/react";
+import * as React from "react";
 
 import { cn } from "@/lib/utils";
 import { EditorMenu } from "./menu";
@@ -12,23 +13,34 @@ import Heading from "@tiptap/extension-heading";
 import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
 import Underline from "@tiptap/extension-underline";
-import Paragraph from "@tiptap/extension-paragraph";
 import BulletList from "@tiptap/extension-bullet-list";
 import OrderedList from "@tiptap/extension-ordered-list";
 import HorizontalRule from "@tiptap/extension-horizontal-rule";
 import Blockquote from "@tiptap/extension-blockquote";
+import { CategoryGroupCheckbox } from "../category/category-group-checkbox";
 
 export function Editor() {
+    const [totalWords, setTotalWords] = React.useState(0);
+    const [timeToRead, setTimeToRead] = React.useState(0);
+    const [progress, setProgress] = React.useState(0);
+
+    React.useEffect(() => {
+        const interval = setInterval(() => {
+            setProgress((v) => (v >= 100 ? 0 : v + 1));
+        }, 500);
+
+        return () => clearInterval(interval);
+    }, []);
+
     const editor = useEditor({
         extensions: [
             StarterKit,
             Underline.configure({}),
             InlineCode.configure({
                 HTMLAttributes: {
-                    class: "px-[2px] py-1 bg-[#1c1c1c] rounded-md",
+                    class: "px-[2px] py-1 bg-[#1c1c1c] rounded-md font-sfmono font-medium",
                 },
             }),
-            Paragraph.configure({}),
             Heading.configure({
                 levels: [1, 2, 3, 4],
             }),
@@ -70,14 +82,109 @@ export function Editor() {
                 class: editorAttributesClass,
             },
         },
+        onUpdate: ({ editor }) => {
+            const content = editor.getText();
+            const words = content.split(" ").length;
+
+            if (content.length) {
+                setTotalWords(words);
+            }
+
+            console.log(words);
+        },
+        onFocus: ({ editor }) => {
+            const content = editor.getText();
+            const words = content.split(" ").length;
+
+            if (content.length) {
+                setTotalWords(content.split(" ").length);
+                const computedTime = Math.ceil(words / 200);
+                setTimeToRead(computedTime);
+            }
+        },
     });
 
     return (
         <section className={containerWrapper}>
-            <UI.Spacer y={20} />
+            <UI.Spacer y={10} />
+
+            <div className="container flex-col flex space-y-1 h-max mx-auto max-w-3xl self-start px-4">
+                <div>
+                    <h4>Metadata: </h4>
+                </div>
+
+                {totalWords > 0 ? (
+                    <UI.Chip size="sm" variant="dot">
+                        <span className="font-sfmono m-1 font-semibold">
+                            Words: {totalWords} / 1500
+                        </span>
+                    </UI.Chip>
+                ) : null}
+
+                {timeToRead > 0 ? (
+                    <UI.Chip size="sm" variant="dot">
+                        <span className="font-sfmono m-1 font-semibold">
+                            Read time: {timeToRead} min(s)
+                        </span>
+                    </UI.Chip>
+                ) : null}
+
+                <UI.Spacer y={5} />
+
+                <div>
+                    <p>Progress: {progress}%</p>
+                    <UI.Spacer y={2} />
+                    <UI.Progress
+                        aria-label="Progress"
+                        value={progress}
+                        color="default"
+                        className="max-w-md"
+                        size="sm"
+                    />
+                </div>
+
+                <UI.Spacer y={5} />
+            </div>
+
+            <div
+                className={cn([
+                    "container",
+                    "h-max",
+                    "mx-auto",
+                    "max-w-3xl",
+                    "self-start",
+                    "px-4",
+                    "flex",
+                    "flex-col",
+                ])}
+            >
+                <CategoryGroupCheckbox />
+                <UI.Spacer y={2} />
+            </div>
+
             <div className="container h-max mx-auto max-w-3xl">
                 <EditorMenu editor={editor} />
             </div>
+
+            <div
+                className={cn([
+                    "container",
+                    "h-max",
+                    "mx-auto",
+                    "max-w-3xl",
+                    "self-start",
+                    "px-4",
+                    "flex",
+                    "flex-col",
+                ])}
+            >
+                <input
+                    aria-label="Title"
+                    className="w-full h-14 py-2 outline-none bg-transparent font-sfmono font-bold text-4xl max-md:text-xl text-current placeholder:text-current placeholder:opacity-80 placeholder:focus:opacity-100"
+                    placeholder="Title..."
+                />
+            </div>
+
             <div className="container h-max mx-auto max-w-3xl overflow-y-scroll">
                 <EditorContent
                     editor={editor}
@@ -85,6 +192,22 @@ export function Editor() {
                     autoComplete="false"
                     autoCapitalize="false"
                 />
+            </div>
+
+            <div
+                className={cn([
+                    "container",
+                    "h-max",
+                    "mx-auto",
+                    "max-w-3xl",
+                    "self-start",
+                    "px-4",
+                ])}
+            >
+                <UI.Spacer y={10} />
+                <UI.Button size="sm" color="default" className="w-1/6">
+                    Save
+                </UI.Button>
             </div>
         </section>
     );
@@ -100,12 +223,13 @@ const containerWrapper = cn([
     "w-full",
     "h-full",
     "my-2",
-    "space-y-3",
+    "space-y-1",
 ]);
 
 const editorAttributesClass = cn([
     "w-full",
     "h-[700px]",
+    "font-sfmono",
     "p-4",
     "rounded-md",
     "outline-none",
