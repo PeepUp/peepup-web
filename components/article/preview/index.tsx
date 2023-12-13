@@ -6,21 +6,41 @@ import { PreviewArticleMeta } from "@/types/article";
 import { AuthorAvatarPopover } from "../author/AuthorAvatarPopover";
 import { InsightIcon, RepostIcon, StarShineIcon, TimerIcon } from "@/components/icons";
 import { CategoryChip } from "../category/category-chip";
+import { ImageCoverModal } from "../image/image-modal";
 
 export type Props = {
     post: PreviewArticleMeta;
 };
 
 export function PreviewArticle({ post }: Props) {
+    const {
+        isOpen: isOpenModal,
+        onOpen: onOpenModal,
+        onOpenChange: onOpenChangeModal,
+    } = UI.useDisclosure();
+
     return (
         <UI.Card
             key={post.id}
             className="w-full max-w-2xl h-[276px] self-center flex flex-row max-md:flex-col hover:shadow-xl transition-shadow duration-300 ease-in-out shadow-none"
         >
+            <UI.Modal
+                isOpen={isOpenModal}
+                onOpenChange={onOpenChangeModal}
+                radius="lg"
+                size="4xl"
+                draggable={false}
+                placement="center"
+                backdrop="blur"
+            >
+                <ImageCoverModal src={post.image_cover} />
+            </UI.Modal>
+
             <UI.Image
                 alt="Album cover"
                 className="object-cover h-full max-w-[500px] w-full justify-self-center self-center max-md:hidden hover:grayscale-0 grayscale-[50%]"
                 width={300}
+                onClick={onOpenModal}
                 height="100%"
                 shadow="none"
                 radius="none"

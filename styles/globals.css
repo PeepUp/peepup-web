@@ -1,17 +1,15 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/base";
 
 @layer base {
     h1 {
-        @apply font-medium;
-        @apply text-3xl;
+        @apply font-bold;
+        @apply text-4xl;
         @apply max-sm:text-xl;
     }
 
     h2 {
         @apply font-bold;
-        @apply text-2xl;
+        @apply text-3xl;
     }
 
     h3 {
@@ -61,39 +59,5 @@
                 @apply items-center justify-center;
             }
         }
-    }
-}
-
-@layer components {
-    .ctr {
-        @apply w-full h-full;
-        @apply flex flex-col items-center justify-center;
-    }
-
-    .__link {
-        @apply text-xs;
-        @apply font-medium;
-        @apply select-none;
-    }
-    .modal-content {
-        scrollbar-width: thin;
-    }
-
-    .modal-content::-webkit-scrollbar {
-        width: 10px;
-    }
-
-    .modal-content::-webkit-scrollbar-track {
-        @apply bg-background;
-        border-radius: 10px;
-    }
-
-    .modal-content::-webkit-scrollbar-thumb {
-        background: #888;
-        border-radius: 10px;
-    }
-
-    .modal-content::-webkit-scrollbar-thumb:hover {
-        background: #555;
     }
 }

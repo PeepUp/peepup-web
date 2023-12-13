@@ -1,6 +1,8 @@
 import * as UI from "@nextui-org/react";
 import * as Icons from "@/components/icons";
+
 import Link from "next/link";
+
 import { BackwardButton } from "@/components/backward-button";
 
 export default function Layout(props: { children: React.ReactNode }) {
@@ -37,7 +39,7 @@ export default function Layout(props: { children: React.ReactNode }) {
                             rel="noopener"
                             color="default"
                             variant="light"
-                            className="text-md font-medium w-full flex flex-row justify-start items-center gap-3"
+                            className="text-md w-full flex flex-row justify-start items-center gap-3"
                             href={item.href}
                             startContent={item.icons}
                             referrerPolicy="no-referrer"
@@ -135,13 +137,8 @@ const sideBarList: SideBarListData[] = [
         href: "/about",
     },
     {
-        name: "Contact",
-        icons: <Icons.ServiceCallIcon size={18} className="fill-current" />,
-        href: "/",
-    },
-    {
         name: "FAQ",
         icons: <Icons.IdeaLampIcon size={18} className="fill-current" />,
-        href: "/",
+        href: "/faq",
     },
 ];

@@ -2,6 +2,7 @@
 
 import * as UI from "@nextui-org/react";
 import * as React from "react";
+
 import Link from "next/link";
 
 import { cn, capitalizeFirstLetter } from "@/lib/utils";
@@ -12,12 +13,18 @@ import { CategoryChip } from "./category/category-chip";
 
 import { PreviewArticle } from "./preview";
 import { PreviewArticleMeta } from "@/types/article";
+import { ImageCoverModal } from "./image/image-modal";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
 export default function PreviewListPost() {
+    const ref = React.useRef<any>();
+    const {
+        isOpen: isOpenModal,
+        onOpen: onOpenModal,
+        onOpenChange: onOpenChangeModal,
+    } = UI.useDisclosure();
     const { data } = useGlobalContext();
     const [isFollowed, setIsFollowed] = React.useState(false);
-    const ref = React.useRef<any>();
 
     const fetchPostsPreview = async ({ pageParam = 1 }: { pageParam: number }) => {
         const url = `${URL_ENDPOINT_ARTICLES}/admin/posts/articles/preview?page=${pageParam}&size=12`;
@@ -114,31 +121,44 @@ export default function PreviewListPost() {
         </UI.Card>
     );
 
-    const FirstPostCard = ({ post }: { post: PreviewArticleMeta }) => (
-        <UI.Card className="w-full max-w-2xl h-full self-center hover:shadow-xl transition-shadow duration-300 ease-in-out shadow-none">
-            <div className="relative col-span-6 md:col-span-4 max-h-72">
-                <UI.Image
-                    alt="Album cover"
-                    className="object-cover h-72 w-full justify-self-center self-center"
-                    width="100%"
-                    radius="none"
-                    height={0}
-                    shadow="none"
-                    isZoomed
-                    isBlurred
-                    draggable={false}
-                    onContextMenu={(e) => e.preventDefault()}
-                    src={
-                        `https://app.requestly.io/delay/3000/${post.image_cover}` ??
-                        "https://nextui.org/images/card-example-3.jpeg"
-                    }
-                />
-            </div>
-            <UI.CardBody className="h-full min-h-max py-4">
-                <div className="flex flex-col items-stretch justify-center">
-                    <div className="flex flex-col items-start justify-start col-span-6 md:col-span-8 space-y-2">
-                        <div className="space-y-3">
-                            <h2>
+    const FirstPostCard = ({ post }: { post: PreviewArticleMeta }) => {
+        return (
+            <UI.Card className="w-full max-w-2xl h-full self-center hover:shadow-xl transition-shadow duration-300 ease-in-out shadow-none">
+                <div className="relative col-span-6 md:col-span-4 max-h-72">
+                    <UI.Modal
+                        isOpen={isOpenModal}
+                        onOpenChange={onOpenChangeModal}
+                        radius="lg"
+                        size="4xl"
+                        draggable={false}
+                        placement="center"
+                        backdrop="blur"
+                    >
+                        <ImageCoverModal src={post.image_cover} />
+                    </UI.Modal>
+
+                    <UI.Image
+                        alt="Album cover"
+                        onClick={() => onOpenModal()}
+                        className="object-cover h-72 w-full justify-self-center self-center"
+                        width="100%"
+                        radius="none"
+                        height={0}
+                        shadow="none"
+                        isZoomed
+                        isBlurred
+                        draggable={false}
+                        onContextMenu={(e) => e.preventDefault()}
+                        src={
+                            `https://app.requestly.io/delay/1000/${post.image_cover}` ??
+                            "https://nextui.org/images/card-example-3.jpeg"
+                        }
+                    />
+                </div>
+                <UI.CardBody className="h-full min-h-max py-4">
+                    <div className="flex flex-col items-stretch justify-center">
+                        <div className="flex flex-col items-start justify-start col-span-6 md:col-span-8 space-y-2">
+                            <div className="space-y-3">
                                 <UI.Link
                                     as={Link}
                                     href={`/posts/${post.slug}`}
@@ -157,107 +177,108 @@ export default function PreviewListPost() {
                                         "capitalize",
                                     ])}
                                 >
-                                    {post.title}
+                                    <h2>{post.title}</h2>
                                 </UI.Link>
-                            </h2>
 
-                            <h3 className="text-md font-normal">
-                                {capitalizeFirstLetter(post.description)}
-                            </h3>
-                        </div>
-                        <div className="flex justify-between items-center w-full pt-2">
-                            <UI.Popover showArrow placement="top-start">
-                                <UI.PopoverTrigger>
-                                    <UI.User
-                                        name="Milad Alizadeh"
-                                        description={new Date()
-                                            .toLocaleString("en-US", {
-                                                month: "long",
-                                                year: "numeric",
-                                                day: "numeric",
-                                            })
-                                            .toString()}
-                                        avatarProps={{
-                                            src:
-                                                data && data.identity
-                                                    ? data.identity.avatar
-                                                    : "http://localhost:3000/assets/images/milad.jpg",
-                                            alt: "Milad Alizadeh",
-                                            color: "primary",
-                                            className: "cursor-pointer w-8 h-8 text-xs",
-                                        }}
-                                        classNames={{
-                                            name: "text-xs font-medium",
-                                        }}
-                                    />
-                                </UI.PopoverTrigger>
-                                <UI.PopoverContent>
-                                    <UserCard />
-                                </UI.PopoverContent>
-                            </UI.Popover>
+                                <h3 className="text-md font-normal">
+                                    {capitalizeFirstLetter(post.description)}
+                                </h3>
+                            </div>
+                            <div className="flex justify-between items-center w-full pt-2">
+                                <UI.Popover showArrow placement="top-start">
+                                    <UI.PopoverTrigger>
+                                        <UI.User
+                                            name="Milad Alizadeh"
+                                            description={new Date()
+                                                .toLocaleString("en-US", {
+                                                    month: "long",
+                                                    year: "numeric",
+                                                    day: "numeric",
+                                                })
+                                                .toString()}
+                                            avatarProps={{
+                                                src:
+                                                    data && data.identity
+                                                        ? data.identity.avatar
+                                                        : "http://localhost:3000/assets/images/milad.jpg",
+                                                alt: "Milad Alizadeh",
+                                                color: "primary",
+                                                className:
+                                                    "cursor-pointer w-8 h-8 text-xs",
+                                            }}
+                                            classNames={{
+                                                name: "text-xs font-medium",
+                                            }}
+                                        />
+                                    </UI.PopoverTrigger>
+                                    <UI.PopoverContent>
+                                        <UserCard />
+                                    </UI.PopoverContent>
+                                </UI.Popover>
 
-                            <UI.Popover placement="left" color="foreground">
-                                <UI.PopoverTrigger title="Time to read">
-                                    <div className="cursor-pointer mr-4">
-                                        <TimerIcon size={24} />
-                                    </div>
-                                </UI.PopoverTrigger>
+                                <UI.Popover placement="left" color="foreground">
+                                    <UI.PopoverTrigger title="Time to read">
+                                        <div className="cursor-pointer mr-4">
+                                            <TimerIcon size={24} />
+                                        </div>
+                                    </UI.PopoverTrigger>
 
-                                <UI.PopoverContent>
-                                    <p>{10} min read</p>
-                                </UI.PopoverContent>
-                            </UI.Popover>
-                        </div>
-
-                        <div className="space-x-2">
-                            {post.categories.length > 0
-                                ? post.categories.map((category) => (
-                                      <CategoryChip {...category} key={category.id} />
-                                  ))
-                                : null}
-                        </div>
-
-                        <div className="flex justify-between items-center max-md:w-3/5 w-3/4">
-                            <div className="flex space-y-2 items-start justify-center group">
-                                <p className="flex items-center justify-center group-hover:text-[#FBBC05]">
-                                    <StarShineIcon
-                                        size={20}
-                                        className="mr-1 group-hover:fill-[#FBBC05] group-hover:scale-125 text-current dark:stroke-[#FBBC05] fill-none"
-                                    />
-                                    {post.stars.length} star
-                                    {post.stars.length > 1 ? "s" : ""}
-                                </p>
+                                    <UI.PopoverContent>
+                                        <p>{10} min read</p>
+                                    </UI.PopoverContent>
+                                </UI.Popover>
                             </div>
 
-                            <div className="flex space-y-2 items-start justify-center group select-none">
-                                <p className="flex items-center justify-center group-hover:text-[#D2DE32]">
-                                    <RepostIcon
-                                        size={16}
-                                        fill="currentColor"
-                                        className="mr-1 group-hover:scale-105 group-hover:fill-[#D2DE32] text-current"
-                                    />
-                                    {post.reposts.length} repost
-                                    {post.reposts.length > 1 ? "s" : ""}
-                                </p>
+                            <div className="space-x-2">
+                                {post.categories.length > 0
+                                    ? post.categories.map((category) => (
+                                          <CategoryChip {...category} key={category.id} />
+                                      ))
+                                    : null}
                             </div>
 
-                            <div className="flex space-y-2 items-start justify-center group">
-                                <p className="flex select-none items-center justify-center space-x-1">
-                                    <InsightIcon
-                                        size={12}
-                                        stroke="#D2DE32"
-                                        className="mr-1 group-hover:fill-[#D2DE32] text-current"
-                                    />
-                                    {post.visit_count} view
-                                    {post.visit_count > 1 ? "s" : ""}
-                                </p>
+                            <div className="flex justify-between items-center max-md:w-3/5 w-3/4">
+                                <div className="flex space-y-2 items-start justify-center group">
+                                    <p className="flex items-center justify-center group-hover:text-[#FBBC05]">
+                                        <StarShineIcon
+                                            size={20}
+                                            className="mr-1 group-hover:fill-[#FBBC05] group-hover:scale-125 text-current dark:stroke-[#FBBC05] fill-none"
+                                        />
+                                        {post.stars.length} star
+                                        {post.stars.length > 1 ? "s" : ""}
+                                    </p>
+                                </div>
+
+                                <div className="flex space-y-2 items-start justify-center group select-none">
+                                    <p className="flex items-center justify-center group-hover:text-[#D2DE32]">
+                                        <RepostIcon
+                                            size={16}
+                                            fill="currentColor"
+                                            className="mr-1 group-hover:scale-105 group-hover:fill-[#D2DE32] text-current"
+                                        />
+                                        {post.reposts.length} repost
+                                        {post.reposts.length > 1 ? "s" : ""}
+                                    </p>
+                                </div>
+
+                                <div className="flex space-y-2 items-start justify-center group">
+                                    <p className="flex select-none items-center justify-center space-x-1">
+                                        <InsightIcon
+                                            size={12}
+                                            stroke="#D2DE32"
+                                            className="mr-1 group-hover:fill-[#D2DE32] text-current"
+                                        />
+                                        {post.visit_count} view
+                                        {post.visit_count > 1 ? "s" : ""}
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </UI.CardBody>
-        </UI.Card>
-    );
+                </UI.CardBody>
+            </UI.Card>
+        );
+    };
 
     const SkeletonFirstCard = () => (
         <UI.Card className="w-3/4 space-y-3 min-h-[500px]" radius="lg">
@@ -307,11 +328,16 @@ export default function PreviewListPost() {
         >
             {response ? (
                 response.pages.map((group, i) => {
-                    return group.data.map((post: PreviewArticleMeta, i: number) => {
-                        if (i == 0) {
-                            return <FirstPostCard post={post} key={i} />;
-                        }
+                    if (i === 0) {
+                        return (
+                            <FirstPostCard
+                                post={group.data[0] as PreviewArticleMeta}
+                                key={i}
+                            />
+                        );
+                    }
 
+                    return group.data.map((post: PreviewArticleMeta, i: number) => {
                         return <PreviewArticle post={post} key={i} />;
                     });
                 })

@@ -17,6 +17,7 @@ export function CategoryChip({ id, label, ...opt }: Props) {
                 radius={opt.radius ?? "sm"}
                 className="dark:bg-sky-50/10 min-w-[54px] text-center font-bold"
                 variant="flat"
+                aria-label={label}
             >
                 # {label}
             </UI.Chip>
