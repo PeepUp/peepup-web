@@ -406,6 +406,7 @@ export function AuthForm(props: AuthFormProps) {
                         Terms of Service
                     </UI.Link>
                     <UI.Modal
+                        size="lg"
                         isOpen={isOpenTerms}
                         onOpenChange={onOpenChangeTerms}
                         scrollBehavior="inside"
@@ -428,6 +429,7 @@ export function AuthForm(props: AuthFormProps) {
                         &nbsp; Privacy Policy
                     </UI.Link>
                     <UI.Modal
+                        size="lg"
                         isOpen={isOpenPrivacy}
                         onOpenChange={onOpenChangePrivacy}
                         scrollBehavior="inside"

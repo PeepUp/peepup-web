@@ -1,3 +1,5 @@
+import * as FAQContent from "@/components/legal-agreement/faq-content";
+
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
@@ -49,29 +51,28 @@ export const siteConfig = {
     ],
     faqItems: [
         {
-            title: "Can I save my favorite posts to read later?",
-            content:
-                "Yes, while we encourage creativity and freedom of expression, there are certain content guidelines and community standards in place to ensure a safe and respectful environment for all users. These standards may vary by platform but commonly include restrictions on hate speech, explicit adult content, harassment, and anything that violates copyright or privacy laws.",
-        },
-        {
             title: "How do I start a blog using this app?",
-            content:
-                "Yes, while we encourage creativity and freedom of expression, there are certain content guidelines and community standards in place to ensure a safe and respectful environment for all users. These standards may vary by platform but commonly include restrictions on hate speech, explicit adult content, harassment, and anything that violates copyright or privacy laws.",
+            content: FAQContent.content1,
         },
+
         {
             title: "What features does the app offer for content creation?",
-            content:
-                "Yes, while we encourage creativity and freedom of expression, there are certain content guidelines and community standards in place to ensure a safe and respectful environment for all users. These standards may vary by platform but commonly include restrictions on hate speech, explicit adult content, harassment, and anything that violates copyright or privacy laws.",
+            content: FAQContent.content2,
         },
+
         {
             title: "Are there any limitations on the type of content I can publish?",
-            content:
-                "Yes, while we encourage creativity and freedom of expression, there are certain content guidelines and community standards in place to ensure a safe and respectful environment for all users. These standards may vary by platform but commonly include restrictions on hate speech, explicit adult content, harassment, and anything that violates copyright or privacy laws.",
+            content: FAQContent.content3,
         },
+
+        {
+            title: "Can I save my favorite posts to read later?",
+            content: FAQContent.content4,
+        },
+
         {
             title: "What's the process for becoming a featured blogger on this platform?",
-            content:
-                "Yes, while we encourage creativity and freedom of expression, there are certain content guidelines and community standards in place to ensure a safe and respectful environment for all users. These standards may vary by platform but commonly include restrictions on hate speech, explicit adult content, harassment, and anything that violates copyright or privacy laws.",
+            content: FAQContent.content5,
         },
     ],
 

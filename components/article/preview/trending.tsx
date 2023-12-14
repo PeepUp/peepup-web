@@ -127,7 +127,7 @@ export function BlogOverviewCover() {
 
             <UI.Card className="w-full bg-transparent border-none" shadow="none">
                 <UI.Button
-                    className="w-40 py-4 mx-auto"
+                    className="w-40 py-4 mx-auto font-medium"
                     endContent={<ForwardIcon className="dark:fill-white/60" />}
                     as={Link}
                     href="/explore"
