@@ -24,14 +24,6 @@ export function Editor() {
     const [timeToRead, setTimeToRead] = React.useState(0);
     const [progress, setProgress] = React.useState(0);
 
-    React.useEffect(() => {
-        const interval = setInterval(() => {
-            setProgress((v) => (v >= 100 ? 0 : v + 1));
-        }, 500);
-
-        return () => clearInterval(interval);
-    }, []);
-
     const editor = useEditor({
         extensions: [
             StarterKit,
@@ -109,8 +101,22 @@ export function Editor() {
             <UI.Spacer y={10} />
 
             <div className="container flex-col flex space-y-1 h-max mx-auto max-w-3xl self-start px-4">
-                <div>
-                    <h4>Metadata: </h4>
+                <div className="w-max">
+                    <UI.Tooltip
+                        size="sm"
+                        showArrow
+                        placement="top-start"
+                        content={
+                            <div className="px-1 py-2">
+                                <div className="text-small font-bold">Custom Content</div>
+                                <div className="text-tiny">
+                                    This is a custom tooltip content
+                                </div>
+                            </div>
+                        }
+                    >
+                        <h4>Metadata: </h4>
+                    </UI.Tooltip>
                 </div>
 
                 {totalWords > 0 ? (
@@ -131,8 +137,22 @@ export function Editor() {
 
                 <UI.Spacer y={5} />
 
-                <div>
-                    <p>Progress: {progress}%</p>
+                <div className="w-max">
+                    <UI.Tooltip
+                        size="sm"
+                        showArrow
+                        placement="top-start"
+                        content={
+                            <div className="px-1 py-2">
+                                <div className="text-small font-bold">Custom Content</div>
+                                <div className="text-tiny">
+                                    This is a custom tooltip content
+                                </div>
+                            </div>
+                        }
+                    >
+                        <p>Progress: {progress}%</p>
+                    </UI.Tooltip>
                     <UI.Spacer y={2} />
                     <UI.Progress
                         aria-label="Progress"

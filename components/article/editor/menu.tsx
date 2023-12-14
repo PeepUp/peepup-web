@@ -24,11 +24,11 @@ export function EditorMenu({ editor }: Props) {
                         variant="light"
                         color="secondary"
                     >
-                        <div className="w-full">H</div>
+                        H
                     </UI.Button>
                 </UI.PopoverTrigger>
                 <UI.PopoverContent className="w-max">
-                    {(_) => (
+                    {() => (
                         <div className="p-1 w-full">
                             <div className="flex gap-2 w-full">
                                 <UI.Tooltip content="Heading 1" offset={5}>

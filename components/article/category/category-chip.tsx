@@ -8,7 +8,7 @@ export type Props = Category & {
 };
 
 export function CategoryChip({ id, label, ...opt }: Props) {
-    const path = `/posts/category/${label}`;
+    const path = `/category/${label}`;
 
     return (
         <UI.Link key={id} href={path}>
