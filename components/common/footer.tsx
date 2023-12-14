@@ -4,7 +4,7 @@ import { siteConfig } from "@/config/site";
 
 export function Footer() {
     return (
-        <footer className="w-full flex flex-col items-start justify-center">
+        <footer className="flex flex-col justify-center items-center">
             <UI.Divider />
             <UI.Spacer y={8} className="max-sm:m-0" />
             <div className="flex max-md:flex-col justify-around items-center w-5/6">

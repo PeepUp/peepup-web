@@ -21,7 +21,7 @@ export function FrequentlyAskingQuestion() {
                         aria-label={"Accordion " + faq.title}
                         title={faq.title}
                     >
-                        {faq.content}
+                        {faq.content()}
                     </UI.AccordionItem>
                 ))}
             </UI.Accordion>
