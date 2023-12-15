@@ -4,7 +4,6 @@ import React from "react";
 import * as UI from "@nextui-org/react";
 
 import { join } from "path";
-import { useFetch } from "@/hooks/useFetch";
 import { Button, CheckboxGroup, Pagination } from "@nextui-org/react";
 import { CustomCheckbox } from "./category-checkbox";
 import { URL_ENDPOINT_ARTICLES } from "@/lib/constant";
@@ -12,8 +11,17 @@ import { Category } from "@/types/category";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { BackIcon } from "@/components/icons";
 
-export function CategoryGroupCheckbox() {
-    const [groupSelected, setGroupSelected] = React.useState<string[]>([]);
+type Props = {
+    options?: {
+        showTitle?: boolean;
+        defaultSelected?: string[];
+    };
+};
+
+export function CategoryGroupCheckbox({ options }: Props) {
+    const [groupSelected, setGroupSelected] = React.useState<string[]>(
+        options?.defaultSelected ?? []
+    );
     const [page, setPage] = React.useState(0);
 
     const url = new URL(join(URL_ENDPOINT_ARTICLES, "posts", "categories"));
@@ -40,15 +48,38 @@ export function CategoryGroupCheckbox() {
         });
 
     return (
-        <div className="flex flex-col gap-1 max-w-3xl w-full">
+        <div className="flex flex-col gap-1 max-w-3xl mx-auto max-sm:w-full">
             <CheckboxGroup
-                label="Select categories"
+                label={
+                    <UI.Tooltip
+                        className="font-sans"
+                        size="sm"
+                        showArrow
+                        placement="top-start"
+                        content={
+                            <div className="px-1 py-2">
+                                <div className="text-small font-bold">Custom Content</div>
+                                <div className="text-tiny">
+                                    This is a custom tooltip content
+                                </div>
+                            </div>
+                        }
+                    >
+                        {options && options.showTitle ? (
+                            <h4 className="font-semibold text-current">
+                                Select categories
+                            </h4>
+                        ) : (
+                            <> </>
+                        )}
+                    </UI.Tooltip>
+                }
                 orientation="horizontal"
                 value={groupSelected}
                 onValueChange={(value: string[]) => setGroupSelected(value)}
-                className="font-sfmono font-semibold text-current gap-1 rounded-md"
+                className="font-semibold text-current gap-1 rounded-md"
             >
-                <div className="flex-nowrap flex gap-1 overflow-x-auto px-2 scroll-p-0 scroll-m-0 scrollbar-hide h-max items-center">
+                <div className="flex-nowrap flex gap-1 overflow-x-auto px-2 max-sm:px-0 scroll-p-0 scroll-m-0 scrollbar-hide h-max items-center">
                     {data && data.data ? (
                         data.data?.map((category: Category, i: number) => (
                             <CustomCheckbox

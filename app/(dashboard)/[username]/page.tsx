@@ -23,7 +23,7 @@ export default function page() {
                 aria-label="tabs_navigation_dashboard"
                 radius="full"
                 className="mx-auto self-center"
-                // defaultSelectedKey="post_articles"
+                defaultSelectedKey="post_articles"
             >
                 <UI.Tab
                     key="new_posts"

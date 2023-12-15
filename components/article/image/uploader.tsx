@@ -5,20 +5,6 @@ import * as UI from "@nextui-org/react";
 import * as React from "react";
 import { ImageCoverModal } from "./image-modal";
 
-const toBase64 = async (file: File) => {
-    const fileReader = new FileReader();
-    fileReader.readAsDataURL(file);
-    // using Promise API
-    return new Promise((resolve, reject) => {
-        fileReader.onload = () => {
-            resolve(fileReader.result);
-        };
-        fileReader.onerror = (error) => {
-            reject(error);
-        };
-    });
-};
-
 export function ImageUploader() {
     const {
         isOpen: isOpenModal,
