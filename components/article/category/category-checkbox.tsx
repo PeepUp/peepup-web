@@ -5,12 +5,12 @@ import { CheckIcon } from "@/components/icons";
 const checkbox = tv({
     slots: {
         base: "border-default hover:bg-default-200",
-        content: "text-current text-xs font-semibold font-sfmono",
+        content: "text-current text-xs font-semibold",
     },
     variants: {
         isSelected: {
             true: {
-                base: "border-primary bg-primary hover:bg-primary-500 hover:border-primary-500",
+                base: "border-secondary bg-default hover:bg-primary-500 hover:border-primary-500",
                 content: "text-primary-foreground pl-1",
             },
         },

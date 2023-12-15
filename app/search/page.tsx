@@ -8,13 +8,13 @@ import { PreviewArticleMeta } from "@/types/article";
 import { cn } from "@/lib/utils";
 
 type Props = {
-    searchParams: {
+    params: {
         q: string;
     };
 };
 
-export default function Page({ searchParams }: Props) {
-    const url = `${URL_ENDPOINT_ARTICLES}/posts/articles/search?status=published&title=${searchParams.q}`;
+export default function Page({ params }: Props) {
+    const url = `${URL_ENDPOINT_ARTICLES}/posts/articles/search?status=published&title=${params.q}`;
     const [data, setData] = React.useState<PreviewArticleMeta[]>();
     const [loading, setLoading] = React.useState<boolean>(false);
 
@@ -38,7 +38,7 @@ export default function Page({ searchParams }: Props) {
 
     React.useEffect(() => {
         fetchData();
-    }, [searchParams]);
+    }, [params]);
 
     return (
         <section
@@ -69,14 +69,14 @@ export default function Page({ searchParams }: Props) {
                         <UI.Spacer y={40} />
                         <UI.Spinner
                             size="md"
-                            label={`Searching for '${searchParams.q}' ...`}
+                            label={`Searching for '${params.q}' ...`}
                             color="secondary"
                         />
                     </>
                 ) : !loading && data && data.length === 0 ? (
                     <>
                         <UI.Spacer y={40} />
-                        <p>No records for '{searchParams.q}'</p>
+                        <p>No records for '{params.q}'</p>
                     </>
                 ) : null}
             </div>
