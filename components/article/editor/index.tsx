@@ -17,12 +17,15 @@ import BulletList from "@tiptap/extension-bullet-list";
 import OrderedList from "@tiptap/extension-ordered-list";
 import HorizontalRule from "@tiptap/extension-horizontal-rule";
 import Blockquote from "@tiptap/extension-blockquote";
-import { CategoryGroupCheckbox } from "../category/category-group-checkbox";
+import { EditorMetadataPreview } from "./metadata";
+import { SelectCategories } from "./select-categories";
+import { ImageUploader } from "../image/uploader";
 
 export function Editor() {
     const [totalWords, setTotalWords] = React.useState(0);
     const [timeToRead, setTimeToRead] = React.useState(0);
     const [progress, setProgress] = React.useState(0);
+    const [title, setTitle] = React.useState<string>("");
 
     const editor = useEditor({
         extensions: [
@@ -30,7 +33,7 @@ export function Editor() {
             Underline.configure({}),
             InlineCode.configure({
                 HTMLAttributes: {
-                    class: "px-[2px] py-1 bg-[#1c1c1c] rounded-md font-sfmono font-medium",
+                    class: "px-[2px] py-1 bg-[#1c1c1c] rounded-md font-mono",
                 },
             }),
             Heading.configure({
@@ -96,75 +99,44 @@ export function Editor() {
         },
     });
 
+    const saveButton = (
+        <div
+            className={cn([
+                "container",
+                "h-max",
+                "mx-auto",
+                "max-w-3xl",
+                "self-start",
+                "px-4",
+            ])}
+        >
+            <UI.Spacer y={10} />
+            <UI.Button
+                size="sm"
+                color="default"
+                className="w-1/6"
+                disabled={progress !== 100}
+            >
+                Save
+            </UI.Button>
+        </div>
+    );
+
     return (
         <section className={containerWrapper}>
             <UI.Spacer y={10} />
 
-            <div className="container flex-col flex space-y-1 h-max mx-auto max-w-3xl self-start px-4">
-                <div className="w-max">
-                    <UI.Tooltip
-                        size="sm"
-                        showArrow
-                        placement="top-start"
-                        content={
-                            <div className="px-1 py-2">
-                                <div className="text-small font-bold">Custom Content</div>
-                                <div className="text-tiny">
-                                    This is a custom tooltip content
-                                </div>
-                            </div>
-                        }
-                    >
-                        <h4>Metadata: </h4>
-                    </UI.Tooltip>
-                </div>
+            <EditorMetadataPreview
+                metadata={{
+                    progress,
+                    timeToRead,
+                    totalWords,
+                    title,
+                    categories: [],
+                }}
+            />
 
-                {totalWords > 0 ? (
-                    <UI.Chip size="sm" variant="dot">
-                        <span className="font-sfmono m-1 font-semibold">
-                            Words: {totalWords} / 1500
-                        </span>
-                    </UI.Chip>
-                ) : null}
-
-                {timeToRead > 0 ? (
-                    <UI.Chip size="sm" variant="dot">
-                        <span className="font-sfmono m-1 font-semibold">
-                            Read time: {timeToRead} min(s)
-                        </span>
-                    </UI.Chip>
-                ) : null}
-
-                <UI.Spacer y={5} />
-
-                <div className="w-max">
-                    <UI.Tooltip
-                        size="sm"
-                        showArrow
-                        placement="top-start"
-                        content={
-                            <div className="px-1 py-2">
-                                <div className="text-small font-bold">Custom Content</div>
-                                <div className="text-tiny">
-                                    This is a custom tooltip content
-                                </div>
-                            </div>
-                        }
-                    >
-                        <p>Progress: {progress}%</p>
-                    </UI.Tooltip>
-                    <UI.Spacer y={2} />
-                    <UI.Progress
-                        aria-label="Progress"
-                        value={progress}
-                        color="default"
-                        className="max-w-md"
-                        size="sm"
-                    />
-                </div>
-
-                <UI.Spacer y={5} />
-            </div>
+            <SelectCategories />
 
             <div
                 className={cn([
@@ -178,33 +150,21 @@ export function Editor() {
                     "flex-col",
                 ])}
             >
-                <CategoryGroupCheckbox />
+                <ImageUploader />
                 <UI.Spacer y={2} />
-            </div>
-
-            <div className="container h-max mx-auto max-w-3xl">
-                <EditorMenu editor={editor} />
-            </div>
-
-            <div
-                className={cn([
-                    "container",
-                    "h-max",
-                    "mx-auto",
-                    "max-w-3xl",
-                    "self-start",
-                    "px-4",
-                    "flex",
-                    "flex-col",
-                ])}
-            >
                 <input
                     aria-label="Title"
                     className="w-full h-14 py-2 outline-none bg-transparent font-sfmono font-bold text-4xl max-md:text-xl text-current placeholder:text-current placeholder:opacity-80 placeholder:focus:opacity-100"
                     placeholder="Title..."
+                    onChange={(e) => setTitle(e.target.value)}
                 />
             </div>
 
+            <UI.Spacer y={6} />
+            <div className="container h-max mx-auto max-w-3xl">
+                <EditorMenu editor={editor} />
+            </div>
+            <UI.Spacer y={2} />
             <div className="container h-max mx-auto max-w-3xl overflow-y-scroll">
                 <EditorContent
                     editor={editor}
@@ -214,21 +174,7 @@ export function Editor() {
                 />
             </div>
 
-            <div
-                className={cn([
-                    "container",
-                    "h-max",
-                    "mx-auto",
-                    "max-w-3xl",
-                    "self-start",
-                    "px-4",
-                ])}
-            >
-                <UI.Spacer y={10} />
-                <UI.Button size="sm" color="default" className="w-1/6">
-                    Save
-                </UI.Button>
-            </div>
+            {saveButton}
         </section>
     );
 }

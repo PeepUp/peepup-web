@@ -22,7 +22,7 @@ export function PreviewArticle({ post }: Props) {
     return (
         <UI.Card
             key={post.id}
-            className="w-full max-w-2xl h-[276px] self-center flex flex-row max-md:flex-col hover:shadow-xl transition-shadow duration-300 ease-in-out shadow-none"
+            className="w-full max-w-2xl h-[276px] max-md:h-max self-center flex flex-row max-md:flex-col hover:shadow-xl transition-shadow duration-300 ease-in-out shadow-none"
         >
             <UI.Modal
                 isOpen={isOpenModal}
@@ -111,7 +111,7 @@ export function PreviewArticle({ post }: Props) {
                                 : null}
                         </div>
 
-                        <div className="flex justify-between items-center max-md:w-3/5 w-3/4">
+                        <div className="flex justify-between items-center max-md:w-max max-md:space-x-4 w-3/4">
                             <div className="flex space-y-2 items-start justify-center group">
                                 <p className="flex items-center justify-center group-hover:text-[#FBBC05]">
                                     <StarShineIcon

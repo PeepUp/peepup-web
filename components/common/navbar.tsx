@@ -13,13 +13,7 @@ import { useAuth } from "@/hooks/auth/useAuth";
 import { getTokenSession } from "@/lib/session/token";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { useGlobalContext } from "@/context/store/global";
-import {
-    HomeIcon,
-    LogoutIcon,
-    MarkdownIcon,
-    SearchIcon,
-    SettingIcon,
-} from "@/components/icons";
+import { HomeIcon, LogoutIcon, MarkdownIcon, SettingIcon } from "@/components/icons";
 import { toast } from "sonner";
 import { SearchInput } from "./input/search/search";
 
@@ -30,7 +24,6 @@ export const Navbar = () => {
     const { verifyAuth, loading, signout } = useAuth();
     const onTheSignupPage = usePathname() === "/signup";
     const onTheExplorePage = usePathname() === "/explore";
-    const [isOnSearch, setIsOnSearch] = useState(false);
 
     React.useEffect(() => {
         if (access && Object.keys(data).length === 0) {
@@ -104,7 +97,7 @@ export const Navbar = () => {
             variant="flat"
             startContent={
                 onTheExplorePage ? (
-                    <HomeIcon size={16} fill="currentColor" />
+                    <HomeIcon size={18} />
                 ) : (
                     <MarkdownIcon size={16} stroke="currentColor" />
                 )
@@ -132,16 +125,18 @@ export const Navbar = () => {
         <UI.Navbar maxWidth="2xl" position="sticky">
             <UI.NavbarContent className="basis-1/5 sm:basis-full" justify="start">
                 <UI.NavbarItem className="gap-3 max-w-fit">
-                    <NextLink
-                        className="flex justify-start items-center gap-1"
+                    <UI.Button
+                        type="button"
+                        as={NextLink}
+                        className="flex justify-start items-center gap-1 hover:bg-transparent bg-transparent"
                         href="/"
-                        replace
                         onContextMenu={(e) => e.preventDefault()}
+                        radius="full"
                     >
                         <p className="font-randrake font-medium text-2xl select-none">
                             PeepUp
                         </p>
-                    </NextLink>
+                    </UI.Button>
                 </UI.NavbarItem>
             </UI.NavbarContent>
 

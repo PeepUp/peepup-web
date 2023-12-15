@@ -177,7 +177,7 @@ export default function PreviewListPost() {
                                         "capitalize",
                                     ])}
                                 >
-                                    <h2>{post.title}</h2>
+                                    <h2 className="max-md:text-1xl">{post.title}</h2>
                                 </UI.Link>
 
                                 <h3 className="text-md font-normal">
@@ -185,7 +185,11 @@ export default function PreviewListPost() {
                                 </h3>
                             </div>
                             <div className="flex justify-between items-center w-full pt-2">
-                                <UI.Popover showArrow placement="top-start">
+                                <UI.Popover
+                                    showArrow
+                                    placement="top-start"
+                                    triggerScaleOnOpen={false}
+                                >
                                     <UI.PopoverTrigger>
                                         <UI.User
                                             name="Milad Alizadeh"
@@ -237,7 +241,7 @@ export default function PreviewListPost() {
                                     : null}
                             </div>
 
-                            <div className="flex justify-between items-center max-md:w-3/5 w-3/4">
+                            <div className="flex justify-between items-center max-md:w-max max-md:space-x-4 w-3/4">
                                 <div className="flex space-y-2 items-start justify-center group">
                                     <p className="flex items-center justify-center group-hover:text-[#FBBC05]">
                                         <StarShineIcon

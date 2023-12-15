@@ -25,11 +25,14 @@ export function SearchInput() {
                 size="md"
                 name="search"
                 classNames={{
-                    inputWrapper: "bg-default-50",
-                    input: "text-sm font-semibold",
+                    inputWrapper: "bg-default-50 shadow-lg",
+                    input: "text-sm font-semibold placeholder:font-semibold placeholder:text-current",
                 }}
                 endContent={
-                    <UI.Kbd className="hidden lg:inline-block" keys={["command"]}>
+                    <UI.Kbd
+                        className="hidden lg:inline-block select-none cursor-default"
+                        keys={["command"]}
+                    >
                         + K
                     </UI.Kbd>
                 }
