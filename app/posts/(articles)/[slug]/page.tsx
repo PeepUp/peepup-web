@@ -162,7 +162,7 @@ export default function Page({ params }: Props) {
 
                 <UI.Spacer y={5} />
 
-                <div className="flex justify-center items-center max-md:w-10/12 w-2/5 space-x-6">
+                <div className="flex justify-center items-center max-md:w-10/12 w-2/5 space-x-6 max-md:space-x-2">
                     <div className="flex space-y-2 items-center justify-center group">
                         <UI.Button size="sm" radius="md" className="bg-transparent">
                             <p className="flex select-none items-center justify-center">
@@ -192,15 +192,17 @@ export default function Page({ params }: Props) {
                     </div>
 
                     <div className="flex space-y-2 items-start justify-center group">
-                        <p className="flex select-none items-center justify-center space-x-1">
-                            <InsightIcon
-                                size={12}
-                                stroke="#D2DE32"
-                                className="mr-1 group-hover:fill-[#D2DE32] text-current"
-                            />
-                            {metadata && metadata.visit_count} view
-                            {metadata && metadata.visit_count > 1 ? "s" : ""}
-                        </p>
+                        <UI.Button size="sm" radius="md" className="bg-transparent">
+                            <p className="flex select-none items-center justify-center">
+                                <InsightIcon
+                                    size={12}
+                                    stroke="#D2DE32"
+                                    className="mr-1 group-hover:fill-[#D2DE32]"
+                                />
+                                {metadata && metadata.visit_count} view
+                                {metadata && metadata.visit_count > 1 ? "s" : ""}
+                            </p>
+                        </UI.Button>
                     </div>
                 </div>
             </header>

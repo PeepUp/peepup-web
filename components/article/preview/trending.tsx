@@ -14,7 +14,7 @@ import { PreviewArticleMeta } from "@/types/article";
 
 export function BlogOverviewCover() {
     const url = new URL(join(URL_ENDPOINT_ARTICLES, "posts", "articles", "popular"));
-    const { data } = useFetch<PreviewArticleMeta[]>({
+    const { data, error, loading } = useFetch<PreviewArticleMeta[]>({
         url,
         config: {
             method: "GET",
@@ -29,7 +29,13 @@ export function BlogOverviewCover() {
         if (data) {
             console.log(data);
         }
-    }, [data]);
+
+        if (error) {
+            if (error === 500) {
+                return;
+            }
+        }
+    }, [data, error]);
 
     const SmallCardPost = ({ post }: { post: PreviewArticleMeta }) => {
         return (
@@ -160,32 +166,38 @@ export function BlogOverviewCover() {
                 "justify-start items-center",
             ])}
         >
-            <div className="max-w-[900px] gap-2 grid grid-cols-12 grid-rows-2 px-8 my-12">
-                {data
-                    ? data.map((article, i) => {
-                          if (i >= 0 && i <= 2)
-                              return <SmallCardPost key={i} post={article} />;
-                          if (i === 3) return <MediumCardPost key={i} post={article} />;
-                          if (i === 4)
-                              return <ExtraLargeCardPost key={i} post={article} />;
-                          if (i === 5)
-                              return <ExtraLargeCardPost key={i} post={article} />;
-                          if (i === 6) return <MediumCardPost key={i} post={article} />;
-                          if (i > 6 && i <= 9)
-                              return <SmallCardPost key={i} post={article} />;
-                      })
-                    : null}
-            </div>
-
             <UI.Card className="w-full bg-transparent border-none" shadow="none">
-                <UI.Button
-                    className="w-40 py-4 mx-auto font-medium"
-                    endContent={<ForwardIcon className="dark:fill-white/60" />}
-                    as={Link}
-                    href="/explore"
-                >
-                    See more
-                </UI.Button>
+                <div className="max-w-[900px] mx-auto gap-2 grid grid-cols-12 grid-rows-2 px-8 my-12">
+                    {data
+                        ? data.map((article, i) => {
+                              if (i >= 0 && i <= 2)
+                                  return <SmallCardPost key={i} post={article} />;
+                              if (i === 3)
+                                  return <MediumCardPost key={i} post={article} />;
+                              if (i === 4)
+                                  return <ExtraLargeCardPost key={i} post={article} />;
+                              if (i === 5)
+                                  return <ExtraLargeCardPost key={i} post={article} />;
+                              if (i === 6)
+                                  return <MediumCardPost key={i} post={article} />;
+                              if (i > 6 && i <= 9)
+                                  return <SmallCardPost key={i} post={article} />;
+                          })
+                        : null}
+                </div>
+                {!loading && (
+                    <UI.Button
+                        type="button"
+                        target="_self"
+                        className="w-40 py-4 mx-auto font-medium"
+                        endContent={<ForwardIcon className="dark:fill-white/60" />}
+                        as={Link}
+                        href="/explore"
+                        variant="light"
+                    >
+                        See more
+                    </UI.Button>
+                )}
             </UI.Card>
         </div>
     );

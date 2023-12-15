@@ -100,12 +100,12 @@ export default function Layout(props: { children: React.ReactNode }) {
     return (
         <>
             <header>
-                <nav className="">
+                <nav>
                     <BackwardButton />
                 </nav>
                 <UI.Spacer y={6} />
             </header>
-            <section className="flex flex-row max-lg:space-x-5 space-x-3 min-w-full min-h-full max-sm:flex-col">
+            <section className="flex flex-row max-lg:space-x-5 space-x-3 max-md:space-x-0 min-w-full min-h-full max-sm:flex-col">
                 {sideBar}
                 {props.children}
                 {rightSideBar}
@@ -123,22 +123,24 @@ type SideBarListData = {
 const sideBarList: SideBarListData[] = [
     {
         name: "Home",
-        icons: <Icons.HomeIcon size={18} className="fill-current" />,
+        icons: <Icons.HomeIcon size={24} />,
         href: "/",
     },
     {
         name: "Profile",
-        icons: <Icons.ProfileUserIcon size={20} className="fill-current" />,
+        icons: <Icons.ProfileUserIcon size={24} fill="none" />,
         href: "/me",
     },
     {
         name: "About",
-        icons: <p className="font-randrake font-medium text-[9px] select-none">PeepUp</p>,
+        icons: (
+            <p className="font-randrake font-medium text-[12px] select-none">PeepUp</p>
+        ),
         href: "/about",
     },
     {
         name: "FAQ",
-        icons: <Icons.IdeaLampIcon size={18} className="fill-current" />,
+        icons: <Icons.IdeaLampIcon size={24} className="fill-current" />,
         href: "/faq",
     },
 ];

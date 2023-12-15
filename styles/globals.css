@@ -4,6 +4,7 @@
     h1 {
         @apply font-bold;
         @apply text-4xl;
+        @apply max-md:text-4xl;
         @apply max-sm:text-xl;
     }
 
@@ -59,5 +60,11 @@
                 @apply items-center justify-center;
             }
         }
+    }
+
+    pre {
+        @apply font-mono;
+        @apply text-sm;
+        @apply font-medium;
     }
 }

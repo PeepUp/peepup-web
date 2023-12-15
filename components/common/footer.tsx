@@ -41,7 +41,7 @@ export function Footer() {
                     </Link>
                 </div>
 
-                <div className="flex space-x-4 max-sm:flex-col justify-center items-center mt-2 w-full max-sm:w-1/2 max-sm:space-x-0">
+                <div className="flex  max-sm:flex-col justify-evenly items-center mt-2 w-full max-sm:w-1/2 max-sm:space-x-0">
                     <UI.Link
                         as={Link}
                         href={siteConfig.links.privacyPolicy}

@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import * as UI from "@nextui-org/react";
 
 import { join } from "path";
 import { useFetch } from "@/hooks/useFetch";
@@ -31,11 +32,12 @@ export function CategoryGroupCheckbox() {
             },
         }).then((res) => res.json());
 
-    const { isPending, isError, error, data, isFetching, isPlaceholderData } = useQuery({
-        queryKey: ["categories", page],
-        queryFn: () => fetchProjects(),
-        placeholderData: keepPreviousData,
-    });
+    const { isPending, isError, error, data, isFetching, isPlaceholderData, isLoading } =
+        useQuery({
+            queryKey: ["categories", page],
+            queryFn: () => fetchProjects(),
+            placeholderData: keepPreviousData,
+        });
 
     return (
         <div className="flex flex-col gap-1 max-w-3xl w-full">
@@ -47,8 +49,7 @@ export function CategoryGroupCheckbox() {
                 className="font-sfmono font-semibold text-current gap-1 rounded-md"
             >
                 <div className="flex-nowrap flex gap-1 overflow-x-auto px-2 scroll-p-0 scroll-m-0 scrollbar-hide h-max items-center">
-                    {data &&
-                        data.data &&
+                    {data && data.data ? (
                         data.data?.map((category: Category, i: number) => (
                             <CustomCheckbox
                                 key={i}
@@ -58,7 +59,10 @@ export function CategoryGroupCheckbox() {
                             >
                                 {category.label}
                             </CustomCheckbox>
-                        ))}
+                        ))
+                    ) : (
+                        <UI.Spinner color="primary" />
+                    )}
                 </div>
             </CheckboxGroup>
 
@@ -103,9 +107,6 @@ export function CategoryGroupCheckbox() {
                     <BackIcon size={20} className="transform rotate-180" />
                 </Button>
             </div>
-            <p className="mt-4 ml-1 text-default-500 capitalize">
-                Selected: {groupSelected.join(", ")}
-            </p>
         </div>
     );
 }

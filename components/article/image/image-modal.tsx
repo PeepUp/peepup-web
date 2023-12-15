@@ -9,10 +9,7 @@ export function ImageCoverModal({ src }: Props) {
         <UI.ModalContent>
             {(onClose) => (
                 <UI.Image
-                    src={
-                        `https://app.requestly.io/delay/1000/${src}` ??
-                        "https://nextui.org/images/card-example-3.jpeg"
-                    }
+                    src={src}
                     onClick={onClose}
                     alt="Album cover"
                     radius="none"

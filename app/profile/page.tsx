@@ -13,7 +13,7 @@ export default function Page() {
     const [avatar, setAvatar] = useState("/path/to/default/avatar.jpg");
     const [socialMedia, setSocialMedia] = useState("");
 
-    const handleAvatarChange = (e) => {
+    const handleAvatarChange = (e: any) => {
         const file = e.target.files[0];
         const reader = new FileReader();
         reader.onloadend = () => {
@@ -101,7 +101,7 @@ const ProfileSettings = () => {
     const [avatar, setAvatar] = useState("/path/to/default/avatar.jpg");
     const [socialMedia, setSocialMedia] = useState("");
 
-    const handleAvatarChange = (e) => {
+    const handleAvatarChange = (e: any) => {
         const file = e.target.files[0];
         const reader = new FileReader();
         reader.onloadend = () => {

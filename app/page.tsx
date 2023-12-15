@@ -33,7 +33,7 @@ export default function Home() {
                     <UI.Image
                         src="https://app.requestly.io/delay/1000/http://localhost:3000/assets/images/left-bg-peepup-home.png"
                         alt="PeepUp"
-                        loading="lazy"
+                        loading="eager"
                         className={cn([
                             "flex-none object-cover",
                             "rounded-[100%]",
@@ -58,6 +58,7 @@ export default function Home() {
                             className={cn([
                                 "shrink",
                                 "tracking-wide",
+                                "font-medium",
                                 "font-randrake",
                                 "text-center",
                                 "select-none",
@@ -103,7 +104,7 @@ export default function Home() {
                         isBlurred
                         draggable={false}
                         onContextMenu={(e) => e.preventDefault()}
-                        loading="lazy"
+                        loading="eager"
                     />
                 </div>
                 <UI.Spacer y={40} className="max-sm:hidden" />
