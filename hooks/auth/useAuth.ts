@@ -31,6 +31,7 @@ export function useAuth() {
             setData({
                 ...data,
                 identity: {
+                    id: json.id,
                     username: json.username,
                     email: json.email,
                     avatar: json.avatar,

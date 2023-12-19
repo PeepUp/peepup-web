@@ -1,3 +1,5 @@
+"use client";
+
 import * as UI from "@nextui-org/react";
 import Link from "next/link";
 
@@ -7,6 +9,7 @@ import { AuthorAvatarPopover } from "../author/AuthorAvatarPopover";
 import { InsightIcon, RepostIcon, StarShineIcon, TimerIcon } from "@/components/icons";
 import { CategoryChip } from "../category/category-chip";
 import { ImageCoverModal } from "../image/image-modal";
+import { InteractionStatistic } from "../interaction";
 
 export type Props = {
     post: PreviewArticleMeta;
@@ -87,6 +90,13 @@ export function PreviewArticle({ post }: Props) {
                                         "Full-stack developer, @getnextui lover she/her 🎉",
                                     name: "Milad Alizadeh",
                                     username: "milad",
+                                    created_at: new Date(post.created_at)
+                                        .toLocaleDateString("en-US", {
+                                            month: "long",
+                                            year: "numeric",
+                                            day: "numeric",
+                                        })
+                                        .toString(),
                                 }}
                             />
 
@@ -111,42 +121,7 @@ export function PreviewArticle({ post }: Props) {
                                 : null}
                         </div>
 
-                        <div className="flex justify-between items-center max-md:w-max max-md:space-x-4 w-3/4">
-                            <div className="flex space-y-2 items-start justify-center group">
-                                <p className="flex items-center justify-center group-hover:text-[#FBBC05]">
-                                    <StarShineIcon
-                                        size={20}
-                                        className="mr-1 group-hover:fill-[#FBBC05] group-hover:scale-125 text-current dark:stroke-[#FBBC05] fill-none"
-                                    />
-                                    {post.stars.length} star
-                                    {post.stars.length > 1 ? "s" : ""}
-                                </p>
-                            </div>
-
-                            <div className="flex space-y-2 items-start justify-center group select-none">
-                                <p className="flex items-center justify-center group-hover:text-[#D2DE32]">
-                                    <RepostIcon
-                                        size={16}
-                                        fill="currentColor"
-                                        className="mr-1 group-hover:scale-105 group-hover:fill-[#D2DE32] text-current"
-                                    />
-                                    {post.reposts.length} repost
-                                    {post.reposts.length > 1 ? "s" : ""}
-                                </p>
-                            </div>
-
-                            <div className="flex space-y-2 items-start justify-center group">
-                                <p className="flex select-none items-center justify-center space-x-1">
-                                    <InsightIcon
-                                        size={12}
-                                        stroke="#D2DE32"
-                                        className="mr-1 group-hover:fill-[#D2DE32] text-current"
-                                    />
-                                    {post.visit_count} view
-                                    {post.visit_count > 1 ? "s" : ""}
-                                </p>
-                            </div>
-                        </div>
+                        <InteractionStatistic {...post} />
                     </div>
                 </div>
             </UI.CardBody>

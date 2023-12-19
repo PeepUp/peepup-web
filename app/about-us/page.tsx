@@ -35,7 +35,7 @@ export default function Page() {
                 If you’re new to Peepup,{" "}
                 <a className="mt-4 text-start w-full">
                     <UI.Link
-                        href="/privacy-policy"
+                        href="/faq"
                         rel="noopener noreferrer"
                         target="_self"
                         as={Link}

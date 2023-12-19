@@ -136,7 +136,7 @@ const sideBarList: SideBarListData[] = [
         icons: (
             <p className="font-randrake font-medium text-[12px] select-none">PeepUp</p>
         ),
-        href: "/about",
+        href: "/about-us",
     },
     {
         name: "FAQ",
