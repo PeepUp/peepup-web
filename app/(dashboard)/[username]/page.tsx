@@ -89,7 +89,7 @@ export default function page() {
                 </div>
                 {data?.identity?.username ? (
                     <div className="flex justify-start items-center space-x-1 max-sm:justify-center">
-                        <p className="max-sm:text-xs">{data?.identity?.username}</p>
+                        <p className="max-sm:text-xs">@{data?.identity?.username}</p>
                         <VerifiedIcon size={20} className="max-sm:w-3 h-3" />
                     </div>
                 ) : (
@@ -127,7 +127,7 @@ export default function page() {
                 "gap-8",
             ])}
         >
-            {data?.isAuthenticated && data?.isAuthorized && <NavigationDashboard />}
+            {data?.isAuthenticated && <NavigationDashboard />}
             <NavigationTabs />
         </section>
     );

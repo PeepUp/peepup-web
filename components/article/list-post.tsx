@@ -12,9 +12,11 @@ import { URL_ENDPOINT_ARTICLES } from "@/lib/constant";
 import { CategoryChip } from "./category/category-chip";
 
 import { PreviewArticle } from "./preview";
-import { PreviewArticleMeta } from "@/types/article";
 import { ImageCoverModal } from "./image/image-modal";
 import { useInfiniteQuery } from "@tanstack/react-query";
+
+import type { PreviewArticleMeta } from "@/types/article";
+import { InteractionStatistic } from "./interaction";
 
 export default function PreviewListPost() {
     const ref = React.useRef<any>();
@@ -30,8 +32,11 @@ export default function PreviewListPost() {
         const url = `${URL_ENDPOINT_ARTICLES}/admin/posts/articles/preview?page=${pageParam}&size=12`;
         const data = await fetch(url, {
             method: "GET",
-            cache: "default",
+            cache: "reload",
             mode: "cors",
+            next: {
+                revalidate: 1000,
+            },
         });
 
         const json = await data.json();
@@ -74,14 +79,16 @@ export default function PreviewListPost() {
                         isBordered
                         radius="full"
                         size="md"
-                        src="https://i.pravatar.cc/150?u=a04258114e29026702d"
+                        src={data && data.identity ? data.identity.avatar : ""}
                     />
                     <div className="flex flex-col items-start justify-center">
                         <h4 className="text-small font-semibold leading-none text-default-600">
-                            Zoey Lang
+                            {data && data.identity
+                                ? data.identity.fullName
+                                : "Milad Alizadeh"}
                         </h4>
                         <h5 className="text-small tracking-tight text-default-500">
-                            @zoeylang
+                            @{data && data.identity ? data.identity.username : "milad"}
                         </h5>
                     </div>
                 </div>
@@ -192,8 +199,12 @@ export default function PreviewListPost() {
                                 >
                                     <UI.PopoverTrigger>
                                         <UI.User
-                                            name="Milad Alizadeh"
-                                            description={new Date()
+                                            name={
+                                                data && data.identity
+                                                    ? data.identity.fullName
+                                                    : ""
+                                            }
+                                            description={new Date(post.created_at)
                                                 .toLocaleString("en-US", {
                                                     month: "long",
                                                     year: "numeric",
@@ -241,42 +252,7 @@ export default function PreviewListPost() {
                                     : null}
                             </div>
 
-                            <div className="flex justify-between items-center max-md:w-max max-md:space-x-4 w-3/4">
-                                <div className="flex space-y-2 items-start justify-center group">
-                                    <p className="flex items-center justify-center group-hover:text-[#FBBC05]">
-                                        <StarShineIcon
-                                            size={20}
-                                            className="mr-1 group-hover:fill-[#FBBC05] group-hover:scale-125 text-current dark:stroke-[#FBBC05] fill-none"
-                                        />
-                                        {post.stars.length} star
-                                        {post.stars.length > 1 ? "s" : ""}
-                                    </p>
-                                </div>
-
-                                <div className="flex space-y-2 items-start justify-center group select-none">
-                                    <p className="flex items-center justify-center group-hover:text-[#D2DE32]">
-                                        <RepostIcon
-                                            size={16}
-                                            fill="currentColor"
-                                            className="mr-1 group-hover:scale-105 group-hover:fill-[#D2DE32] text-current"
-                                        />
-                                        {post.reposts.length} repost
-                                        {post.reposts.length > 1 ? "s" : ""}
-                                    </p>
-                                </div>
-
-                                <div className="flex space-y-2 items-start justify-center group">
-                                    <p className="flex select-none items-center justify-center space-x-1">
-                                        <InsightIcon
-                                            size={12}
-                                            stroke="#D2DE32"
-                                            className="mr-1 group-hover:fill-[#D2DE32] text-current"
-                                        />
-                                        {post.visit_count} view
-                                        {post.visit_count > 1 ? "s" : ""}
-                                    </p>
-                                </div>
-                            </div>
+                            <InteractionStatistic {...post} />
                         </div>
                     </div>
                 </UI.CardBody>

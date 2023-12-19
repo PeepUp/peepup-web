@@ -1,3 +1,6 @@
+"use client";
+
+import { useGlobalContext } from "@/context/store/global";
 import * as UI from "@nextui-org/react";
 
 export type Props = {
@@ -6,20 +9,28 @@ export type Props = {
     avatar: string;
     username: string;
     isFollowed: boolean;
+    created_at: string;
 };
 
 export function AuthorAvatarPopover(props: Props) {
+    const { data } = useGlobalContext();
+
     const avatarPopoverCard = (
         <UI.Card shadow="none" className="max-w-[300px] border-none bg-transparent">
             <UI.CardHeader className="justify-between">
                 <div className="flex gap-3">
-                    <UI.Avatar size="md" src={props.avatar} color="default" isBordered />
+                    <UI.Avatar
+                        size="md"
+                        src={data && data.identity ? data.identity.avatar : ""}
+                        color="default"
+                        isBordered
+                    />
                     <div className="flex flex-col items-start justify-center">
                         <h4 className="text-small font-semibold leading-none text-current">
-                            {props.name}
+                            {data && data.identity ? data.identity.fullName : ""}
                         </h4>
                         <h5 className="text-small tracking-tight text-default-500">
-                            @{props.username}
+                            @{data && data.identity ? data.identity.username : ""}
                         </h5>
                     </div>
                 </div>
@@ -57,19 +68,14 @@ export function AuthorAvatarPopover(props: Props) {
         <UI.Popover triggerScaleOnOpen={false}>
             <UI.PopoverTrigger>
                 <UI.User
-                    name="Milad Alizadeh"
-                    description={new Date()
-                        .toLocaleString("en-US", {
-                            month: "long",
-                            year: "numeric",
-                            day: "numeric",
-                        })
-                        .toString()}
+                    name={data && data.identity ? data.identity.fullName : ""}
+                    description={props.created_at}
                     avatarProps={{
-                        src: props.avatar
-                            ? props.avatar
-                            : "http://localhost:3000/assets/images/milad.jpg",
-                        alt: "Milad Alizadeh",
+                        src:
+                            data && data.identity
+                                ? data.identity.avatar
+                                : "http://localhost:3000/assets/images/milad.jpg",
+                        alt: "avatar",
                         color: "primary",
                         className: "w-8 h-8 text-xs",
                     }}

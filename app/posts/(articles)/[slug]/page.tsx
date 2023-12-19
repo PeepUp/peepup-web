@@ -11,6 +11,7 @@ import { getTokenSession, setTokenSession } from "@/lib/session/token";
 import { CategoryChip } from "@/components/article/category/category-chip";
 import { InsightIcon, RepostIcon, StarShineIcon } from "@/components/icons";
 import { ImageCoverModal } from "@/components/article/image/image-modal";
+import { InteractionStatistic } from "@/components/article/interaction";
 
 export type Props = { params: { slug: string } };
 
@@ -30,7 +31,7 @@ export default function Page({ params }: Props) {
     const { data, error } = useFetch<string>({
         url,
         config: {
-            cache: "force-cache",
+            cache: "no-store",
             method: "GET",
         },
     });
@@ -162,49 +163,14 @@ export default function Page({ params }: Props) {
 
                 <UI.Spacer y={5} />
 
-                <div className="flex justify-center items-center max-md:w-10/12 w-2/5 space-x-6 max-md:space-x-2">
-                    <div className="flex space-y-2 items-center justify-center group">
-                        <UI.Button size="sm" radius="md" className="bg-transparent">
-                            <p className="flex select-none items-center justify-center">
-                                <StarShineIcon
-                                    size={20}
-                                    stroke="#FBBC05"
-                                    className="mr-1 group-hover:fill-[#FBBC05] group-hover:scale-125 text-current"
-                                />
-                                {metadata && metadata.stars.length} star
-                                {metadata && metadata.stars.length > 1 ? "s" : ""}
-                            </p>
-                        </UI.Button>
-                    </div>
-
-                    <div className="flex space-y-2 items-start justify-center group select-none">
-                        <UI.Button size="sm" radius="md" className="bg-transparent">
-                            <p className="flex items-center justify-center select-none">
-                                <RepostIcon
-                                    size={14}
-                                    fill="currentColor"
-                                    className="mr-1 group-hover:fill-[#48cae4] text-current"
-                                />
-                                {metadata && metadata.reposts.length} repost
-                                {metadata && metadata.reposts.length > 1 ? "s" : ""}
-                            </p>
-                        </UI.Button>
-                    </div>
-
-                    <div className="flex space-y-2 items-start justify-center group">
-                        <UI.Button size="sm" radius="md" className="bg-transparent">
-                            <p className="flex select-none items-center justify-center">
-                                <InsightIcon
-                                    size={12}
-                                    stroke="#D2DE32"
-                                    className="mr-1 group-hover:fill-[#D2DE32]"
-                                />
-                                {metadata && metadata.visit_count} view
-                                {metadata && metadata.visit_count > 1 ? "s" : ""}
-                            </p>
-                        </UI.Button>
-                    </div>
-                </div>
+                <InteractionStatistic
+                    {...{
+                        id: metadata?.id ?? "",
+                        stars: metadata?.stars ?? [],
+                        reposts: metadata?.reposts ?? [],
+                        visit_count: metadata?.visit_count ?? 0,
+                    }}
+                />
             </header>
 
             <UI.Spacer y={20} />

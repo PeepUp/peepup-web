@@ -14,6 +14,7 @@ export function FrequentlyAskingQuestion() {
                 "justify-center items-center",
             ])}
         >
+            <UI.Spacer y={20} />
             <UI.Accordion>
                 {siteConfig.faqItems.map((faq, i) => (
                     <UI.AccordionItem
@@ -25,7 +26,7 @@ export function FrequentlyAskingQuestion() {
                     </UI.AccordionItem>
                 ))}
             </UI.Accordion>
-            <UI.Spacer y={20} />
+            <UI.Spacer y={44} />
         </div>
     );
 }

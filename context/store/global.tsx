@@ -4,6 +4,7 @@ import * as React from "react";
 
 export type GlobalDataStore = {
     identity: {
+        id?: string;
         username: string;
         email: string;
         avatar: string;
