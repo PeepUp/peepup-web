@@ -24,28 +24,35 @@ export function useAuth() {
         setLoading(true);
         const response = await getMe(access);
 
-        if (response.ok) {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            const { data: json } = await response.json();
+        if (!response.ok) {
+            if (response.status === 401) {
+                setData({} as GlobalDataStore);
+                clearTokenSession(["_access", "_refresh"]);
+            }
 
-            setData({
-                ...data,
-                identity: {
-                    id: json.id,
-                    username: json.username,
-                    email: json.email,
-                    avatar: json.avatar,
-                    firstName: json.firstName,
-                    lastName: json.lastName,
-                    fullName: json.firstName + " " + json.lastName,
-                    roles: json.roles,
-                    state: json.state,
-                },
-                isAuthenticated: true,
-            });
-            setLoading(false);
             return;
         }
+
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        const { data: json } = await response.json();
+
+        setData({
+            ...data,
+            identity: {
+                id: json.id,
+                username: json.username,
+                email: json.email,
+                avatar: json.avatar,
+                firstName: json.firstName,
+                lastName: json.lastName,
+                fullName: json.firstName + " " + json.lastName,
+                roles: json.roles,
+                state: json.state,
+            },
+            isAuthenticated: true,
+        });
+        setLoading(false);
+        return;
 
         setLoading(false);
     }

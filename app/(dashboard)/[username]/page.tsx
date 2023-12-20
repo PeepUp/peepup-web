@@ -5,7 +5,7 @@ import * as UI from "@nextui-org/react";
 
 import PreviewListPost from "@/components/article/list-post";
 
-import { cn } from "@/lib/utils";
+import { cn, getGreeting } from "@/lib/utils";
 import { useGlobalContext } from "@/context/store/global";
 import { Editor } from "@/components/article/editor";
 import { LineDoodleIcon, PlusSquareIcon, VerifiedIcon } from "@/components/icons";
@@ -80,7 +80,7 @@ export default function page() {
             ])}
         >
             <div>
-                <p className="max-sm:text-xs">Good evening,</p>
+                <p className="max-sm:text-xs">{getGreeting()},</p>
                 <div className="absolute z-0 -translate-y-5 translate-x-14">
                     <LineDoodleIcon
                         size={42}

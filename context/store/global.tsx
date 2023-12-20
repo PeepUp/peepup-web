@@ -2,23 +2,17 @@
 
 import * as React from "react";
 
+import type { Identity } from "@/types/identities";
+import { AuthToken } from "@/types/token";
+
 export type GlobalDataStore = {
-    identity: {
-        id?: string;
-        username: string;
-        email: string;
-        avatar: string;
-        firstName: string;
-        lastName: string;
-        fullName: string;
-        roles: string;
-        state: string;
-    };
+    identity: Identity;
     uid: string;
     accessToken: string;
     refreshToken: string;
     isAuthorized: boolean;
     isAuthenticated: boolean;
+    authToken: AuthToken;
 };
 
 export interface GlobalDataContextProps {

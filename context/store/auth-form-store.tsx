@@ -2,17 +2,19 @@
 
 import * as React from "react";
 
-import type { MethodOption } from "@/types/identities";
+import type { Identity, MethodOption } from "@/types/identities";
+import { CSRFToken } from "@/types/token";
 
-type DataAuthForm = {
-    email: string;
-    method: MethodOption;
-    signUpCompleted: boolean;
-    verifyCodeRetrieved: boolean;
-    verifyCodeApproved: boolean;
-    inputVerifyCode: string;
-    csrf: string;
-};
+type DataAuthForm = Readonly<
+    {
+        csrf: CSRFToken;
+        method: MethodOption;
+        inputVerifyCode: string;
+        signUpCompleted: boolean;
+        verifyCodeApproved: boolean;
+        verifyCodeRetrieved: boolean;
+    } & Pick<Identity, "email">
+>;
 
 interface AuthFormContextProps {
     data: DataAuthForm;

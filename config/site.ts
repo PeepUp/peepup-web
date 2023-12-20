@@ -21,28 +21,20 @@ export const siteConfig = {
             href: "/profile",
         },
         {
-            label: "Dashboard",
-            href: "/dashboard",
-        },
-        {
-            label: "Projects",
-            href: "/projects",
-        },
-        {
-            label: "Team",
-            href: "/team",
-        },
-        {
-            label: "Calendar",
-            href: "/calendar",
-        },
-        {
             label: "Settings",
             href: "/settings",
         },
         {
-            label: "Help & Feedback",
-            href: "/help-feedback",
+            label: "Dashboard",
+            href: "/dashboard",
+        },
+        {
+            label: "About Us",
+            href: "/about-us",
+        },
+        {
+            label: "FAQ",
+            href: "/faq",
         },
         {
             label: "Logout",

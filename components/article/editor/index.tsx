@@ -17,6 +17,7 @@ import BulletList from "@tiptap/extension-bullet-list";
 import OrderedList from "@tiptap/extension-ordered-list";
 import HorizontalRule from "@tiptap/extension-horizontal-rule";
 import Blockquote from "@tiptap/extension-blockquote";
+
 import { EditorMetadataPreview } from "./metadata";
 import { SelectCategories } from "./select-categories";
 import { ImageUploader } from "../image/uploader";

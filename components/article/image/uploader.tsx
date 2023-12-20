@@ -84,12 +84,6 @@ export function ImageUploader() {
                     <div className="space-y-4 select-none">
                         {!loading ? (
                             <>
-                                <FilledUploadIcon
-                                    size={24}
-                                    className="w-16 h-16 "
-                                    stroke="none"
-                                    fill="currentColor"
-                                />
                                 <input
                                     hidden
                                     type="file"

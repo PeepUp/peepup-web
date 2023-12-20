@@ -9,6 +9,33 @@ import { URL_ENDPOINT_ARTICLES } from "@/lib/constant";
 
 import { InsightIcon, RepostIcon, StarShineIcon } from "@/components/icons";
 
+type Props = {
+    stars: Star[];
+    reposts: Repost[];
+    id: string;
+    visit_count: number;
+};
+
+export function InteractionStatistic({ id, stars, reposts, visit_count }: Props) {
+    const { data } = useGlobalContext();
+
+    return (
+        <div className="flex justify-between items-center max-md:w-max max-md:space-x-4 w-3/4">
+            <LikeButon
+                stars={stars}
+                uid={data && data.identity ? data.identity.id : ""}
+                articleId={id}
+            />
+            <RepostButon
+                reposts={reposts}
+                uid={data && data.identity ? data.identity.id : ""}
+                articleId={id}
+            />
+            <VisitButon visit_count={visit_count} />
+        </div>
+    );
+}
+
 export function LikeButon({
     stars,
     uid,
@@ -144,7 +171,7 @@ export function RepostButon({
 export function VisitButon({ visit_count }: { visit_count: number }) {
     return (
         <div className="flex space-y-2 items-start justify-center group">
-            <p className="flex select-none items-center justify-center space-x-1 select-none cursor-pointer">
+            <p className="flex items-center justify-center space-x-1 select-none cursor-pointer">
                 <InsightIcon
                     size={12}
                     stroke="#D2DE32"
@@ -153,33 +180,6 @@ export function VisitButon({ visit_count }: { visit_count: number }) {
                 {visit_count} view
                 {visit_count > 1 ? "s" : ""}
             </p>
-        </div>
-    );
-}
-
-type Props = {
-    stars: Star[];
-    reposts: Repost[];
-    id: string;
-    visit_count: number;
-};
-
-export function InteractionStatistic({ id, stars, reposts, visit_count }: Props) {
-    const { data } = useGlobalContext();
-
-    return (
-        <div className="flex justify-between items-center max-md:w-max max-md:space-x-4 w-3/4">
-            <LikeButon
-                stars={stars}
-                uid={data && data.identity ? data.identity.id : ""}
-                articleId={id}
-            />
-            <RepostButon
-                reposts={reposts}
-                uid={data && data.identity ? data.identity.id : ""}
-                articleId={id}
-            />
-            <VisitButon visit_count={visit_count} />
         </div>
     );
 }
