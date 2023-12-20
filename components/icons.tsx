@@ -1,6 +1,33 @@
 import * as React from "react";
 import { IconSvgProps } from "@/types";
 
+export const LockIcon: React.FC<IconSvgProps> = ({
+    size = 24,
+    width,
+    height,
+    ...props
+}) => (
+    <svg
+        aria-hidden="true"
+        focusable="false"
+        height={size || height}
+        role="presentation"
+        viewBox="0 0 26 30"
+        fill="none"
+        strokeWidth={1}
+        width={size || width}
+        {...props}
+    >
+        <path
+            d="M13 18.8889V22M5.5 11.9337C6.20713 11.8889 7.07889 11.8889 8.2 11.8889H17.8C18.9211 11.8889 19.7929 11.8889 20.5 11.9337M5.5 11.9337C4.61752 11.9895 3.99144 12.1152 3.45705 12.3976C2.61031 12.8449 1.9219 13.5588 1.49047 14.4369C1 15.4352 1 16.7419 1 19.3556V21.5333C1 24.147 1 25.4536 1.49047 26.452C1.9219 27.3301 2.61031 28.044 3.45705 28.4913C4.41964 29 5.67976 29 8.2 29H17.8C20.3203 29 21.5803 29 22.543 28.4913C23.3897 28.044 24.0781 27.3301 24.5095 26.452C25 25.4536 25 24.147 25 21.5333V19.3556C25 16.7419 25 15.4352 24.5095 14.4369C24.0781 13.5588 23.3897 12.8449 22.543 12.3976C22.0085 12.1152 21.3824 11.9895 20.5 11.9337M5.5 11.9337V8.77778C5.5 4.48224 8.85787 1 13 1C17.1421 1 20.5 4.48224 20.5 8.77778V11.9337"
+            stroke="#C0C0C0"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        />
+    </svg>
+);
+
 export const FilledUploadIcon: React.FC<IconSvgProps> = ({
     size = 24,
     width,

@@ -41,6 +41,28 @@ export const siteConfig = {
             href: "/logout",
         },
     ],
+    navItemsProfile: [
+        {
+            key: "Home",
+            label: "Home",
+            href: "/",
+        },
+        {
+            key: "Profile",
+            label: "Profile",
+            href: "/me",
+        },
+        {
+            key: "About",
+            label: "About",
+            href: "/about",
+        },
+        {
+            key: "FAQ",
+            label: "FAQ",
+            href: "/faq",
+        },
+    ],
     faqItems: [
         {
             title: "How do I start a blog using this app?",

@@ -1,7 +1,7 @@
 // MyInput.tsx
 import { extendVariants, Input } from "@nextui-org/react";
 
-export const CustomeInput = extendVariants(Input, {
+export const MyInput = extendVariants(Input, {
     variants: {
         color: {
             darker: {
