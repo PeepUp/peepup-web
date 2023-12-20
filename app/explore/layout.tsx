@@ -123,7 +123,7 @@ type SideBarListData = {
 const sideBarList: SideBarListData[] = [
     {
         name: "Home",
-        icons: <Icons.HomeIcon size={24} />,
+        icons: <Icons.HomeIcon size={24} fill="none" />,
         href: "/",
     },
     {

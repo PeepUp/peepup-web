@@ -64,10 +64,6 @@ export async function submitLocalSignInForm(
         (key) => fields.traits[key as keyof SignInDataTraits] !== undefined
     ) as keyof SignInDataTraits;
 
-    console.log({
-        ...fields,
-    });
-
     const response = await fetch(new URL(join(API_IDENTITY_ENDPOINT, "local", "login")), {
         method: "post",
         headers: {
@@ -79,7 +75,7 @@ export async function submitLocalSignInForm(
         body: JSON.stringify({
             traits: fields.traits satisfies SignInDataTraits,
             password: fields.password,
-            method: fields.method ?? "password",
+            method: fields.method ? fields.method : "password",
             password_identifier: typeIdentifier,
         } satisfies SignInData),
     });

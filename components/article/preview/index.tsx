@@ -6,7 +6,7 @@ import Link from "next/link";
 import { capitalizeFirstLetter, cn } from "@/lib/utils";
 import { PreviewArticleMeta } from "@/types/article";
 import { AuthorAvatarPopover } from "../author/AuthorAvatarPopover";
-import { InsightIcon, RepostIcon, StarShineIcon, TimerIcon } from "@/components/icons";
+import { TimerIcon } from "@/components/icons";
 import { CategoryChip } from "../category/category-chip";
 import { ImageCoverModal } from "../image/image-modal";
 import { InteractionStatistic } from "../interaction";
@@ -78,7 +78,9 @@ export function PreviewArticle({ post }: Props) {
                             </h2>
 
                             <p className="text-md font-light">
-                                {capitalizeFirstLetter(post.description)}
+                                {capitalizeFirstLetter(
+                                    post.description.slice(0, 100).concat("...")
+                                )}
                             </p>
                         </div>
                         <div className="flex justify-between items-center w-full">

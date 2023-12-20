@@ -5,18 +5,17 @@ import * as React from "react";
 
 import Link from "next/link";
 
-import { cn, capitalizeFirstLetter } from "@/lib/utils";
-import { InsightIcon, RepostIcon, StarShineIcon, TimerIcon } from "../icons";
-import { useGlobalContext } from "@/context/store/global";
-import { URL_ENDPOINT_ARTICLES } from "@/lib/constant";
-import { CategoryChip } from "./category/category-chip";
-
 import { PreviewArticle } from "./preview";
+import { TimerIcon } from "@/components/icons";
+import { InteractionStatistic } from "./interaction";
 import { ImageCoverModal } from "./image/image-modal";
+import { URL_ENDPOINT_ARTICLES } from "@/lib/constant";
+import { cn, capitalizeFirstLetter } from "@/lib/utils";
+import { CategoryChip } from "./category/category-chip";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { useGlobalContext } from "@/context/store/global";
 
 import type { PreviewArticleMeta } from "@/types/article";
-import { InteractionStatistic } from "./interaction";
 
 export default function PreviewListPost() {
     const ref = React.useRef<any>();
@@ -188,7 +187,9 @@ export default function PreviewListPost() {
                                 </UI.Link>
 
                                 <h3 className="text-md font-normal">
-                                    {capitalizeFirstLetter(post.description)}
+                                    {capitalizeFirstLetter(
+                                        post.description.slice(0, 120).concat("...")
+                                    )}
                                 </h3>
                             </div>
                             <div className="flex justify-between items-center w-full pt-2">

@@ -1,21 +1,20 @@
 "use client";
 
-import NextLink from "next/link";
 import React from "react";
+import NextLink from "next/link";
 
 import * as UI from "@nextui-org/react";
 
-import { useState } from "react";
+import { toast } from "sonner";
 import { siteConfig } from "@/config/site";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/auth/useAuth";
+import { SearchInput } from "./input/search/search";
 import { getTokenSession } from "@/lib/session/token";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { useGlobalContext } from "@/context/store/global";
 import { HomeIcon, LogoutIcon, MarkdownIcon, SettingIcon } from "@/components/icons";
-import { toast } from "sonner";
-import { SearchInput } from "./input/search/search";
 
 export const Navbar = () => {
     const { data } = useGlobalContext();
@@ -193,7 +192,11 @@ export const Navbar = () => {
                                           ? "danger"
                                           : "foreground"
                                 }
-                                href="#"
+                                href={
+                                    index === 0 && data && data.identity
+                                        ? `/${data.identity.username}`
+                                        : item.href
+                                }
                                 size="lg"
                             >
                                 {item.label}

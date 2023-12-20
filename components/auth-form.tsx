@@ -36,8 +36,8 @@ export function AuthForm(props: AuthFormProps) {
         try {
             const response = await lib.getCSRFToken();
 
-            if (!response) {
-                throw new Error("Failed to get CSRF Token");
+            if (!response.ok) {
+                throw new Error("Failed while request the CSRF Token");
             }
 
             const { data: csrfData } = await response.json();
@@ -203,7 +203,7 @@ export function AuthForm(props: AuthFormProps) {
                         [inputForm.traitsType ?? "email"]: inputForm.traitsValue,
                     },
                     password: inputForm.password,
-                    method: !props.method ? data.method : props.method,
+                    method: !props.method ? "password" : props.method,
                     csrf: data.csrf,
                 });
 

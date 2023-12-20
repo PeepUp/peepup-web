@@ -389,14 +389,14 @@ export const ProfileUserIcon: React.FC<IconSvgProps> = ({
     >
         <path
             d="M16.2135 14.4933C16.0801 14.48 15.9201 14.48 15.7735 14.4933C12.6001 14.3866 10.0801 11.7866 10.0801 8.58663C10.0801 5.31996 12.7201 2.66663 16.0001 2.66663C19.2668 2.66663 21.9201 5.31996 21.9201 8.58663C21.9068 11.7866 19.3868 14.3866 16.2135 14.4933Z"
-            stroke="#C0C0C0"
+            stroke="currentColor"
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
         />
         <path
             d="M9.54646 19.4134C6.3198 21.5734 6.3198 25.0934 9.54646 27.24C13.2131 29.6934 19.2265 29.6934 22.8932 27.24C26.1198 25.08 26.1198 21.56 22.8932 19.4134C19.2398 16.9734 13.2265 16.9734 9.54646 19.4134Z"
-            stroke="#C0C0C0"
+            stroke="currentColor"
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -421,7 +421,7 @@ export const HomeIcon: React.FC<IconSvgProps> = ({
     >
         <path
             d="M7.70361 14.7343C7.70361 14.0269 7.98456 13.3487 8.48467 12.8486L15.0571 6.27615C15.5778 5.75544 16.4221 5.75544 16.9427 6.27615L23.5151 12.8486C24.0153 13.3487 24.2962 14.0269 24.2962 14.7341V24C24.2962 25.4728 23.1023 26.6667 21.6295 26.6667H15.9999H10.3703C8.89752 26.6667 7.70361 25.4728 7.70361 24V14.7343Z"
-            stroke="#C0C0C0"
+            stroke="currentColor"
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
