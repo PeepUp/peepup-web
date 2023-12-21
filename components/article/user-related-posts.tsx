@@ -116,13 +116,10 @@ export default function UserRelatedPosts({ author_id }: { author_id: string }) {
       ])}
     >
       {response ? (
-        response.pages.map(({ data }: { data: Article[] }, i) => {
-          if (i === 0) {
-            return <TrandingPostCard post={data[0] as Article} key={i} />;
-          }
+        response.pages.map(({ data }: { data: Article[] }) => {
 
           return data.map((post: Article, i: number) => {
-            return i > 0 && <PreviewArticle article={post} key={i} />;
+            return <PreviewArticle article={post} key={i} />;
           });
         })
       ) : (

@@ -1,33 +1,23 @@
 import React from "react";
-import { ListBoxWrapper } from "./list-box-wrapper";
-import {
-  Listbox,
-  ListboxItem,
-  Chip,
-  ScrollShadow,
-  Input,
-  Spacer,
-} from "@nextui-org/react";
-import { join } from "path";
-import { URL_ENDPOINT_ARTICLES } from "@/lib/constant";
 
-import type { Category } from "@/types/article";
+import { Chip, Spacer } from "@nextui-org/react";
+
 import { cn } from "@/lib/utils";
 
-export function ListCategory() {
-  const [categories, setCategories] = React.useState<Category[]>([
-    {
-      id: 1,
-      label: "Category 1",
-    },
-  ] as Category[]);
+import type { Article, Category } from "@/types/article";
+import { useEditorContext } from "@/context/store/editor-store";
 
+type NewArticleData = Pick<Article, "title" | "content" | "categories">;
+
+export function ListCategory() {
+  const [categories, setCategories] = React.useState<Category[]>([] as Category[]);
   const [newCategoryLabel, setNewCategoryLabel] = React.useState("");
+  const { setData, data } = useEditorContext();
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>): void {
     if (event.key === "Enter" && newCategoryLabel.trim() !== "") {
       addCategory(newCategoryLabel.trim());
-      setNewCategoryLabel(""); // Clear the input field after adding the category
+      setNewCategoryLabel("");
     }
   }
 
@@ -38,6 +28,13 @@ export function ListCategory() {
     };
 
     setCategories([...categories, newCategory]);
+    setData({
+        ...data,
+        newArticle: {
+          ...data.newArticle,
+          categories: data.newArticle.categories ? [...data.newArticle.categories, newCategory] : [newCategory]
+        }
+    });
   }
 
   function deleteCategory(id: number): void {
@@ -45,6 +42,13 @@ export function ListCategory() {
       (category) => category.id !== id
     );
     setCategories(updatedCategories);
+    setData({
+        ...data,
+        newArticle: {
+          ...data.newArticle,
+          categories: data.newArticle.categories ? data.newArticle.categories.filter((category) => category.id !== id) : []
+        }
+    });
   }
 
   return (
@@ -70,8 +74,9 @@ export function ListCategory() {
           value={newCategoryLabel}
           className={cn([
             "h-8 w-2/6 rounded-md bg-transparent px-4 py-2 font-medium text-foreground outline-none",
-            "hover:ring-2 hover:ring-secondary hover:ring-offset-2 hover:ring-offset-background",
-            "focus:ring-2 focus:ring-secondary focus:ring-offset-2 focus:ring-offset-background",
+            "hover:ring-1 hover:ring-secondary hover:ring-offset-1 hover:ring-offset-background",
+            "focus:ring-1 focus:ring-secondary focus:ring-offset-1 focus:ring-offset-background",
+            "placeholder-foreground placeholder-opacity-50"
           ])}
           placeholder="input category..."
           onChange={(e) => setNewCategoryLabel(e.target.value)}

@@ -3,6 +3,7 @@
 import * as UI from "@nextui-org/react";
 import * as React from "react";
 
+import {join} from "path";
 import { cn } from "@/lib/utils";
 import { EditorMenu } from "./menu";
 import { useEditor, EditorContent } from "@tiptap/react";
@@ -19,14 +20,19 @@ import HorizontalRule from "@tiptap/extension-horizontal-rule";
 import Blockquote from "@tiptap/extension-blockquote";
 
 import { EditorMetadataPreview } from "./metadata";
-import { SelectCategories } from "./select-categories";
 import { ImageUploader } from "../image/uploader";
 import { ListCategory } from "../category/list-category";
+import { useEditorContext } from "@/context/store/editor-store";
+import { URL_ENDPOINT_ARTICLES } from "@/lib/constant";
+import { useGlobalContext } from "@/context/store/global";
+import { toast } from "sonner";
 
 export function Editor() {
   const [totalWords, setTotalWords] = React.useState(0);
   const [timeToRead, setTimeToRead] = React.useState(0);
   const [progress, setProgress] = React.useState(0);
+  const {data: globalData} = useGlobalContext();
+  const {setData, data} = useEditorContext();
   const [title, setTitle] = React.useState<string>("");
 
   const editor = useEditor({
@@ -80,49 +86,92 @@ export function Editor() {
       },
     },
     onUpdate: ({ editor }) => {
-      const content = editor.getText();
+      const content = editor.getHTML();
       const words = content.split(" ").length;
 
       if (content.length) {
         setTotalWords(words);
+        setData({
+          ...data,
+          newArticle: {
+            ...data.newArticle,
+            content
+          }
+        });
       }
-
-      console.log(words);
     },
     onFocus: ({ editor }) => {
-      const content = editor.getText();
+      const content = editor.getHTML();
       const words = content.split(" ").length;
 
       if (content.length) {
         setTotalWords(content.split(" ").length);
         const computedTime = Math.ceil(words / 200);
         setTimeToRead(computedTime);
+        setData({
+          ...data,
+          newArticle: {
+            ...data.newArticle,
+            timeToRead: computedTime.toString(),
+            content
+          }
+        });
       }
     },
   });
 
-  const saveButton = (
-    <div
-      className={cn([
-        "container",
-        "h-max",
-        "mx-auto",
-        "max-w-3xl",
-        "self-start",
-        "px-4",
-      ])}
-    >
-      <UI.Spacer y={10} />
-      <UI.Button
-        size="sm"
-        color="default"
-        className="w-1/6"
-        disabled={progress !== 100}
-      >
-        Save
-      </UI.Button>
-    </div>
-  );
+  
+
+  React.useEffect(() => {
+    console.log(data)
+  }, [data])
+
+
+  const url = new URL(join(URL_ENDPOINT_ARTICLES, "posts", globalData && globalData.identity ? globalData.identity.id : "", "articles"))
+
+  async function postNewArticle () {
+    console.log(url);
+    const response = await fetch(url, {
+      method: "POST",
+      body: JSON.stringify({
+        slug: data.newArticle.title.toLowerCase().split(" ").join("-"),
+        image_cover: data.newArticle.image_cover,
+        content: data.newArticle.content,
+        description: data.newArticle.content.slice(0, 120),
+        status: "published",
+
+      }),
+    })
+
+
+    if (!response.ok) {
+      return toast.error("Upps sorry, cannot save your article");
+    }
+
+    /* const url2 = new URL( join( URL_ENDPOINT_ARTICLES, "posts", "categories",))
+
+    for(let i = 0; i < data.newArticle.categories.length; i++) {
+      const response = await fetch(url2, {
+        method: "POST",
+        body: JSON.stringify({
+          label: data.newArticle.categories[i].label,
+        }),
+      })
+
+      if (!response.ok) {
+        toast.error("Upps sorry, cannot save your article");
+      }
+    } */
+  }
+
+  const handleSaveNewArticle = async () => {
+
+    if (!data.newArticle.title || !data.newArticle.content) {
+       return toast.error("Title cannot be empty");
+    }
+
+    await postNewArticle();
+  }
 
   return (
     <section className={containerWrapper}>
@@ -158,7 +207,13 @@ export function Editor() {
           aria-label="Title"
           className="h-14 w-full bg-transparent py-2 font-sfmono text-4xl font-bold text-current outline-none placeholder:text-current placeholder:opacity-80 placeholder:focus:opacity-100 max-md:text-xl"
           placeholder="Title..."
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={(e) => setData({
+            ...data,
+            newArticle: {
+              ...data.newArticle,
+              title: e.target.value
+            }
+          })}
         />
       </div>
 
@@ -176,7 +231,27 @@ export function Editor() {
         />
       </div>
 
-      {saveButton}
+    <div
+      className={cn([
+        "container",
+        "h-max",
+        "mx-auto",
+        "max-w-3xl",
+        "self-start",
+        "px-4",
+      ])}
+    >
+      <UI.Spacer y={10} />
+      <UI.Button
+        type="button"
+        size="sm"
+        color="default"
+        className="w-1/6"
+        onPress={handleSaveNewArticle}
+      >
+        Save
+      </UI.Button>
+    </div>
     </section>
   );
 }

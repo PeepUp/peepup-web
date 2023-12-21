@@ -31,7 +31,7 @@ export default function page() {
       >
         {data && data.isAuthenticated ? (
           <UI.Tab
-            key="new_posts"
+            key="editor"
             aria-label="create new post"
             className="w-full"
             title={

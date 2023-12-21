@@ -50,14 +50,14 @@ export function TrandingPostCard({ post }: { post: Article }) {
         <div className="flex flex-col items-stretch justify-center">
           <div className="col-span-6 flex flex-col items-start justify-start space-y-2 md:col-span-8">
             <UI.Chip
-              content="Tranding"
+              content="Trending"
               color="secondary"
               variant="flat"
               size="sm"
               title="Tranding"
               className="font-bold"
             >
-              Tranding
+              Trending
             </UI.Chip>
             <div className="space-y-3">
               <UI.Link

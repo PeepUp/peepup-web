@@ -83,7 +83,7 @@ export function EditorMetadataPreview({ metadata }: Props) {
 
             <UI.Spacer y={5} />
 
-            <div className="w-max">
+      {/* <div className="w-max">
                 <UI.Tooltip
                     size="sm"
                     showArrow
@@ -108,8 +108,8 @@ export function EditorMetadataPreview({ metadata }: Props) {
                     size="sm"
                 />
             </div>
-
             <UI.Spacer y={5} />
+*/}
         </div>
     );
 }
