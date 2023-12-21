@@ -65,7 +65,9 @@ export const Navbar = () => {
           textValue="profile"
         >
           <p className="font-semibold">Signed in as</p>
-          <p className="font-semibold">{data.identity.email}</p>
+          <UI.Link color="secondary" href={`/${data?.identity?.username}`}>
+            <h5 className="font-semibold">{data.identity.email}</h5>
+          </UI.Link>
         </UI.DropdownItem>
         <UI.DropdownItem
           key="settings"
@@ -74,9 +76,13 @@ export const Navbar = () => {
         >
           Settings
         </UI.DropdownItem>
-        <UI.DropdownItem key="analytics" textValue="Analytics">
-          Analytics
+
+        <UI.DropdownItem key="dashboard" textValue="Dashboard">
+          <UI.Link color="foreground" href={`/${data?.identity?.username}`}>
+            <p>Dashboard</p>
+          </UI.Link>
         </UI.DropdownItem>
+
         <UI.DropdownItem key="help_and_feedback" textValue="Help & Feedback">
           Help & Feedback
         </UI.DropdownItem>

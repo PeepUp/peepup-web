@@ -4,13 +4,15 @@ import { Chip, Spacer } from "@nextui-org/react";
 
 import { cn } from "@/lib/utils";
 
-import type { Article, Category } from "@/types/article";
 import { useEditorContext } from "@/context/store/editor-store";
 
-type NewArticleData = Pick<Article, "title" | "content" | "categories">;
+import type { Category } from "@/types/article";
+import { toast } from "sonner";
 
 export function ListCategory() {
-  const [categories, setCategories] = React.useState<Category[]>([] as Category[]);
+  const [categories, setCategories] = React.useState<Category[]>(
+    [] as Category[],
+  );
   const [newCategoryLabel, setNewCategoryLabel] = React.useState("");
   const { setData, data } = useEditorContext();
 
@@ -22,6 +24,19 @@ export function ListCategory() {
   }
 
   function addCategory(label: string): void {
+    const existingCategory = categories.find(
+      (category) => category.label === label,
+    );
+
+    if (existingCategory) {
+      toast.warning("Category already exist", {
+        description: "Upss, can't add the same category!",
+        position: "top-right",
+        important: true,
+      });
+      return;
+    }
+
     const newCategory = {
       id: categories.length + 1,
       label,
@@ -29,25 +44,29 @@ export function ListCategory() {
 
     setCategories([...categories, newCategory]);
     setData({
-        ...data,
-        newArticle: {
-          ...data.newArticle,
-          categories: data.newArticle.categories ? [...data.newArticle.categories, newCategory] : [newCategory]
-        }
+      ...data,
+      newArticle: {
+        ...data.newArticle,
+        categories: data.newArticle.categories
+          ? [...data.newArticle.categories, newCategory]
+          : [newCategory],
+      },
     });
   }
 
   function deleteCategory(id: number): void {
     const updatedCategories = categories.filter(
-      (category) => category.id !== id
+      (category) => category.id !== id,
     );
     setCategories(updatedCategories);
     setData({
-        ...data,
-        newArticle: {
-          ...data.newArticle,
-          categories: data.newArticle.categories ? data.newArticle.categories.filter((category) => category.id !== id) : []
-        }
+      ...data,
+      newArticle: {
+        ...data.newArticle,
+        categories: data.newArticle.categories
+          ? data.newArticle.categories.filter((category) => category.id !== id)
+          : [],
+      },
     });
   }
 
@@ -56,7 +75,7 @@ export function ListCategory() {
       <div>
         <h4>Select Category:</h4>
       </div>
-      <div className="rounded-lg p-4">
+      <div className="rounded-lg space-y-4">
         <div className="space-x-2">
           {categories && categories.length > 0
             ? categories.map((category, i) => (
@@ -67,8 +86,6 @@ export function ListCategory() {
             : null}
         </div>
 
-        <Spacer y={3} />
-
         <input
           type="text"
           value={newCategoryLabel}
@@ -76,7 +93,7 @@ export function ListCategory() {
             "h-8 w-2/6 rounded-md bg-transparent px-4 py-2 font-medium text-foreground outline-none",
             "hover:ring-1 hover:ring-secondary hover:ring-offset-1 hover:ring-offset-background",
             "focus:ring-1 focus:ring-secondary focus:ring-offset-1 focus:ring-offset-background",
-            "placeholder-foreground placeholder-opacity-50"
+            "placeholder-foreground placeholder-opacity-50",
           ])}
           placeholder="input category..."
           onChange={(e) => setNewCategoryLabel(e.target.value)}

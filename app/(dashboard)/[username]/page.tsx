@@ -4,19 +4,20 @@ import * as React from "react";
 import * as UI from "@nextui-org/react";
 import * as Icons from "@/components/icons";
 
-import PreviewListPost from "@/components/article/list-post";
+import UserRelatedPosts from "@/components/article/user-related-posts";
 
 import { cn, getGreeting } from "@/lib/utils";
 import { Editor } from "@/components/article/editor";
 import { useGlobalContext } from "@/context/store/global";
-import UserRelatedPosts from "@/components/article/user-related-posts";
 import { RepostedByUser } from "@/components/article/reposted-by-user";
 import { StaredByUser } from "@/components/article/stared-by-user";
+import { ModalAuth } from "@/components/modal-signin";
 
 export default function page() {
   const greeting = getGreeting();
   const { data } = useGlobalContext();
   const [activeTab, setActiveTab] = React.useState<React.Key>("post_articles");
+  const { isOpen, onOpen, onOpenChange } = UI.useDisclosure();
 
   const NavigationTabs = () => (
     <div className="flex w-full flex-col">
