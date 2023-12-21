@@ -6,81 +6,85 @@ import * as UI from "@nextui-org/react";
 import { PreviewArticle } from "@/components/article/preview";
 import { PreviewArticleMeta } from "@/types/article";
 import { cn } from "@/lib/utils";
+import { useSearchParams } from "next/navigation";
 
-type Props = {
-    params: {
-        q: string;
-    };
-};
+export default function Page() {
+  const searchParams = useSearchParams();
 
-export default function Page({ params }: Props) {
-    const url = `${URL_ENDPOINT_ARTICLES}/posts/articles/search?status=published&title=${params.q}`;
-    const [data, setData] = React.useState<PreviewArticleMeta[]>();
-    const [loading, setLoading] = React.useState<boolean>(false);
+  const q = searchParams.get("q");
+  const url = `${URL_ENDPOINT_ARTICLES}/posts/articles/search?status=published&title=${
+    q ? q.toLowerCase().trim() : ""
+  }`;
+  const [data, setData] = React.useState<PreviewArticleMeta[]>();
+  const [loading, setLoading] = React.useState<boolean>(false);
 
-    async function fetchData() {
-        setLoading(true);
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        const response = await fetch(url, {
-            method: "GET",
-        });
+  React.useEffect(() => {
+    console.log("params.q", q);
+  }, [q]);
 
-        if (response.ok) {
-            const { data } = await response.json();
-            setData(data as PreviewArticleMeta[]);
-            setLoading(false);
-            return;
-        }
+  async function fetchData() {
+    setLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    const response = await fetch(url, {
+      method: "GET",
+    });
 
-        setLoading(false);
-        return;
+    if (response.ok) {
+      const { data } = await response.json();
+      setData(data as PreviewArticleMeta[]);
+      setLoading(false);
+      return;
     }
 
-    React.useEffect(() => {
-        fetchData();
-    }, [params]);
+    setLoading(false);
+    return;
+  }
 
-    return (
-        <section
-            className={cn([
-                "container",
-                "flex",
-                "flex-col",
-                "justify-center",
-                "items-center",
-                "flex-shrink-0",
-                "w-full",
-                "h-max",
-                "my-2",
-                "space-y-3",
-            ])}
-        >
-            <UI.Spacer y={20} />
-            <div>
-                {data && data?.length > 0 ? (
-                    data.map((post: PreviewArticleMeta, i) => (
-                        <React.Fragment key={i}>
-                            <UI.Spacer y={2} />
-                            <PreviewArticle post={post} key={i} />
-                        </React.Fragment>
-                    ))
-                ) : loading && data && data.length === 0 ? (
-                    <>
-                        <UI.Spacer y={40} />
-                        <UI.Spinner
-                            size="md"
-                            label={`Searching for '${params.q}' ...`}
-                            color="secondary"
-                        />
-                    </>
-                ) : !loading && data && data.length === 0 ? (
-                    <>
-                        <UI.Spacer y={40} />
-                        <p>No records for '{params.q}'</p>
-                    </>
-                ) : null}
-            </div>
-            <UI.Spacer y={20} />
-        </section>
-    );
+  React.useEffect(() => {
+    fetchData();
+  }, [q]);
+
+  return (
+    <section
+      className={cn([
+        "container",
+        "flex",
+        "flex-col",
+        "justify-center",
+        "items-center",
+        "flex-shrink-0",
+        "w-full",
+        "h-max",
+        "my-2",
+        "space-y-3",
+      ])}
+    >
+      <UI.Spacer y={20} />
+      <div>
+        {data && data?.length > 0 ? (
+          data.map((post: PreviewArticleMeta, i) => (
+            <React.Fragment key={i}>
+              <UI.Spacer y={2} />
+              <PreviewArticle post={post} key={i} />
+            </React.Fragment>
+          ))
+        ) : loading && data && data.length === 0 ? (
+          <>
+            <UI.Spacer y={40} />
+            <UI.Spinner
+              size="md"
+              label={`Searching for '${q}' ...`}
+              color="secondary"
+            />
+          </>
+        ) : !loading && data && data.length === 0 ? (
+          <>
+            <UI.Spacer y={40} />
+            <p>No records for '{q}'</p>
+          </>
+        ) : null}
+      </div>
+      <UI.Spacer y={20} />
+    </section>
+  );
 }
