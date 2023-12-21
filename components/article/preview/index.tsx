@@ -26,7 +26,7 @@ export function PreviewArticle({ article }: Props) {
   return (
     <UI.Card
       key={article.id}
-      className="flex h-[274px] w-full max-w-2xl flex-row self-center self-center justify-self-center shadow-none transition-shadow duration-300 ease-in-out hover:shadow-xl max-md:h-max max-md:flex-col"
+      className="flex h-[274px] w-full max-w-2xl flex-row self-center justify-self-center shadow-none transition-shadow duration-300 ease-in-out hover:shadow-xl max-md:h-max max-md:flex-col"
     >
       <UI.Modal
         isOpen={isOpenModal}
@@ -41,7 +41,9 @@ export function PreviewArticle({ article }: Props) {
             "bg-gradient-to-t from-zinc-900 to-zinc-900/10 backdrop-opacity-20",
         }}
       >
-        <ImageCoverModal src={article.image_cover} />
+        {article && article.image_cover && (
+          <ImageCoverModal src={article.image_cover} />
+        )}
       </UI.Modal>
 
       <UI.Image
@@ -55,7 +57,11 @@ export function PreviewArticle({ article }: Props) {
         isBlurred
         draggable={false}
         onContextMenu={(e) => e.preventDefault()}
-        src={article.image_cover ?? "https://app.requestly.io/delay/8000"}
+        src={
+          article && article.image_cover
+            ? article.image_cover
+            : "https://app.requestly.io/delay/8000"
+        }
       />
 
       <UI.CardBody className="h-full min-h-[200px] w-full">
@@ -86,13 +92,17 @@ export function PreviewArticle({ article }: Props) {
                     "capitalize",
                   ])}
                 >
-                  {article.title.slice(0, 64).concat("...")}
+                  {article && article.title && article.title.length > 64
+                    ? article.title.slice(0, 64).concat("...")
+                    : article.title}
                 </UI.Link>
               </h2>
 
               <p className="text-md font-light">
                 {capitalizeFirstLetter(
-                  article.description.slice(0, 100).concat("...")
+                  article && article.description
+                    ? article.description.slice(0, 100).concat("...")
+                    : "",
                 )}
               </p>
             </div>

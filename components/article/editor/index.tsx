@@ -3,8 +3,8 @@
 import * as UI from "@nextui-org/react";
 import * as React from "react";
 
-import {join} from "path";
-import { cn } from "@/lib/utils";
+import { join } from "path";
+import { base64Encode, cn } from "@/lib/utils";
 import { EditorMenu } from "./menu";
 import { useEditor, EditorContent } from "@tiptap/react";
 
@@ -31,8 +31,8 @@ export function Editor() {
   const [totalWords, setTotalWords] = React.useState(0);
   const [timeToRead, setTimeToRead] = React.useState(0);
   const [progress, setProgress] = React.useState(0);
-  const {data: globalData} = useGlobalContext();
-  const {setData, data} = useEditorContext();
+  const { data: globalData } = useGlobalContext();
+  const { setData, data } = useEditorContext();
   const [title, setTitle] = React.useState<string>("");
 
   const editor = useEditor({
@@ -90,13 +90,16 @@ export function Editor() {
       const words = content.split(" ").length;
 
       if (content.length) {
+        const computedTime = Math.ceil(words / 200);
+        setTimeToRead(computedTime);
         setTotalWords(words);
         setData({
           ...data,
           newArticle: {
             ...data.newArticle,
-            content
-          }
+            timeToRead: computedTime.toString(),
+            content,
+          },
         });
       }
     },
@@ -113,40 +116,85 @@ export function Editor() {
           newArticle: {
             ...data.newArticle,
             timeToRead: computedTime.toString(),
-            content
-          }
+            content,
+          },
         });
       }
     },
   });
 
-  
-
   React.useEffect(() => {
-    console.log(data)
-  }, [data])
+    console.log(data);
+  }, [data]);
 
+  const url = new URL(
+    `http://127.0.0.1:8000/api/posts/${
+      globalData && globalData.identity ? globalData.identity.id : ""
+    }/articles`,
+  );
 
-  const url = new URL(join(URL_ENDPOINT_ARTICLES, "posts", globalData && globalData.identity ? globalData.identity.id : "", "articles"))
+  async function saveImageToServer(data: string, type: string) {
+    const url = new URL(join(URL_ENDPOINT_ARTICLES, "upload", "image"));
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json; charset=UTF-8",
+      },
+      body: JSON.stringify({ data, image_type: type }),
+    });
 
-  async function postNewArticle () {
-    console.log(url);
+    return response;
+  }
+
+  async function postNewArticle() {
+    const responseImage = await saveImageToServer(
+      data.newArticle.image_cover,
+      data.newArticle.image_type,
+    );
+
+    if (!responseImage.ok) {
+      if (responseImage.status === 413) {
+        return toast.error("Upps sorry, your image is too large");
+      }
+      return toast.error("Upps sorry, cannot save your image");
+    }
+
+    const { data: imageData } = await responseImage.json();
+
+    if (imageData) {
+      setData({
+        ...data,
+        newArticle: {
+          ...data.newArticle,
+          image_cover: imageData.url,
+        },
+      });
+    }
+
     const response = await fetch(url, {
       method: "POST",
       body: JSON.stringify({
+        title: data.newArticle.title,
         slug: data.newArticle.title.toLowerCase().split(" ").join("-"),
-        image_cover: data.newArticle.image_cover,
-        content: data.newArticle.content,
-        description: data.newArticle.content.slice(0, 120),
+        image_cover: imageData ? imageData.url : data.newArticle.image_cover,
+        content: base64Encode(data.newArticle.content),
+        reading_time: data.newArticle.timeToRead,
+        description: data.newArticle.description,
         status: "published",
-
+        author_id:
+          globalData && globalData.identity ? globalData.identity.id : "",
       }),
-    })
-
+      headers: {
+        "Content-Type": "application/json; charset=UTF-8",
+      },
+    });
 
     if (!response.ok) {
       return toast.error("Upps sorry, cannot save your article");
     }
+    toast.success("Your article has been saved", {
+      position: "top-right",
+    });
 
     /* const url2 = new URL( join( URL_ENDPOINT_ARTICLES, "posts", "categories",))
 
@@ -165,13 +213,12 @@ export function Editor() {
   }
 
   const handleSaveNewArticle = async () => {
-
     if (!data.newArticle.title || !data.newArticle.content) {
-       return toast.error("Title cannot be empty");
+      return toast.error("Title cannot be empty");
     }
 
     await postNewArticle();
-  }
+  };
 
   return (
     <section className={containerWrapper}>
@@ -207,13 +254,31 @@ export function Editor() {
           aria-label="Title"
           className="h-14 w-full bg-transparent py-2 font-sfmono text-4xl font-bold text-current outline-none placeholder:text-current placeholder:opacity-80 placeholder:focus:opacity-100 max-md:text-xl"
           placeholder="Title..."
-          onChange={(e) => setData({
-            ...data,
-            newArticle: {
-              ...data.newArticle,
-              title: e.target.value
-            }
-          })}
+          onChange={(e) =>
+            setData({
+              ...data,
+              newArticle: {
+                ...data.newArticle,
+                title: e.target.value,
+              },
+            })
+          }
+        />
+
+        <UI.Spacer y={2} />
+        <input
+          aria-label="Description"
+          className="h-14 w-full bg-transparent py-2 font-sfmono text-xl font-medium text-current outline-none placeholder:text-current placeholder:opacity-80 placeholder:focus:opacity-100 max-md:text-xl"
+          placeholder="Description..."
+          onChange={(e) =>
+            setData({
+              ...data,
+              newArticle: {
+                ...data.newArticle,
+                description: e.target.value,
+              },
+            })
+          }
         />
       </div>
 
@@ -231,27 +296,27 @@ export function Editor() {
         />
       </div>
 
-    <div
-      className={cn([
-        "container",
-        "h-max",
-        "mx-auto",
-        "max-w-3xl",
-        "self-start",
-        "px-4",
-      ])}
-    >
-      <UI.Spacer y={10} />
-      <UI.Button
-        type="button"
-        size="sm"
-        color="default"
-        className="w-1/6"
-        onPress={handleSaveNewArticle}
+      <div
+        className={cn([
+          "container",
+          "h-max",
+          "mx-auto",
+          "max-w-3xl",
+          "self-start",
+          "px-4",
+        ])}
       >
-        Save
-      </UI.Button>
-    </div>
+        <UI.Spacer y={10} />
+        <UI.Button
+          type="button"
+          size="sm"
+          color="default"
+          className="w-1/6"
+          onPress={handleSaveNewArticle}
+        >
+          Save
+        </UI.Button>
+      </div>
     </section>
   );
 }

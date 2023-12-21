@@ -6,7 +6,7 @@ import { join } from "path";
 import { URL_ENDPOINT_ARTICLES } from "@/lib/constant";
 import { useGlobalContext } from "@/context/store/global";
 
-import { ModalAuth } from "@/components/tabs-auth";
+import { ModalAuth } from "@/components/modal-signin";
 import { InsightIcon, RepostIcon, StarShineIcon } from "@/components/icons";
 
 import type { Repost, Star } from "@/types/article";
@@ -67,8 +67,8 @@ export function LikeButon({
           "articles",
           articleId ? articleId : "",
           "unstars",
-          uid ? uid : ""
-        )
+          uid ? uid : "",
+        ),
       );
 
       const res = await fetch(url.toString(), {
@@ -103,8 +103,8 @@ export function LikeButon({
           "articles",
           articleId ? articleId : "",
           "stars",
-          uid ? uid : ""
-        )
+          uid ? uid : "",
+        ),
       );
 
       const res = await fetch(url.toString(), {
@@ -176,8 +176,8 @@ export function RepostButon({
           "articles",
           articleId ? articleId : "",
           "unreposts",
-          uid ? uid : ""
-        )
+          uid ? uid : "",
+        ),
       );
 
       const res = await fetch(url.toString(), {
@@ -213,8 +213,8 @@ export function RepostButon({
           "articles",
           articleId ? articleId : "",
           "reposts",
-          uid ? uid : ""
-        )
+          uid ? uid : "",
+        ),
       );
 
       const res = await fetch(url.toString(), {
@@ -268,10 +268,16 @@ export function RepostButon({
   );
 }
 
-export function VisitButon({ visit_count }: { visit_count: number }) {
+export function VisitButon({
+  visit_count,
+  disabled,
+}: {
+  visit_count: number;
+  disabled?: boolean;
+}) {
   return (
     <div className="group flex items-start justify-center space-y-2">
-      <UI.Button size="sm" as="button" variant="light">
+      <UI.Button size="sm" as="button" variant="light" disabled={disabled}>
         <p className="flex cursor-pointer select-none items-center justify-center space-x-1">
           <InsightIcon
             size={12}

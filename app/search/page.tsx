@@ -4,7 +4,7 @@ import * as React from "react";
 import { URL_ENDPOINT_ARTICLES } from "@/lib/constant";
 import * as UI from "@nextui-org/react";
 import { PreviewArticle } from "@/components/article/preview";
-import { PreviewArticleMeta } from "@/types/article";
+import { Article } from "@/types/article";
 import { cn } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
 
@@ -15,7 +15,7 @@ export default function Page() {
   const url = `${URL_ENDPOINT_ARTICLES}/posts/articles/search?status=published&title=${
     q ? q.toLowerCase().trim() : ""
   }`;
-  const [data, setData] = React.useState<PreviewArticleMeta[]>();
+  const [data, setData] = React.useState<Article[]>();
   const [loading, setLoading] = React.useState<boolean>(false);
 
   React.useEffect(() => {
@@ -31,7 +31,7 @@ export default function Page() {
 
     if (response.ok) {
       const { data } = await response.json();
-      setData(data as PreviewArticleMeta[]);
+      setData(data as Article[]);
       setLoading(false);
       return;
     }
@@ -62,10 +62,10 @@ export default function Page() {
       <UI.Spacer y={20} />
       <div>
         {data && data?.length > 0 ? (
-          data.map((post: PreviewArticleMeta, i) => (
+          data.map((post: Article, i) => (
             <React.Fragment key={i}>
               <UI.Spacer y={2} />
-              <PreviewArticle post={post} key={i} />
+              <PreviewArticle article={post} key={i} />
             </React.Fragment>
           ))
         ) : loading && data && data.length === 0 ? (

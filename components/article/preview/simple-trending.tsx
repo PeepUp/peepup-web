@@ -9,10 +9,11 @@ import { URL_ENDPOINT_ARTICLES } from "@/lib/constant";
 import type { Article } from "@/types/article";
 import { join } from "path";
 import { cn } from "@/lib/utils";
+import { LikeButon, VisitButon } from "../interaction";
 
 export function SimplePopulars() {
   const url = new URL(
-    join(URL_ENDPOINT_ARTICLES, "posts", "articles", "popular")
+    join(URL_ENDPOINT_ARTICLES, "posts", "articles", "popular"),
   );
 
   const { data, error, loading } = useFetch<Article[]>({
@@ -42,7 +43,7 @@ export function SimplePopulars() {
                   index < 5 && (
                     <li
                       key={index}
-                      className="text-md mb-2 w-full rounded-md p-2 font-medium"
+                      className="flex flex-col items-start text-md mb-2 w-full rounded-md p-2 font-medium"
                     >
                       <UI.Link
                         href={`/posts/${post.slug}`}
@@ -59,8 +60,9 @@ export function SimplePopulars() {
                       >
                         {post.title}
                       </UI.Link>
+                      <VisitButon visit_count={post.visit_count} disabled />
                     </li>
-                  )
+                  ),
               )
             ) : (
               <Skeleton />

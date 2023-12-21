@@ -83,7 +83,9 @@ export function TrandingPostCard({ post }: { post: Article }) {
 
               <h3 className="text-md font-normal">
                 {capitalizeFirstLetter(
-                  post.description.slice(0, 120).concat("...")
+                  post && post.description
+                    ? post.description.slice(0, 120).concat("...")
+                    : "",
                 )}
               </h3>
             </div>
