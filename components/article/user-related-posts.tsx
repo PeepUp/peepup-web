@@ -9,10 +9,12 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 
 import { TrandingPostCard } from "./preview/TrandingPostCard";
 
-import type { Article } from "@/types/article";
 import { cn } from "@/lib/utils";
+import { useGlobalContext } from "@/context/store/global";
 
-export default function PreviewListPost() {
+import type { Article } from "@/types/article";
+
+export default function UserRelatedPosts({ author_id }: { author_id: string }) {
   const ref = React.useRef<any>();
 
   const fetchPostsPreview = async ({
@@ -20,7 +22,7 @@ export default function PreviewListPost() {
   }: {
     pageParam: number;
   }) => {
-    const url: string = `${URL_ENDPOINT_ARTICLES}/admin/posts/articles/preview?pageParam=${pageParam}&size=8`;
+    const url: string = `${URL_ENDPOINT_ARTICLES}/posts/${author_id}/articles`;
 
     const data = await fetch(url, {
       method: "GET",
@@ -60,6 +62,12 @@ export default function PreviewListPost() {
       return pages.length + 1;
     },
   });
+
+  React.useEffect(() => {
+    if (response) {
+      console.log(response);
+    }
+  }, [response]);
 
   const SkeletonFirstCard = () => (
     <UI.Card className="min-h-[500px] w-3/4 space-y-3" radius="lg">

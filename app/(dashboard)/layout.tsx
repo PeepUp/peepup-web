@@ -1,16 +1,13 @@
 import { BackwardButton } from "@/components/backward-button";
-import * as UI from "@nextui-org/react";
+import { NavTab } from "@/components/common/navtab";
 
 export default function Layout(props: { children: React.ReactNode }) {
-    return (
-        <>
-            <header>
-                <nav>
-                    <BackwardButton />
-                </nav>
-                <UI.Spacer y={6} />
-            </header>
-            <main>{props.children}</main>
-        </>
-    );
+  return (
+    <section>
+      <header>
+        <BackwardButton />
+      </header>
+      <section>{props.children}</section>
+    </section>
+  );
 }

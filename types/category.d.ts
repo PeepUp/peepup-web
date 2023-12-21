@@ -1,6 +1,6 @@
 export type Category = {
-    id: string;
-    label: string;
+  id: string;
+  label: string;
 };
 
 export type Categories = Category[];

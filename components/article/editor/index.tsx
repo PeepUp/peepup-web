@@ -21,187 +21,188 @@ import Blockquote from "@tiptap/extension-blockquote";
 import { EditorMetadataPreview } from "./metadata";
 import { SelectCategories } from "./select-categories";
 import { ImageUploader } from "../image/uploader";
+import { ListCategory } from "../category/list-category";
 
 export function Editor() {
-    const [totalWords, setTotalWords] = React.useState(0);
-    const [timeToRead, setTimeToRead] = React.useState(0);
-    const [progress, setProgress] = React.useState(0);
-    const [title, setTitle] = React.useState<string>("");
+  const [totalWords, setTotalWords] = React.useState(0);
+  const [timeToRead, setTimeToRead] = React.useState(0);
+  const [progress, setProgress] = React.useState(0);
+  const [title, setTitle] = React.useState<string>("");
 
-    const editor = useEditor({
-        extensions: [
-            StarterKit,
-            Underline.configure({}),
-            InlineCode.configure({
-                HTMLAttributes: {
-                    class: "px-[2px] py-1 bg-[#1c1c1c] rounded-md font-mono",
-                },
-            }),
-            Heading.configure({
-                levels: [1, 2, 3, 4],
-            }),
-            OrderedList.configure({
-                HTMLAttributes: {
-                    class: "list-decimal ml-5 font-semibold",
-                },
-            }),
-            BulletList.configure({
-                HTMLAttributes: {
-                    class: "list-disc ml-5 font-semibold",
-                },
-            }),
-            HorizontalRule.configure({
-                HTMLAttributes: {
-                    class: "border-top-2 my-2 leading-loose",
-                },
-            }),
-            TaskList.configure({
-                HTMLAttributes: {
-                    class: "ml-5 font-semibold",
-                },
-            }),
-            TaskItem.configure({
-                nested: true,
-            }),
-            Blockquote.configure({
-                HTMLAttributes: {
-                    class: "border-l-2 border-current pl-4 py-1 font-semibold my-2",
-                },
-            }),
-        ],
-        content: contentDefault,
-        autofocus: true,
-        editable: true,
-        injectCSS: true,
-        editorProps: {
-            attributes: {
-                class: editorAttributesClass,
-            },
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      Underline.configure({}),
+      InlineCode.configure({
+        HTMLAttributes: {
+          class: "px-[2px] py-1 bg-[#1c1c1c] rounded-md font-mono",
         },
-        onUpdate: ({ editor }) => {
-            const content = editor.getText();
-            const words = content.split(" ").length;
-
-            if (content.length) {
-                setTotalWords(words);
-            }
-
-            console.log(words);
+      }),
+      Heading.configure({
+        levels: [1, 2, 3, 4],
+      }),
+      OrderedList.configure({
+        HTMLAttributes: {
+          class: "list-decimal ml-5 font-semibold",
         },
-        onFocus: ({ editor }) => {
-            const content = editor.getText();
-            const words = content.split(" ").length;
-
-            if (content.length) {
-                setTotalWords(content.split(" ").length);
-                const computedTime = Math.ceil(words / 200);
-                setTimeToRead(computedTime);
-            }
+      }),
+      BulletList.configure({
+        HTMLAttributes: {
+          class: "list-disc ml-5 font-semibold",
         },
-    });
+      }),
+      HorizontalRule.configure({
+        HTMLAttributes: {
+          class: "border-top-2 my-2 leading-loose",
+        },
+      }),
+      TaskList.configure({
+        HTMLAttributes: {
+          class: "ml-5 font-semibold",
+        },
+      }),
+      TaskItem.configure({
+        nested: true,
+      }),
+      Blockquote.configure({
+        HTMLAttributes: {
+          class: "border-l-2 border-current pl-4 py-1 font-semibold my-2",
+        },
+      }),
+    ],
+    content: contentDefault,
+    autofocus: true,
+    editable: true,
+    injectCSS: true,
+    editorProps: {
+      attributes: {
+        class: editorAttributesClass,
+      },
+    },
+    onUpdate: ({ editor }) => {
+      const content = editor.getText();
+      const words = content.split(" ").length;
 
-    const saveButton = (
-        <div
-            className={cn([
-                "container",
-                "h-max",
-                "mx-auto",
-                "max-w-3xl",
-                "self-start",
-                "px-4",
-            ])}
-        >
-            <UI.Spacer y={10} />
-            <UI.Button
-                size="sm"
-                color="default"
-                className="w-1/6"
-                disabled={progress !== 100}
-            >
-                Save
-            </UI.Button>
-        </div>
-    );
+      if (content.length) {
+        setTotalWords(words);
+      }
 
-    return (
-        <section className={containerWrapper}>
-            <UI.Spacer y={10} />
+      console.log(words);
+    },
+    onFocus: ({ editor }) => {
+      const content = editor.getText();
+      const words = content.split(" ").length;
 
-            <EditorMetadataPreview
-                metadata={{
-                    progress,
-                    timeToRead,
-                    totalWords,
-                    title,
-                    categories: [],
-                }}
-            />
+      if (content.length) {
+        setTotalWords(content.split(" ").length);
+        const computedTime = Math.ceil(words / 200);
+        setTimeToRead(computedTime);
+      }
+    },
+  });
 
-            <SelectCategories />
+  const saveButton = (
+    <div
+      className={cn([
+        "container",
+        "h-max",
+        "mx-auto",
+        "max-w-3xl",
+        "self-start",
+        "px-4",
+      ])}
+    >
+      <UI.Spacer y={10} />
+      <UI.Button
+        size="sm"
+        color="default"
+        className="w-1/6"
+        disabled={progress !== 100}
+      >
+        Save
+      </UI.Button>
+    </div>
+  );
 
-            <div
-                className={cn([
-                    "container",
-                    "h-max",
-                    "mx-auto",
-                    "max-w-3xl",
-                    "self-start",
-                    "px-4",
-                    "flex",
-                    "flex-col",
-                ])}
-            >
-                <ImageUploader />
-                <UI.Spacer y={2} />
-                <input
-                    aria-label="Title"
-                    className="w-full h-14 py-2 outline-none bg-transparent font-sfmono font-bold text-4xl max-md:text-xl text-current placeholder:text-current placeholder:opacity-80 placeholder:focus:opacity-100"
-                    placeholder="Title..."
-                    onChange={(e) => setTitle(e.target.value)}
-                />
-            </div>
+  return (
+    <section className={containerWrapper}>
+      <UI.Spacer y={10} />
 
-            <UI.Spacer y={6} />
-            <div className="container h-max mx-auto max-w-3xl">
-                <EditorMenu editor={editor} />
-            </div>
-            <UI.Spacer y={2} />
-            <div className="container h-max mx-auto max-w-3xl overflow-y-scroll">
-                <EditorContent
-                    editor={editor}
-                    autoCorrect="false"
-                    autoComplete="false"
-                    autoCapitalize="false"
-                />
-            </div>
+      <EditorMetadataPreview
+        metadata={{
+          progress,
+          timeToRead,
+          totalWords,
+          title,
+          categories: [],
+        }}
+      />
 
-            {saveButton}
-        </section>
-    );
+      <ListCategory />
+
+      <div
+        className={cn([
+          "container",
+          "h-max",
+          "mx-auto",
+          "max-w-3xl",
+          "self-start",
+          "px-4",
+          "flex",
+          "flex-col",
+        ])}
+      >
+        <ImageUploader />
+        <UI.Spacer y={2} />
+        <input
+          aria-label="Title"
+          className="h-14 w-full bg-transparent py-2 font-sfmono text-4xl font-bold text-current outline-none placeholder:text-current placeholder:opacity-80 placeholder:focus:opacity-100 max-md:text-xl"
+          placeholder="Title..."
+          onChange={(e) => setTitle(e.target.value)}
+        />
+      </div>
+
+      <UI.Spacer y={6} />
+      <div className="container mx-auto h-max max-w-3xl">
+        <EditorMenu editor={editor} />
+      </div>
+      <UI.Spacer y={2} />
+      <div className="container mx-auto h-max max-w-3xl overflow-y-scroll">
+        <EditorContent
+          editor={editor}
+          autoCorrect="false"
+          autoComplete="false"
+          autoCapitalize="false"
+        />
+      </div>
+
+      {saveButton}
+    </section>
+  );
 }
 
 const containerWrapper = cn([
-    "container",
-    "flex",
-    "flex-col",
-    "justify-center",
-    "items-center",
-    "flex-shrink-0",
-    "w-full",
-    "h-full",
-    "my-2",
-    "space-y-1",
+  "container",
+  "flex",
+  "flex-col",
+  "justify-center",
+  "items-center",
+  "flex-shrink-0",
+  "w-full",
+  "h-full",
+  "my-2",
+  "space-y-1",
 ]);
 
 const editorAttributesClass = cn([
-    "w-full",
-    "h-[700px]",
-    "font-sfmono",
-    "p-4",
-    "rounded-md",
-    "outline-none",
-    "dark:selection:bg-[#909090] dark:selection:text-[#252525]",
-    "selection:bg-[#909090] darkselection:text-[#252525]",
+  "w-full",
+  "h-[700px]",
+  "font-sfmono",
+  "p-4",
+  "rounded-md",
+  "outline-none",
+  "dark:selection:bg-[#909090] dark:selection:text-[#252525]",
+  "selection:bg-[#909090] darkselection:text-[#252525]",
 ]);
 
 const contentDefault = `
