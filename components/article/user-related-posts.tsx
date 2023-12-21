@@ -3,14 +3,10 @@
 import * as UI from "@nextui-org/react";
 import * as React from "react";
 
+import { cn } from "@/lib/utils";
 import { PreviewArticle } from "./preview";
 import { URL_ENDPOINT_ARTICLES } from "@/lib/constant";
 import { useInfiniteQuery } from "@tanstack/react-query";
-
-import { TrandingPostCard } from "./preview/TrandingPostCard";
-
-import { cn } from "@/lib/utils";
-import { useGlobalContext } from "@/context/store/global";
 
 import type { Article } from "@/types/article";
 
@@ -117,7 +113,6 @@ export default function UserRelatedPosts({ author_id }: { author_id: string }) {
     >
       {response ? (
         response.pages.map(({ data }: { data: Article[] }) => {
-
           return data.map((post: Article, i: number) => {
             return <PreviewArticle article={post} key={i} />;
           });

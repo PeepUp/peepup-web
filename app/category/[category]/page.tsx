@@ -3,7 +3,6 @@
 import * as React from "react";
 import * as UI from "@nextui-org/react";
 import { PreviewArticle } from "@/components/article/preview";
-import { CategoryGroupCheckbox } from "@/components/article/category/category-group-checkbox";
 import { URL_ENDPOINT_ARTICLES } from "@/lib/constant";
 import { Article } from "@/types/article";
 import { cn } from "@/lib/utils";
@@ -20,8 +19,8 @@ export default function Page({ params }: Props) {
     join(
       URL_ENDPOINT_ARTICLES,
       "posts",
-      `articles/search?status=published&categories=${params.category}`
-    )
+      `articles/search?status=published&categories=${params.category}`,
+    ),
   );
   const [data, setData] = React.useState<Article[]>();
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -64,30 +63,9 @@ export default function Page({ params }: Props) {
       ])}
     >
       <div>
-        <p>Search results for '{params.category}'</p>
+        <p>Search results for category '{params.category}'</p>
       </div>
       <UI.Spacer y={6} />
-      <div
-        className={cn([
-          "container",
-          "h-max",
-          "mx-auto",
-          "max-w-3xl",
-          "self-start",
-          "px-4",
-          "flex",
-          "flex-col",
-        ])}
-      >
-        <CategoryGroupCheckbox
-          options={{
-            showTitle: false,
-            defaultSelected: [params.category],
-          }}
-        />
-      </div>
-
-      <UI.Spacer y={20} />
       <div>
         {data && data?.length > 0 ? (
           data.map((post: Article, i) => (
