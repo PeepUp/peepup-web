@@ -129,7 +129,7 @@ export function PreviewArticle({ article }: Props) {
                 </UI.PopoverTrigger>
 
                 <UI.PopoverContent className="">
-                  <p>{article.timeToRead ?? 0} min read</p>
+                  <p>{article ? article.reading_time : 0} min read</p>
                 </UI.PopoverContent>
               </UI.Popover>
             </div>

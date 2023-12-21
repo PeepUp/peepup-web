@@ -174,15 +174,16 @@ export function Editor() {
     const response = await fetch(url, {
       method: "POST",
       body: JSON.stringify({
+        status: "published",
         title: data.newArticle.title,
-        slug: data.newArticle.title.toLowerCase().split(" ").join("-"),
-        image_cover: imageData ? imageData.url : data.newArticle.image_cover,
-        content: base64Encode(data.newArticle.content),
+        categories: data.newArticle.categories,
         reading_time: data.newArticle.timeToRead,
         description: data.newArticle.description,
-        status: "published",
+        content: base64Encode(data.newArticle.content),
+        slug: data.newArticle.title.toLowerCase().split(" ").join("-"),
         author_id:
           globalData && globalData.identity ? globalData.identity.id : "",
+        image_cover: imageData ? imageData.url : data.newArticle.image_cover,
       }),
       headers: {
         "Content-Type": "application/json; charset=UTF-8",

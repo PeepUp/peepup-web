@@ -13,6 +13,7 @@ export type Article = {
   image_cover: string;
   updated_at: string;
   timeToRead?: string;
+  reading_time?: string;
   visit_count: number;
   read_count?: number;
   author_id: string;

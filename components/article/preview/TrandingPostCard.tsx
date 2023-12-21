@@ -57,7 +57,7 @@ export function TrandingPostCard({ post }: { post: Article }) {
               title="Tranding"
               className="font-bold"
             >
-              Trending
+              {post.visit_count > 0 ? "Popular" : "New Article"}
             </UI.Chip>
             <div className="space-y-3">
               <UI.Link
@@ -109,7 +109,7 @@ export function TrandingPostCard({ post }: { post: Article }) {
                 </UI.PopoverTrigger>
 
                 <UI.PopoverContent>
-                  <p>{10} min read</p>
+                  <p>{post ? post.reading_time : 0} min read</p>
                 </UI.PopoverContent>
               </UI.Popover>
             </div>
