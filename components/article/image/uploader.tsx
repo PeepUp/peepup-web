@@ -4,6 +4,7 @@ import { FilledUploadIcon } from "@/components/icons";
 import * as UI from "@nextui-org/react";
 import * as React from "react";
 import { ImageCoverModal } from "./image-modal";
+import { useEditorContext } from "@/context/store/editor-store";
 
 export function ImageUploader() {
     const {
@@ -13,6 +14,7 @@ export function ImageUploader() {
     } = UI.useDisclosure();
     const [image, setImage] = React.useState<File | string>("");
     const [loading, setLoading] = React.useState(false);
+    const { setData, data } = useEditorContext();
 
     async function handleUploadImage(e: React.ChangeEvent<HTMLInputElement>) {
         setLoading(true);
@@ -26,12 +28,29 @@ export function ImageUploader() {
                 if (e.target?.result) {
                     const result = e.target.result as string;
                     setImage(result as string);
+                    setData({
+                      ...data,
+                      newArticle: {
+                        ...data.newArticle,
+                        image_cover: btoa(result as string)
+                      }
+                    })
                 }
             };
         }
         setLoading(false);
     }
 
+  const handleDeleteImage = () => {
+    setImage("");
+    setData({
+      ...data,
+      newArticle: {
+        ...data.newArticle,
+        image_cover: ""
+      }
+    })
+  }
     return (
         <>
             {image ? (
@@ -40,7 +59,7 @@ export function ImageUploader() {
                         <UI.Chip
                             className="p-3 cursor-pointer font-bold hover:text-secondary"
                             size="sm"
-                            onClick={() => setImage("")}
+                            onClick={handleDeleteImage}
                         >
                             X
                         </UI.Chip>
