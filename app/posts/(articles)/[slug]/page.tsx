@@ -12,6 +12,7 @@ import { CategoryChip } from "@/components/article/category/category-chip";
 import { InsightIcon, RepostIcon, StarShineIcon } from "@/components/icons";
 import { ImageCoverModal } from "@/components/article/image/image-modal";
 import { InteractionStatistic } from "@/components/article/interaction";
+import { AuthorAvatarPopover } from "@/components/article/author/AuthorAvatarPopover";
 
 export type Props = { params: { slug: string } };
 
@@ -179,7 +180,18 @@ export default function Page({ params }: Props) {
             />
           ) : null}
         </div>
+
         <UI.Spacer y={10} />
+        {metadata && (
+          <AuthorAvatarPopover
+            id={metadata.author_id}
+            key={metadata.slug}
+            created_at={metadata.created_at}
+          />
+        )}
+
+        <UI.Spacer y={5} />
+
         <div className="space-x-2">
           {metadata && metadata.categories.length > 0
             ? metadata.categories.map((category) => (

@@ -50,24 +50,18 @@ export default function page() {
         ) : null}
 
         <UI.Tab key="post_articles" title="Posts" className="w-full">
-          {data && data.isAuthenticated ? (
+          {data && data.isAuthenticated && (
             <UserRelatedPosts author_id={data.identity.id} />
-          ) : (
-            <SpinnerLoading />
           )}
         </UI.Tab>
         <UI.Tab key="repost" title="Repost">
-          {data && data.isAuthenticated ? (
+          {data && data.isAuthenticated && (
             <RepostedByUser author_id={data.identity.id} />
-          ) : (
-            <SpinnerLoading />
           )}
         </UI.Tab>
         <UI.Tab key="stars" title="Stars">
-          {data && data.isAuthenticated ? (
+          {data && data.isAuthenticated && (
             <StaredByUser author_id={data.identity.id} />
-          ) : (
-            <SpinnerLoading />
           )}
         </UI.Tab>
       </UI.Tabs>

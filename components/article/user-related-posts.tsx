@@ -59,12 +59,6 @@ export default function UserRelatedPosts({ author_id }: { author_id: string }) {
     },
   });
 
-  React.useEffect(() => {
-    if (response) {
-      console.log(response);
-    }
-  }, [response]);
-
   const SkeletonFirstCard = () => (
     <UI.Card className="min-h-[500px] w-3/4 space-y-3" radius="lg">
       <UI.Skeleton className="rounded-lg">
@@ -96,6 +90,25 @@ export default function UserRelatedPosts({ author_id }: { author_id: string }) {
     </UI.Card>
   );
 
+  React.useEffect(() => {
+    console.log(response);
+  }, [response]);
+
+  if (
+    response &&
+    response.pages.length &&
+    response.pages[0].data.length === 0
+  ) {
+    return (
+      <div className="w-full h-full flex flex-col justify-center items-center">
+        <UI.Spacer y={40} />
+        <h5 className="text-current text-center">
+          Upps, there are reposted records found!
+        </h5>
+      </div>
+    );
+  }
+
   return (
     <section
       className={cn([
@@ -111,42 +124,26 @@ export default function UserRelatedPosts({ author_id }: { author_id: string }) {
         "space-y-3",
       ])}
     >
-      {response ? (
+      {response && response.pages.length > 0 ? (
         response.pages.map(({ data }: { data: Article[] }) => {
-          return data.map((post: Article, i: number) => {
-            return <PreviewArticle article={post} key={i} />;
-          });
+          return (
+            data &&
+            data.length > 0 &&
+            data.map((post: Article, i: number) => {
+              return <PreviewArticle article={post} key={i} />;
+            })
+          );
         })
       ) : (
-        <>
-          <SkeletonFirstCard />
-          {new Array(6).fill(0).map((_, i) => (
-            <UI.Card key={i} className="w-3/4 space-y-3" radius="lg">
-              <UI.Skeleton className="rounded-lg">
-                <div className="h-24 rounded-lg bg-default-300"></div>
-              </UI.Skeleton>
-              <div className="space-y-3">
-                <UI.Skeleton className="w-3/5 rounded-lg">
-                  <div className="h-3 w-3/5 rounded-lg bg-default-200"></div>
-                </UI.Skeleton>
-                <UI.Skeleton className="w-4/5 rounded-lg">
-                  <div className="h-3 w-4/5 rounded-lg bg-default-200"></div>
-                </UI.Skeleton>
-                <UI.Skeleton className="w-2/5 rounded-lg">
-                  <div className="h-3 w-2/5 rounded-lg bg-default-300"></div>
-                </UI.Skeleton>
-              </div>
-            </UI.Card>
-          ))}
-        </>
+        <div className="w-full h-full flex flex-col justify-center items-center">
+          <UI.Spacer y={40} />
+          <h5 className="text-current text-center">
+            Upps, there are reposted records found!
+          </h5>
+        </div>
       )}
       <span ref={ref}></span>
       <UI.Spacer y={4} />
-      <UI.Spinner
-        size="sm"
-        hidden={isLoading ? false : true}
-        color="secondary"
-      />
       <UI.Spacer y={20} />
     </section>
   );

@@ -5,7 +5,7 @@ import * as UI from "@nextui-org/react";
 import Link from "next/link";
 
 import { capitalizeFirstLetter, cn } from "@/lib/utils";
-import { Article, ArticleAuthor } from "@/types/article";
+import { Article } from "@/types/article";
 import { AuthorAvatarPopover } from "../author/AuthorAvatarPopover";
 import { TimerIcon } from "@/components/icons";
 import { CategoryChip } from "../category/category-chip";

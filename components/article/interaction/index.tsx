@@ -57,6 +57,7 @@ export function LikeButon({
   articleId?: string;
 }) {
   const { isOpen, onOpen, onOpenChange } = UI.useDisclosure();
+  let flag = false;
 
   async function fetcherDislike() {
     try {
@@ -80,7 +81,6 @@ export function LikeButon({
 
       if (!res.ok) {
         if (res.status === 400) {
-          console.log("already disliked");
           return;
         }
       }
@@ -189,13 +189,11 @@ export function RepostButon({
 
       if (!res.ok) {
         if (res.status === 400) {
-          console.log("already disliked");
           return;
         }
       }
 
       if (res.status === 204) {
-        console.log("success");
         return;
       }
     } catch (error) {
@@ -231,7 +229,6 @@ export function RepostButon({
       }
 
       if (res.status === 204) {
-        console.log("success");
         return;
       }
     } catch (error) {
