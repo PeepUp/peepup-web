@@ -3,27 +3,54 @@
 import * as UI from "@nextui-org/react";
 import React from "react";
 
-import { join } from "path";
-import { API_IDENTITY_ENDPOINT } from "@/lib/constant";
-import { useGlobalContext } from "@/context/store/global";
-
 import type { ArticleAuthor } from "@/types/article";
-import { getIdentityPreview } from "@/lib/api/identity/me";
-import { useFetch } from "@/hooks/useFetch";
+
 import Link from "next/link";
+import { getIdentityPreview } from "@/lib/api/identity/me";
+
+interface IdentityPreviewData {
+  id: string;
+  firstName: string;
+  lastName: string;
+  username: string;
+  avatar: string;
+}
+
+const cache: IdentityPreviewData[] = [];
 
 export function AuthorAvatarPopover({ id, created_at }: ArticleAuthor) {
-  const url = new URL(
-    join(API_IDENTITY_ENDPOINT, "identities", id ? id : "", "preview")
-  );
+  const [data, setData] = React.useState<any>();
 
-  const { data, error } = useFetch<Awaited<any>>({
-    url,
-    config: {
-      cache: "force-cache",
-      mode: "cors",
-    },
-  });
+  const fetch = React.useMemo(() => {
+    async function fetchData(): Promise<IdentityPreviewData | undefined> {
+      const cachedData = cache.find((item) => item.id === id);
+      if (cachedData) return cachedData;
+
+      try {
+        cache.splice(0, cache.length);
+        const response = await getIdentityPreview(id);
+
+        if (!response.ok) throw new Error("Network response was not ok.");
+
+        const { data } = await response.json();
+
+        cache.push(data);
+
+        return data;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        return undefined;
+      }
+    }
+
+    return fetchData;
+  }, [id]);
+
+  React.useEffect(() => {
+    if (id) {
+      fetch().then(setData);
+    }
+  }, [id, fetch]);
 
   const fullName =
     data && data.firstName && data.lastName
